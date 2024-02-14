@@ -81,6 +81,15 @@ function App() {
               </>
             }
           />
+          <Route
+            path="/customerInsight"
+            element={
+              <>
+                <PageTitle title="VoiceD | Sales Agent - Dashboard" />
+                <CustomerInsight />
+              </>
+            }
+          />
           </>
           
         )}
