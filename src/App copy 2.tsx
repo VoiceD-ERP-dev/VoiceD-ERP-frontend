@@ -5,7 +5,7 @@ import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import Calendar from './pages/Calendar';
-import ECommerce from './pages/Dashboard/ECommerce';
+import ECommerce from './pages/Dashboard/SalesDashboard';
 import CustomerRegister from './components/Salesman/CustomerRegister';
 import CustomerInsight from './components/Salesman/CustomerInsight';
 import MyInvoices from './components/Salesman/MyInvoices';

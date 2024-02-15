@@ -3,7 +3,7 @@ import Header from '../components/Header/index';
 import Sidebar from '../components/Sidebar/index';
 import AdminSidebar from '../components/Sidebar/AdminSidebar';
 
-const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+const DefaultAdminLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -35,4 +35,4 @@ const DefaultLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   );
 };
 
-export default DefaultLayout;
+export default DefaultAdminLayout;
