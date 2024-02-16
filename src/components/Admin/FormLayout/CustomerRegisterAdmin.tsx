@@ -23,6 +23,8 @@ function CustomerRegisterAdmin() {
     nic: Yup.string().required("Required"),
     brid: Yup.string().required("Required"),
     email: Yup.string().required("Required"),
+    package: Yup.string().required("Required"),
+    payment: Yup.string().required("Required"),
     contact: Yup.string()
     .min(10, "must include a valid mobile number")
     .matches(/[0-9]/, "must includes only digits")
@@ -58,6 +60,8 @@ function CustomerRegisterAdmin() {
                   email: "",
                   address: "",
                   contact: "",
+                  package: "",
+                  payment: "",
 
                 }}
                 validationSchema={CustomerRegistrationSchema}
@@ -222,11 +226,12 @@ function CustomerRegisterAdmin() {
 
                       <SelectField
                         label="Select a Package"
-                        name='Select a Package'
+                        name='package'
                         icon="Inventory"
                         boxcolor="transparent"
                         handleChange={handleChange}
                         options={["Basic", "Platinum", "Premium"]}
+                        values={values}
                       />
 
                      
@@ -247,11 +252,12 @@ function CustomerRegisterAdmin() {
 
                       <SelectField
                         label="Select a Payment Method"
-                        name='Select a Payment Method'
+                        name='payment'
                         icon="Payments"
                         boxcolor="transparent"
                         handleChange={handleChange}
                         options={["Direct Purchase", "Bank Deposit", "Cheque"]}
+                        values={values}
                       />
 
                      
