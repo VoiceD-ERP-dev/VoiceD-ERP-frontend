@@ -1,23 +1,23 @@
 import { Link, useNavigate } from 'react-router-dom';
-import Breadcrumb from '../Breadcrumbs/Breadcrumb';
-import SelectGroupOne from '../Forms/SelectGroup/SelectGroupOne';
-import DefaultAdminLayout from '../../layout/DefaultAdminLayout';
+import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
+import SelectGroupOne from '../../Forms/SelectGroup/SelectGroupOne';
+import DefaultLayout from '../../../layout/DefaultLayout';
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import InputField from '../FormElements/InputFiled';
-import PrimaryButton from '../FormElements/PrimaryButon';
-import SelectField from '../FormElements/SelectField';
-import CheckboxOne from '../Checkboxes/CheckboxOne';
-import TextField from '../FormElements/TextFiled';
+import InputField from '../../FormElements/InputFiled';
+import PrimaryButton from '../../FormElements/PrimaryButon';
+import SelectField from '../../FormElements/SelectField';
+import CheckboxOne from '../../Checkboxes/CheckboxOne';
+import TextField from '../../FormElements/TextFiled';
 
 
-function CustomerRegisterAdmin() {
+function CustomerRegister() {
 
 
   const navigate = useNavigate();
 
   const SignUpSchema = Yup.object().shape({
-    userName: Yup.string().required("Required"),
+    userName: Yup.string().required("Required"), 
     nic: Yup.string().required("Required"),
     email: Yup.string().required("Required"),
     contact: Yup.string().required("Required"),
@@ -37,7 +37,7 @@ function CustomerRegisterAdmin() {
 
 
   return (
-    <DefaultAdminLayout>
+    <DefaultLayout>
       <Breadcrumb pageName="Customer Registration Form" />
 
       <div className="w-full gap-9 sm:grid-cols-2 ">
@@ -259,8 +259,8 @@ function CustomerRegisterAdmin() {
 
 
       </div>
-    </DefaultAdminLayout>
+    </DefaultLayout>
   )
 }
 
-export default CustomerRegisterAdmin
+export default CustomerRegister

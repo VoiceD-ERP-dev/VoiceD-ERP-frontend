@@ -1,12 +1,12 @@
 import { Link ,useNavigate} from 'react-router-dom';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
-import DefaultLayout from '../../layout/DefaultLayout';
+import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
+import DefaultAdminLayout from '../../../layout/DefaultAdminLayout';
 import * as Yup from "yup";
-import InvoiceTable from '../Tables/InvoiceTable';
 
 
-function MyInvoices() {
+import InvoiceTableAdminPDTemp from '../TableTemplate/InvoiceTableAdminPDTemp';
+
+function AdminInvoicesPD() {
 
 
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ function MyInvoices() {
 
 
   return (
-    <DefaultLayout>
+    <DefaultAdminLayout>
     <Breadcrumb pageName="My Invoices" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">
@@ -35,8 +35,8 @@ function MyInvoices() {
         
           
           
-      <InvoiceTable 
-tablehead={["","CustomerID", "Customer Name", "InvoiceID", "Invoice Date", "Action"]}
+      <InvoiceTableAdminPDTemp 
+tablehead={["","CustomerID", "Customer Name", "InvoiceID", "Invoice Date","Payment Status", "Action"]}
 />
           
         
@@ -44,8 +44,8 @@ tablehead={["","CustomerID", "Customer Name", "InvoiceID", "Invoice Date", "Acti
 
      
     </div>
-  </DefaultLayout>
+  </DefaultAdminLayout>
   )
 }
 
-export default MyInvoices
+export default AdminInvoicesPD;

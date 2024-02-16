@@ -33,31 +33,8 @@ interface CheckedRows {
 
 
 
-const InvoiceTable = ({ tablehead }: TableProps) => {
+const InvoiceTableAdminAcceptTemp = ({ tablehead }: TableProps) => {
 
-  //  // Explicitly provide the type for checkedRows state
-  //  const [checkedRows, setCheckedRows] = useState<{ [key: number]: boolean }>({});
-
-  //  // Toggle the checkbox state for all rows
-  //  const handleHeaderCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //    const isChecked = event.target.checked;
-  //    const updatedCheckedRows: { [key: number]: boolean } = {};
- 
-  //    customerData.forEach((customerDataItem, key) => {
-  //      updatedCheckedRows[key] = isChecked;
-  //    });
- 
-  //    setCheckedRows(updatedCheckedRows);
-  //  };
- 
-  //  // Toggle the checkbox state for a specific row
-  //  const handleRowCheckboxChange = (key: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-  //    const isChecked = event.target.checked;
-  //    setCheckedRows((prevCheckedRows) => ({
-  //      ...prevCheckedRows,
-  //      [key]: isChecked,
-  //    }));
-  //  };
 
 
   const [checkedRows, setCheckedRows] = useState<CheckedRows>({});
@@ -118,6 +95,7 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               <th className="py-4 px-4 font-medium text-black dark:text-white xl:pl-11 min-w-[80px]">
               
+              <div className="flex flex-row space-x-2">
               <input
                   type="checkbox"
                   checked={checkedRows.all || false}
@@ -125,7 +103,7 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
                 />
                 <button 
                 onClick={handleDownload}
-                className="hover:text-primary ml-3">
+                className="hover:text-primary ">
                       <svg
                         className="fill-current"
                         width="18"
@@ -144,6 +122,7 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
                         />
                       </svg>
                     </button>
+              </div>
               </th>
               {tablehead.slice(1).map((tableh, index) => (
                 <th
@@ -264,7 +243,7 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
   );
 };
 
-export default InvoiceTable;
+export default InvoiceTableAdminAcceptTemp;
 
 
 

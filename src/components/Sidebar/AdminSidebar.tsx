@@ -331,14 +331,14 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
                             <NavLink
-                              to="/invoices/all-invoices"
+                              to="/invoices/pd-invoices"
                               className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
-                  ${pathname.includes('all-invoices') &&
+                  ${pathname.includes('pd-invoices') &&
                                 'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
                                 }`}
                             >
 
-                              All Invoices
+                              Pending Invoices
                             </NavLink>
                           </li>
                           <li>

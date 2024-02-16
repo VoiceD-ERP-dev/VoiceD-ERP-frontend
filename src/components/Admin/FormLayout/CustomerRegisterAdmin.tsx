@@ -1,17 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
-import DefaultLayout from '../../layout/DefaultLayout';
+import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
+import SelectGroupOne from '../../Forms/SelectGroup/SelectGroupOne';
+import DefaultAdminLayout from '../../../layout/DefaultAdminLayout';
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import InputField from '../FormElements/InputFiled';
-import PrimaryButton from '../FormElements/PrimaryButon';
-import SelectField from '../FormElements/SelectField';
-import CheckboxOne from '../Checkboxes/CheckboxOne';
-import TextField from '../FormElements/TextFiled';
+import InputField from '../../FormElements/InputFiled';
+import PrimaryButton from '../../FormElements/PrimaryButon';
+import SelectField from '../../FormElements/SelectField';
+import CheckboxOne from '../../Checkboxes/CheckboxOne';
+import TextField from '../../FormElements/TextFiled';
 
 
-function CustomerRegister() {
+function CustomerRegisterAdmin() {
 
 
   const navigate = useNavigate();
@@ -21,14 +21,7 @@ function CustomerRegister() {
     nic: Yup.string().required("Required"),
     email: Yup.string().required("Required"),
     contact: Yup.string().required("Required"),
-    userID: Yup.string().required("Required"),
-    password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .matches(/[0-9]/, "Password requires a number")
-      .matches(/[a-z]/, "Password requires a lowercase letter")
-      .matches(/[A-Z]/, "Password requires a uppercase letter")
-      .matches(/[^\w]/, "Password requires a symbol")
-      .required("Required"),
+    
   });
 
   const handleRegister = () => {
@@ -37,7 +30,7 @@ function CustomerRegister() {
 
 
   return (
-    <DefaultLayout>
+    <DefaultAdminLayout>
       <Breadcrumb pageName="Customer Registration Form" />
 
       <div className="w-full gap-9 sm:grid-cols-2 ">
@@ -259,8 +252,8 @@ function CustomerRegister() {
 
 
       </div>
-    </DefaultLayout>
+    </DefaultAdminLayout>
   )
 }
 
-export default CustomerRegister
+export default CustomerRegisterAdmin

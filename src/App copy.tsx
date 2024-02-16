@@ -15,9 +15,9 @@ import Settings from './pages/Settings';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
-import CustomerRegister from './components/Salesman/CustomerRegister';
-import CustomerInsight from './components/Salesman/CustomerInsight';
-import MyInvoices from './components/Salesman/MyInvoices';
+import CustomerRegister from './components/Salesman/FormLayout/CustomerRegister';
+import CustomerInsight from './components/Salesman/TableLayout/CustomerInsight';
+import MyInvoices from './components/Salesman/TableLayout/MyInvoices';
 
 
 function App() {

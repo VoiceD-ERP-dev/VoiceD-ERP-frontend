@@ -7,12 +7,14 @@ import SignIn from './pages/Authentication/SignIn';
 import Calendar from './pages/Calendar';
 import SalesDashboard from './pages/Dashboard/SalesDashboard';
 import Profile from './pages/Profile';
-import CustomerRegister from './components/Salesman/CustomerRegister';
-import CustomerInsight from './components/Salesman/CustomerInsight';
-import MyInvoices from './components/Salesman/MyInvoices';
+import CustomerRegister from './components/Salesman/FormLayout/CustomerRegister';
+import CustomerInsight from './components/Salesman/TableLayout/CustomerInsight';
+import MyInvoices from './components/Salesman/TableLayout/MyInvoices';
 import AdminDashboard from './pages/Dashboard/AdminDashboard';
-import CustomerRegisterAdmin from './components/Salesman/CustomerRegisterAdmin';
-import CustomerInsightAdmin from './components/Admin/CustomerInsightAdmin';
+import CustomerRegisterAdmin from './components/Admin/FormLayout/CustomerRegisterAdmin';
+import CustomerInsightAdmin from './components/Admin/TableLayout/CustomerInsightAdmin';
+import AdminInvoicesPD from './components/Admin/TableLayout/InvoicesAdminPD';
+import AdminInvoicesAccept from './components/Admin/TableLayout/InvoicesAdminAccept';
 
 
 function App() {
@@ -89,11 +91,11 @@ function App() {
 
 
 <Route
-              path="/invoices/all-invoices"
+              path="/invoices/pd-invoices"
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <CustomerInsightAdmin />
+                  <AdminInvoicesPD />
                 </>
               }
             />
@@ -104,7 +106,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <CustomerInsightAdmin />
+                  <AdminInvoicesAccept />
                 </>
               }
             />

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
-import CustomerEdit from "./Modal/CustomerEdit";
+import CustomerEdit from "../Modal/CustomerEdit";
 import { faClose , faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 

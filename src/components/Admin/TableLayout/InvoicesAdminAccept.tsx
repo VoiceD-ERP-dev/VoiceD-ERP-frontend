@@ -1,12 +1,13 @@
 import { Link ,useNavigate} from 'react-router-dom';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import SelectGroupOne from '../../components/Forms/SelectGroup/SelectGroupOne';
-import DefaultLayout from '../../layout/DefaultLayout';
+import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
+import SelectGroupOne from '../../Forms/SelectGroup/SelectGroupOne';
+
+import DefaultAdminLayout from '../../../layout/DefaultAdminLayout';
 import * as Yup from "yup";
-import CustomerTableSales from '../Tables/CustomerTableSales';
+import InvoiceTable from '../../Salesman/TableTemplate/InvoiceTable';
+import InvoiceTableAdminAcceptTemp from '../TableTemplate/InvoiceTableAdminAcceptTemp';
 
-
-function CustomerInsight() {
+function AdminInvoicesAccept() {
 
 
     const navigate = useNavigate();
@@ -26,8 +27,8 @@ function CustomerInsight() {
 
 
   return (
-    <DefaultLayout>
-    <Breadcrumb pageName="Customer Insight" />
+    <DefaultAdminLayout>
+    <Breadcrumb pageName="My Invoices" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">
       <div className="flex flex-col gap-9">
@@ -35,8 +36,8 @@ function CustomerInsight() {
         
           
           
-<CustomerTableSales 
-tablehead={["CustomerID", "Customer Name", "Registered On","Payment Status"]}
+      <InvoiceTableAdminAcceptTemp 
+tablehead={["","CustomerID", "Customer Name", "InvoiceID", "Invoice Date", "Action"]}
 />
           
         
@@ -44,8 +45,8 @@ tablehead={["CustomerID", "Customer Name", "Registered On","Payment Status"]}
 
      
     </div>
-  </DefaultLayout>
+  </DefaultAdminLayout>
   )
 }
 
-export default CustomerInsight
+export default AdminInvoicesAccept;

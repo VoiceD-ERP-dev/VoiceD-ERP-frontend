@@ -1,9 +1,9 @@
 import { Link ,useNavigate} from 'react-router-dom';
-import Breadcrumb from '../Breadcrumbs/Breadcrumb';
-import SelectGroupOne from '../Forms/SelectGroup/SelectGroupOne';
-import DefaultAdminLayout from '../../layout/DefaultAdminLayout';
+import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
+import SelectGroupOne from '../../Forms/SelectGroup/SelectGroupOne';
+import DefaultAdminLayout from '../../../layout/DefaultAdminLayout';
 import * as Yup from "yup";
-import CustomerTableAdmin from './CustomerTableAdmin';
+import CustomerTableAdmin from '../TableTemplate/CustomerTableAdmin';
 
 
 function CustomerInsightAdmin() {

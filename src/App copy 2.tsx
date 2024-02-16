@@ -6,9 +6,9 @@ import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import Calendar from './pages/Calendar';
 import ECommerce from './pages/Dashboard/SalesDashboard';
-import CustomerRegister from './components/Salesman/CustomerRegister';
-import CustomerInsight from './components/Salesman/CustomerInsight';
-import MyInvoices from './components/Salesman/MyInvoices';
+import CustomerRegister from './components/Salesman/FormLayout/CustomerRegister';
+import CustomerInsight from './components/Salesman/TableLayout/CustomerInsight';
+import MyInvoices from './components/Salesman/TableLayout/MyInvoices';
 
 
 function App() {
