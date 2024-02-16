@@ -9,6 +9,7 @@ import PrimaryButton from '../../FormElements/PrimaryButon';
 import SelectField from '../../FormElements/SelectField';
 import CheckboxOne from '../../Checkboxes/CheckboxOne';
 import TextField from '../../FormElements/TextFiled';
+import InputFileUpload from '../../FormElements/InputFileUpload';
 
 
 function CustomerRegisterAdmin() {
@@ -16,18 +17,23 @@ function CustomerRegisterAdmin() {
 
   const navigate = useNavigate();
 
-  const SignUpSchema = Yup.object().shape({
-    userName: Yup.string().required("Required"),
+  const CustomerRegistrationSchema = Yup.object().shape({
+    firstName: Yup.string().required("Required"),
+    lastName: Yup.string().required("Required"),
     nic: Yup.string().required("Required"),
+    brid: Yup.string().required("Required"),
     email: Yup.string().required("Required"),
-    contact: Yup.string().required("Required"),
+    contact: Yup.string()
+    .min(10, "must include a valid mobile number")
+    .matches(/[0-9]/, "must includes only digits")
+    .required("Required"),
     
   });
 
-  const handleRegister = () => {
-    navigate("/");
+  const handleRegister = (values) => {
+    console.log("Form values:", values);
+    // You can perform additional actions here, such as submitting the form data to a server.
   };
-
 
   return (
     <DefaultAdminLayout>
@@ -54,7 +60,7 @@ function CustomerRegisterAdmin() {
                   contact: "",
 
                 }}
-                validationSchema={SignUpSchema}
+                validationSchema={CustomerRegistrationSchema}
                 onSubmit={handleRegister}
               >
 
@@ -166,6 +172,49 @@ function CustomerRegisterAdmin() {
                     />
 
 
+
+
+
+
+<div className='w-full py-3 mt-5'>
+                      <h2>Documentations</h2>
+                    </div>
+                    <div className='w-full flex flex-row justify-between space-x-3 '>
+
+                    <InputFileUpload
+                      label="NIC"
+                      name="nicfile"
+                      type="file"
+                      boxcolor="transparent"
+                      placeholder="nicFile"
+                      handleChange={handleChange}
+                      values={values}
+                      icon="UploadFile"
+                    />
+
+                     <div className='flex flex-col w-full'>
+                     <InputFileUpload
+                      label="Business Registration"
+                      name="brFile"
+                      type="file"
+                      boxcolor="transparent"
+                      placeholder="brFile"
+                      handleChange={handleChange}
+                      values={values}
+                      icon="UploadFile"
+                    />
+
+                    <p>Note : if you dont have a registered business yet, leave this filed.</p>
+                     </div>
+
+                     
+
+
+                    </div>
+
+
+
+
                     <div className='w-full py-3 mt-5'>
                       <h2>Package Details</h2>
                     </div>
@@ -213,7 +262,7 @@ function CustomerRegisterAdmin() {
 
 
 
-
+                    
 
 
 
@@ -229,7 +278,7 @@ function CustomerRegisterAdmin() {
 
                       <PrimaryButton
                         type="submit"
-
+                        // eventname={handleRegister}
                         textcolor="#fafafa"
                         label="Register"
                         colorfrom='#c026d3'

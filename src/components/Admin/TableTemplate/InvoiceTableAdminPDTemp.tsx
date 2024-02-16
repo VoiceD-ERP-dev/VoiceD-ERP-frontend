@@ -203,9 +203,12 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
 
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                 <h5 className={`font-medium text-${statusColor}`}>
+                  <div className="w-full rounded-md px-4 py-2 flex justify-center items-center dark:bg-white bg-slate-100">
+                  <h5 className={`font-medium text-[14px] text-${statusColor}` }>
         {customerDataItem.status}
       </h5>
+                  </div>
+              
 
                  </td>
 
