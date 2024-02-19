@@ -302,9 +302,8 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             : setSidebarExpanded(true);
                         }}
                       >
-                         <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-width="1" d="M16 19h4c.6 0 1-.4 1-1v-1a3 3 0 0 0-3-3h-2m-2.2-4A3 3 0 0 0 19 8a3 3 0 0 0-5.2-2M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1c0 .6-.4 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  </svg>
+                          <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="1" d="M6 10h12v1H6zM3 1h12.29L21 6.709V23H3zm12 6h5v-.2L15.2 2H15zM4 22h16V8h-6V2H4zm2-7h12v-1H6zm0 4h9v-1H6z"/><path fill="none" d="M0 0h24v24H0z"/></svg>
                         Invoices
                         <svg
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
@@ -365,6 +364,111 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <h3 className="mb-4 mt-4 ml-4 text-sm font-bold text-[#161616] dark:text-[#fafafa] ">
               COMPANY ROLES
             </h3>
+
+
+            <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/auth' || pathname.includes('auth')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4  font-medium text-[#161616] dark:text-[#ffffff] duration-300 ease-in-out hover:bg-[#b76bff] dark:hover:bg-meta-4 ${(pathname === '/customers' ||
+                            pathname.includes('auth')) &&
+                          'bg-[#b76bff] dark:bg-meta-4'
+                          }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                         {/* <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="1" d="M16 19h4c.6 0 1-.4 1-1v-1a3 3 0 0 0-3-3h-2m-2.2-4A3 3 0 0 0 19 8a3 3 0 0 0-5.2-2M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1c0 .6-.4 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  </svg> */}
+
+<svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-width="1" d="M20.76 3.854l-.87-.042c-3.31-.166-5.67-.934-7.21-2.35L12 .838l-.68.624c-1.54 1.416-3.9 2.184-7.209 2.35l-.87.042-.08.87c-.574 6.312-.029 13.382 8.358 17.957l.481.262.48-.262c8.388-4.575 8.933-11.645 8.36-17.958zm-8.762 17.95c-7.879-4.3-8.381-11.005-7.837-16.993 3.552-.178 6.122-1.033 7.842-2.613 1.72 1.58 4.287 2.438 7.84 2.615.544 5.99.034 12.692-7.845 16.99zm5.524-13.946l.637.636L10.5 16 7 12.689l.637-.636 2.863 2.674z"/><path fill="none" d="M0 0h24v24H0z"/></svg>
+                 
+
+
+                        User Authentications
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
+                            }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${!open && 'hidden'
+                          }`}
+                      >
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/auth/super-admin"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('super-admin') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Super Admin
+                            </NavLink>
+                          </li>
+                          <li>
+
+                          <NavLink
+                              to="/auth/sub-admin"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('sub-admin') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Sub Admin
+                            </NavLink>
+                          </li>
+
+                          <li>
+
+                          <NavLink
+                              to="/auth/sales-agents"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('sales-agents') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Sales Agents
+                            </NavLink>
+                          </li>
+
+
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+
+
 
             </ul>
 

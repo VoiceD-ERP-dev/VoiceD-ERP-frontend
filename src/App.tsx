@@ -15,6 +15,9 @@ import CustomerRegisterAdmin from './components/Admin/FormLayout/CustomerRegiste
 import CustomerInsightAdmin from './components/Admin/TableLayout/CustomerInsightAdmin';
 import AdminInvoicesPD from './components/Admin/TableLayout/InvoicesAdminPD';
 import AdminInvoicesAccept from './components/Admin/TableLayout/InvoicesAdminAccept';
+import SalesAgentAdmin from './components/Admin/CompanyRoles/TableLayout/SalesAgentAdminSA';
+import SaTableAdminSATemp from './components/Admin/CompanyRoles/TableTemplate/SaTableAdminSATemp';
+
 
 
 function App() {
@@ -107,6 +110,17 @@ function App() {
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
                   <AdminInvoicesAccept />
+                </>
+              }
+            />
+
+
+<Route
+              path="/auth/sales-agents"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <SalesAgentAdmin />
                 </>
               }
             />
