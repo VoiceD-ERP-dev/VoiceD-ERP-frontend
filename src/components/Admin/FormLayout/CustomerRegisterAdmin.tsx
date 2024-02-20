@@ -32,6 +32,8 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     .min(10, "must include a valid mobile number")
     .matches(/[0-9]/, "must includes only digits")
     .required("Required"),
+    nicImg: Yup.mixed().required("NIC image is required"),
+    brImg: Yup.mixed().required("Business Registration image is required"),
     
   });
 
@@ -66,6 +68,8 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                   contact: "",
                   package: "",
                   payment: "",
+                  nicImg:"",
+                  brImg:"",
 
                 }}
                 validationSchema={CustomerRegistrationSchema}

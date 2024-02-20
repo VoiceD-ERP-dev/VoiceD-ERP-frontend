@@ -13,7 +13,7 @@ interface InputFileUpload {
     type: "text" | "password" | "email" | "button" | "submit" | "reset" | "file" | undefined;
     placeholder: string;
     handleChange: ChangeEventHandler<HTMLInputElement>;
-    values: { [key: string]: string };
+    values: { [key: string]: any };
     icon: keyof typeof MuiIcons;
   }
   
@@ -49,10 +49,10 @@ function InputFileUpload({ label, name, type, placeholder, handleChange, values,
        className={`w-[44px] h-[44px] rounded-bl-[6px] rounded-tl-[6px] flex justify-center items-center`}>
 <IconComponent/>
        </div>
-        <Field
-          type={type}
+        <input
+          type="file"
           name={name}
-          value={values[name]}
+  
           onChange={handleChange}
           placeholder={placeholder}
           className="w-full h-full p-2 bg-transparent outline-none text-[#1a1a1a] text-[14px] form-control form-field-input"

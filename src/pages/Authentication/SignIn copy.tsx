@@ -7,8 +7,8 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import CoverVid from '../../images/coverVideo/vidcover.mp4';
 import '../../css/parallax.css'
-import axios from 'axios';
-import Cookies from 'js-cookie';
+
+
 
 interface SignInProps {
   onLogin: (role: string) => void; // Callback function to handle login with role
@@ -25,54 +25,34 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
 
 
   const SignUpSchema = Yup.object().shape({
-    email: Yup.string().required("Required"),
+    userID: Yup.string().required("Required"),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
-      //.matches(/[0-9]/, "Password requires a number")
+      .matches(/[0-9]/, "Password requires a number")
       .matches(/[a-z]/, "Password requires a lowercase letter")
       .matches(/[A-Z]/, "Password requires a uppercase letter")
-      //.matches(/[^\w]/, "Password requires a symbol")
+      .matches(/[^\w]/, "Password requires a symbol")
       .required("Required"),
   });
 
-  const handleLogin = async (values: { email: string; password: string }) => {
-    try {
-      // Make an HTTP POST request to the login endpoint
-      const response = await axios.post('http://localhost:5001/api/salesmen/login', {
-        email: values.email,
-        password: values.password,
-      });
-  
-      // Extract the JWT token from the response
-      const jwtToken = response.data.accessToken;
-  
-      // Log the user
-      console.log('Logged in user:', values.email);
-  
-      // Log the JWT token
-      console.log('JWT Token:', jwtToken);
-  
-      Cookies.set('jwtToken', jwtToken);
 
-      // Assuming you have an authentication function that returns the user role
-      const userRole = await authenticate(values.email, values.password);
-  
-      if (userRole === 'admin') {
-        onLogin('admin');
-        navigate('/adminDashboard');
-      } else if (userRole === 'sales') {
-        onLogin('sales');
-        navigate('/dashboard');
-      } else {
-        // Handle other roles or scenarios as needed
-        console.error('Unknown user role:', userRole);
-      }
-    } catch (error) {
-      console.error('Error:', error);
+  const handleLogin = async (values: { userID: string; password: string }) => {
+    // Assuming you have an authentication function that returns the user role
+    const userRole = await authenticate(values.userID, values.password);
+
+    if (userRole === 'superadmin' || userRole === 'admin') {
+      onLogin('superadmin');
+      navigate('/adminDashboard');
+    } else if (userRole === 'sales') {
+      onLogin('sales');
+      navigate('/dashboard');
+    } else {
+      // Handle other roles or scenarios as needed
+      console.error('Unknown user role:', userRole);
     }
   };
 
-  const authenticate = async (email: string, password: string) => {
+  const authenticate = async (userID: string, password: string) => {
     // Replace this with your actual authentication logic
     // For example, you might make an API call to authenticate the user
     // and retrieve the user role.
@@ -80,7 +60,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
     return new Promise<string>((resolve) => {
       setTimeout(() => {
         // Replace 'admin' with the actual user role obtained from authentication
-        resolve('admin');
+        resolve('superadmin');
       }, 1000);
     });
   };
@@ -128,7 +108,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
 
           <Formik
             initialValues={{
-              email: "",
+              userID: "",
               password: "",
             }}
             validationSchema={SignUpSchema}
@@ -147,12 +127,12 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
 
 
                   <InputField
-                    label="Email"
-                    name="email"
+                    label="User ID"
+                    name="userID"
                     type="text"
                     icon="AccountCircle"
                     boxcolor="transparent"
-                    placeholder="Email"
+                    placeholder="User ID"
                     handleChange={handleChange}
                     values={values}
 
