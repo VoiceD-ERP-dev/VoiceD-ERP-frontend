@@ -12,7 +12,10 @@ import TextField from '../../FormElements/TextFiled';
 import InputFileUpload from '../../FormElements/InputFileUpload';
 
 
-function CustomerRegisterAdmin() {
+
+
+
+function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
   const navigate = useNavigate();
@@ -38,7 +41,7 @@ function CustomerRegisterAdmin() {
   };
 
   return (
-    <DefaultAdminLayout>
+    <DefaultAdminLayout userRole={userRole}>
       <Breadcrumb pageName="Customer Registration Form" />
 
       <div className="w-full gap-9 sm:grid-cols-2 ">
@@ -48,6 +51,7 @@ function CustomerRegisterAdmin() {
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark w-full">
               <h3 className="font-medium text-black dark:text-white">
                 Please fill all the details
+                
               </h3>
             </div>
             <div className="p-6.5">

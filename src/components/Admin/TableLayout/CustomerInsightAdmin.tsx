@@ -6,13 +6,13 @@ import * as Yup from "yup";
 import CustomerTableAdmin from '../TableTemplate/CustomerTableAdmin';
 
 
-function CustomerInsightAdmin() {
+function CustomerInsightAdmin({userRole} : {userRole : string}) {
 
 
 
 
   return (
-    <DefaultAdminLayout>
+    <DefaultAdminLayout userRole={userRole}>
     <Breadcrumb pageName="Customer Insight" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">

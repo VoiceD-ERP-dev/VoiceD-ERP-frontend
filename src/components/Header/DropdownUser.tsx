@@ -3,7 +3,12 @@ import { Link } from 'react-router-dom';
 
 import UserOne from '../../images/user/user-01.png';
 
-const DropdownUser = () => {
+
+interface UserProps {
+  userRole: string | null;
+}
+
+const DropdownUser: React.FC<UserProps> = ({ userRole }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const trigger = useRef<any>(null);
@@ -47,7 +52,7 @@ const DropdownUser = () => {
           <span className="block text-sm font-medium text-black dark:text-white">
             Thomas Anree
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">{ userRole }</span>
         </span>
 
         <span className="h-12 w-12 rounded-full">

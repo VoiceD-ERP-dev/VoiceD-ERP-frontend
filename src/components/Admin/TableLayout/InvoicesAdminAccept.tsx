@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import InvoiceTable from '../../Salesman/TableTemplate/InvoiceTable';
 import InvoiceTableAdminAcceptTemp from '../TableTemplate/InvoiceTableAdminAcceptTemp';
 
-function AdminInvoicesAccept() {
+function AdminInvoicesAccept( {userRole} : {userRole :  string}) {
 
 
     const navigate = useNavigate();
@@ -27,7 +27,7 @@ function AdminInvoicesAccept() {
 
 
   return (
-    <DefaultAdminLayout>
+    <DefaultAdminLayout userRole={userRole}>
     <Breadcrumb pageName="My Invoices" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">

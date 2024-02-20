@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import CustomerTableSales from '../TableTemplate/CustomerTableSales';
 
 
-function CustomerInsight() {
+function CustomerInsight({userRole} : {userRole :  string}) {
 
 
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ function CustomerInsight() {
 
 
   return (
-    <DefaultLayout>
+    <DefaultLayout userRole={userRole}>
     <Breadcrumb pageName="Customer Insight" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">

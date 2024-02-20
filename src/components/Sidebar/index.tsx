@@ -7,9 +7,10 @@ import LogoDark from '../../images/logo/logo.png';
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
+  userRole: string | null;
 }
 
-const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
 

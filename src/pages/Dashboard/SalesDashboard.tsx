@@ -8,9 +8,13 @@ import MapOne from '../../components/Maps/MapOne';
 import TableOne from '../../components/Tables/TableOne';
 import DefaultLayout from '../../layout/DefaultLayout';
 
-const SalesDashboard: React.FC = () => {
+interface SalesDashboardProps {
+  userRole: string | null;
+}
+
+const SalesDashboard: React.FC<SalesDashboardProps> = ({userRole}) => {
   return (
-    <DefaultLayout>
+    <DefaultLayout userRole={userRole}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats title="Total Customers (Last 30 Days)" total="15" rate="0.43%" levelUp>
           <svg

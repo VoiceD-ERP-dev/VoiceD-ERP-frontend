@@ -11,7 +11,7 @@ import CheckboxOne from '../../Checkboxes/CheckboxOne';
 import TextField from '../../FormElements/TextFiled';
 
 
-function CustomerRegister() {
+function CustomerRegister({userRole} : {userRole : string}) {
 
 
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ function CustomerRegister() {
 
 
   return (
-    <DefaultLayout>
+    <DefaultLayout userRole={userRole}>
       <Breadcrumb pageName="Customer Registration Form" />
 
       <div className="w-full gap-9 sm:grid-cols-2 ">

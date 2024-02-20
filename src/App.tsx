@@ -26,10 +26,22 @@ function App() {
   const { pathname } = useLocation();
 
 
-  const [userRole, setUserRole] = useState<string | null>(null);
+  // const [userRole, setUserRole] = useState<string | null>(null);
+
+
+
+  const [userRole, setUserRole] = useState<string | null>(() => {
+    // Initialize userRole from localStorage if available, otherwise, default to null
+    return localStorage.getItem('userRole') || null;
+  });
+
+
 
   const handleLogin = (role: string) => {
+    // Set userRole in state
     setUserRole(role);
+    // Save userRole to localStorage for persistence across page refreshes
+    localStorage.setItem('userRole', role);
   };
 
   useEffect(() => {
@@ -55,7 +67,7 @@ function App() {
           }
         />
 
-        {userRole === "admin" && (
+        {userRole === "superadmin" && (
 
 
           <>
@@ -65,7 +77,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard" />
-                  <AdminDashboard />
+                  <AdminDashboard userRole={userRole}/>
                 </>
               }
             />
@@ -76,7 +88,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Registration" />
-                  <CustomerRegisterAdmin />
+                  <CustomerRegisterAdmin userRole={userRole}/>
                 </>
               }
             />
@@ -87,7 +99,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <CustomerInsightAdmin />
+                  <CustomerInsightAdmin userRole={userRole}/>
                 </>
               }
             />
@@ -98,7 +110,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <AdminInvoicesPD />
+                  <AdminInvoicesPD userRole={userRole}/>
                 </>
               }
             />
@@ -109,7 +121,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <AdminInvoicesAccept />
+                  <AdminInvoicesAccept userRole={userRole}/>
                 </>
               }
             />
@@ -120,7 +132,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <SalesAgentAdmin />
+                  <SalesAgentAdmin userRole={userRole}/>
                 </>
               }
             />
@@ -133,6 +145,89 @@ function App() {
 
         )}
 
+
+
+{userRole === "admin" && (
+
+
+<>
+
+  <Route
+    path="/adminDashboard"
+    element={
+      <>
+        <PageTitle title="VoiceD | Admin Dashboard" />
+        <AdminDashboard userRole={userRole}/>
+      </>
+    }
+  />
+
+
+  <Route
+    path="/customers/customer-registration"
+    element={
+      <>
+        <PageTitle title="VoiceD | Admin Dashboard - Customer Registration" />
+        <CustomerRegisterAdmin userRole={userRole}/>
+      </>
+    }
+  />
+
+
+<Route
+    path="/customers/customer-insight"
+    element={
+      <>
+        <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+        <CustomerInsightAdmin userRole={userRole}/>
+      </>
+    }
+  />
+
+
+<Route
+    path="/invoices/pd-invoices"
+    element={
+      <>
+        <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+        <AdminInvoicesPD userRole={userRole}/>
+      </>
+    }
+  />
+
+
+<Route
+    path="/invoices/accepted-invoices"
+    element={
+      <>
+        <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+        <AdminInvoicesAccept userRole={userRole}/>
+      </>
+    }
+  />
+
+
+
+<Route
+              path="/auth/sales-agents"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <SalesAgentAdmin userRole={userRole}/>
+                </>
+              }
+            />
+
+
+
+
+</>
+
+)}
+
+
+
+
         {userRole === "sales" && (
 
           <>
@@ -141,7 +236,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Sales Agent - Dashboard" />
-                  <SalesDashboard />
+                  <SalesDashboard userRole={userRole}/>
                 </>
               }
             />
@@ -150,7 +245,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Sales Agent - Dashboard" />
-                  <CustomerRegister />
+                  <CustomerRegister userRole={userRole}/>
                 </>
               }
             />
@@ -160,7 +255,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Sales Agent - Dashboard" />
-                  <CustomerInsight />
+                  <CustomerInsight userRole={userRole}/>
                 </>
               }
             />
@@ -172,7 +267,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Sales Agent - Dashboard" />
-                  <MyInvoices />
+                  <MyInvoices userRole={userRole}/>
                 </>
               }
             />
@@ -183,7 +278,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Sales Agent - Dashboard" />
-                  <Profile />
+                  <Profile userRole={userRole}/>
                 </>
               }
             />

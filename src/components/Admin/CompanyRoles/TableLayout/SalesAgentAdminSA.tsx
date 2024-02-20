@@ -5,7 +5,7 @@ import * as Yup from "yup";
 
 import SaTableAdminSATemp from '../TableTemplate/SaTableAdminSATemp';
 
-function SalesAgentAdmin() {
+function SalesAgentAdmin( {userRole} : {userRole:string}) {
 
 
     const navigate = useNavigate();
@@ -25,7 +25,7 @@ function SalesAgentAdmin() {
 
 
   return (
-    <DefaultAdminLayout>
+    <DefaultAdminLayout userRole={userRole}>
     <Breadcrumb pageName="My Invoices" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">

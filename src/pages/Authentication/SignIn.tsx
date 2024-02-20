@@ -40,8 +40,8 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
     // Assuming you have an authentication function that returns the user role
     const userRole = await authenticate(values.userID, values.password);
 
-    if (userRole === 'admin') {
-      onLogin('admin');
+    if (userRole === 'superadmin' || userRole === 'admin') {
+      onLogin('superadmin');
       navigate('/adminDashboard');
     } else if (userRole === 'sales') {
       onLogin('sales');
@@ -60,7 +60,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
     return new Promise<string>((resolve) => {
       setTimeout(() => {
         // Replace 'admin' with the actual user role obtained from authentication
-        resolve('admin');
+        resolve('superadmin');
       }, 1000);
     });
   };

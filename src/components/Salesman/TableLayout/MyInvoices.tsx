@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import InvoiceTable from '../TableTemplate/InvoiceTable';
 
 
-function MyInvoices() {
+function MyInvoices({userRole} : {userRole : string}) {
 
 
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ function MyInvoices() {
 
 
   return (
-    <DefaultLayout>
+    <DefaultLayout userRole={userRole}>
     <Breadcrumb pageName="My Invoices" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">

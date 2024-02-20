@@ -6,7 +6,7 @@ import * as Yup from "yup";
 
 import InvoiceTableAdminPDTemp from '../TableTemplate/InvoiceTableAdminPDTemp';
 
-function AdminInvoicesPD() {
+function AdminInvoicesPD( { userRole} : { userRole : string}) {
 
 
     const navigate = useNavigate();
@@ -26,7 +26,7 @@ function AdminInvoicesPD() {
 
 
   return (
-    <DefaultAdminLayout>
+    <DefaultAdminLayout userRole={userRole}>
     <Breadcrumb pageName="My Invoices" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">
