@@ -10,6 +10,7 @@ import SelectField from '../../FormElements/SelectField';
 import CheckboxOne from '../../Checkboxes/CheckboxOne';
 import TextField from '../../FormElements/TextFiled';
 import InputFileUpload from '../../FormElements/InputFileUpload';
+import Cookies from 'js-cookie';
 
 
 
@@ -35,9 +36,60 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     
   });
 
-  const handleRegister = (values) => {
-    console.log("Form values:", values);
-    // You can perform additional actions here, such as submitting the form data to a server.
+  const handleRegister = async (values) => {
+    try {
+      // Extract the JWT token from local storage
+      const jwtToken = Cookies.get('jwtToken');
+  
+      // Construct the headers object with the bearer token
+      const headers = {
+        'Authorization': `Bearer ${jwtToken}`,
+        
+      };
+  
+      // Construct the registration data object
+      const registrationData = new FormData();
+      registrationData.append('firstname', values.firstName || "John");
+      registrationData.append('lastname', values.lastName || "Doe");
+      registrationData.append('nicNo', values.nic || "123456789");
+      registrationData.append('brId', values.brid || "234");
+      registrationData.append('email', values.email || "shanbasnayake98@gmail.com");
+      registrationData.append('phone', values.contact || "1234567890");
+      registrationData.append('address', values.address || "123 Main Street, City");
+      registrationData.append('invoice[0][paymentType]', values.payment || "Card");
+      registrationData.append('invoice[0][order][description]', "Order for invoice for A");
+      registrationData.append('invoice[0][package][package]', values.package || "Basic");
+      registrationData.append('invoice[0][package][startupFee]', "2990");
+  
+      // Append NIC file
+      
+        registrationData.append('nicImg', values.nicImg[0]);
+      
+  
+      // Append Business Registration file
+      
+        registrationData.append('brDoc', values.brFile[0]);
+      
+  
+      // Make an HTTP POST request to the endpoint with the registration data and headers
+      const response = await fetch('http://localhost:5001/api/customers/cv', {
+        method: 'POST',
+        headers: headers,
+        body: registrationData
+      });
+  
+      // Check if the request was successful
+      if (response.ok) {
+        // Log success message or handle success response
+        console.log('Registration successful!');
+      } else {
+        // Handle error response
+        console.error('Registration failed:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    console.log(values);
   };
 
   return (
@@ -65,8 +117,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                   address: "",
                   contact: "",
                   package: "",
-                  payment: "",
-
+                  paymentType:"",
                 }}
                 validationSchema={CustomerRegistrationSchema}
                 onSubmit={handleRegister}
@@ -191,7 +242,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
                     <InputFileUpload
                       label="NIC"
-                      name="nicfile"
+                      name="nicImg"
                       type="file"
                       boxcolor="transparent"
                       placeholder="nicFile"
