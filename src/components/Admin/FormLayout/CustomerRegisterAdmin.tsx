@@ -24,7 +24,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
   const CustomerRegistrationSchema = Yup.object().shape({
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
-    nic: Yup.string().required("Required"),
+    nicNo: Yup.string().required("Required"),
     brid: Yup.string().required("Required"),
     email: Yup.string().required("Required"),
     package: Yup.string().required("Required"),
@@ -51,7 +51,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
       const registrationData = new FormData();
       registrationData.append('firstname', values.firstName || "John");
       registrationData.append('lastname', values.lastName || "Doe");
-      registrationData.append('nicNo', values.nic || "123456789");
+      registrationData.append('nicNo', values.nicNo || "123456789");
       registrationData.append('brId', values.brid || "234");
       registrationData.append('email', values.email || "shanbasnayake98@gmail.com");
       registrationData.append('phone', values.contact || "1234567890");
@@ -63,7 +63,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
   
       // Append NIC file
       
-        registrationData.append('nicImg', values.nicImg[0]);
+        registrationData.append('nicDoc', values.nicDoc[0]);
       
   
       // Append Business Registration file
@@ -111,7 +111,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                 initialValues={{
                   firstName: "",
                   lastName: "",
-                  nic: "",
+                  nicNo: "",
                   brid: "",
                   email: "",
                   address: "",
@@ -174,7 +174,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                     <div className='w-full flex flex-row justify-between space-x-3'>
                       <InputField
                         label="NIC"
-                        name="nic"
+                        name="nicNo"
                         type="text"
                         boxcolor="transparent"
                         placeholder="NIC"
@@ -242,7 +242,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
                     <InputFileUpload
                       label="NIC"
-                      name="nicImg"
+                      name="nicDoc"
                       type="file"
                       boxcolor="transparent"
                       placeholder="nicFile"
