@@ -1,30 +1,42 @@
-import React, { ChangeEventHandler } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import React, { ChangeEvent } from "react";
+import { Formik, Field, Form, ErrorMessage ,  useFormikContext } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import * as MuiIcons from '@mui/icons-material';
 
 
 
-interface InputFileUpload {
+
+interface InputFileUploadProps{
     label: string;
     name : string;
     boxcolor : string;
-    type: "text" | "password" | "email" | "button" | "submit" | "reset" | "file" | undefined;
+    type:  "file";
     placeholder: string;
-    handleChange: ChangeEventHandler<HTMLInputElement>;
-    values: { [key: string]: any };
+    
     icon: keyof typeof MuiIcons;
+    onChange?: (event: any) => void
   }
   
 
-function InputFileUpload({ label, name, type, placeholder, handleChange, values, boxcolor, icon }: InputFileUpload) {
+function InputFileUpload({ label, name, type, placeholder,  boxcolor, icon ,onChange }: InputFileUploadProps) {
+
+  const { setFieldValue } = useFormikContext();
 
     const IconComponent = MuiIcons[icon];
   const iconwrapper = {
     backgroundColor: boxcolor,
     
   }
+
+
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.files) {
+      setFieldValue(name, event.currentTarget.files[0]);
+    }
+  };
+
 
 
   return (
@@ -53,7 +65,7 @@ function InputFileUpload({ label, name, type, placeholder, handleChange, values,
           type="file"
           name={name}
   
-          onChange={handleChange}
+          onChange={handleFileChange}
           placeholder={placeholder}
           className="w-full h-full p-2 bg-transparent outline-none text-[#1a1a1a] text-[14px] form-control form-field-input"
           required

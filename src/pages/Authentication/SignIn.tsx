@@ -35,44 +35,75 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
       .required("Required"),
   });
 
-  const handleLogin = async (values: { email: string; password: string }) => {
-    try {
-      // Make an HTTP POST request to the login endpoint
-      const response = await axios.post('http://localhost:5001/api/salesmen/login', {
-        email: values.email,
-        password: values.password,
-      });
+  // const handleLogin = async (values: { email: string; password: string }) => {
+  //   try {
+  //     // Make an HTTP POST request to the login endpoint
+  //     const response = await axios.post('http://localhost:5001/api/salesmen/login', {
+  //       email: values.email,
+  //       password: values.password,
+  //     });
   
-      // Extract the JWT token from the response
-      const jwtToken = response.data.accessToken;
+  //     // Extract the JWT token from the response
+  //     const jwtToken = response.data.accessToken;
   
-      // Log the user
-      console.log('Logged in user:', values.email);
+  //     // Log the user
+  //     console.log('Logged in user:', values.email);
   
-      // Log the JWT token
-      console.log('JWT Token:', jwtToken);
+  //     // Log the JWT token
+  //     console.log('JWT Token:', jwtToken);
   
-      Cookies.set('jwtToken', jwtToken);
+  //     Cookies.set('jwtToken', jwtToken);
 
-      // Assuming you have an authentication function that returns the user role
-      const userRole = await authenticate(values.email, values.password);
+  //     // Assuming you have an authentication function that returns the user role
+  //     const userRole = await authenticate(values.email, values.password);
   
-      if (userRole === 'admin') {
-        onLogin('admin');
-        navigate('/adminDashboard');
-      } else if (userRole === 'sales') {
-        onLogin('sales');
-        navigate('/dashboard');
-      } else {
-        // Handle other roles or scenarios as needed
-        console.error('Unknown user role:', userRole);
-      }
-    } catch (error) {
-      console.error('Error:', error);
+  //     if (userRole === 'admin') {
+  //       onLogin('admin');
+  //       navigate('/adminDashboard');
+  //     } else if (userRole === 'sales') {
+  //       onLogin('sales');
+  //       navigate('/dashboard');
+  //     } else {
+  //       // Handle other roles or scenarios as needed
+  //       console.error('Unknown user role:', userRole);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //   }
+  // };
+
+  // const authenticate = async (email: string, password: string) => {
+  //   // Replace this with your actual authentication logic
+  //   // For example, you might make an API call to authenticate the user
+  //   // and retrieve the user role.
+  //   // For simplicity, this function returns a hardcoded role after a delay.
+  //   return new Promise<string>((resolve) => {
+  //     setTimeout(() => {
+  //       // Replace 'admin' with the actual user role obtained from authentication
+  //       resolve('admin');
+  //     }, 1000);
+  //   });
+  // };
+
+
+
+  const handleLogin = async (values: { userID: string; password: string }) => {
+    // Assuming you have an authentication function that returns the user role
+    const userRole = await authenticate(values.userID, values.password);
+
+    if (userRole === 'superadmin' || userRole === 'admin') {
+      onLogin('superadmin');
+      navigate('/adminDashboard');
+    } else if (userRole === 'sales') {
+      onLogin('sales');
+      navigate('/dashboard');
+    } else {
+      // Handle other roles or scenarios as needed
+      console.error('Unknown user role:', userRole);
     }
   };
 
-  const authenticate = async (email: string, password: string) => {
+  const authenticate = async (userID: string, password: string) => {
     // Replace this with your actual authentication logic
     // For example, you might make an API call to authenticate the user
     // and retrieve the user role.
@@ -80,12 +111,10 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
     return new Promise<string>((resolve) => {
       setTimeout(() => {
         // Replace 'admin' with the actual user role obtained from authentication
-        resolve('admin');
+        resolve('superadmin');
       }, 1000);
     });
   };
-
-
 
   return (
     <div className='w-full h-screen flex justify-center items-center relative loginScreen '>

@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
 import SelectGroupOne from '../../Forms/SelectGroup/SelectGroupOne';
 import DefaultAdminLayout from '../../../layout/DefaultAdminLayout';
-import { Formik, Field, Form, ErrorMessage , FormikHelpers} from "formik";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import InputField from '../../FormElements/InputFiled';
 import PrimaryButton from '../../FormElements/PrimaryButon';
@@ -11,24 +11,7 @@ import CheckboxOne from '../../Checkboxes/CheckboxOne';
 import TextField from '../../FormElements/TextFiled';
 import InputFileUpload from '../../FormElements/InputFileUpload';
 import axios from 'axios';
-import config from '../../../js/config';
-
-
-
-
-type CustomerFormValuesType = {
-  firstName: string;
-  lastName: string;
-  nicNo: string;
-  brId: string;
-  email: string;
-  address: string;
-  contactNo: string;
-  package: string;
-  payment: string;
-  nicDoc: File | null;
-  brDoc: File | null;
-};
+import Cookies from 'js-cookie';
 
 
 
@@ -40,12 +23,12 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
   const CustomerRegistrationSchema = Yup.object().shape({
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
-    nicNo: Yup.string().required("Required"),
-    brId: Yup.string().required("Required"),
+    nic: Yup.string().required("Required"),
+    brid: Yup.string().required("Required"),
     email: Yup.string().required("Required"),
     package: Yup.string().required("Required"),
     payment: Yup.string().required("Required"),
-    contactNo: Yup.string()
+    contact: Yup.string()
     .min(10, "must include a valid mobile number")
     .matches(/[0-9]/, "must includes only digits")
     .required("Required"),
@@ -53,102 +36,69 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     
   });
 
-
-
-
-
-  // const handleRegister = async (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>): Promise<void> => {
-  //   try {
-  //     const formData = new FormData();
-  //     formData.append('firstName', values.firstName);
-  //     formData.append('lastName', values.lastName);
-  //     formData.append('nic', values.nic);
-  //     formData.append('brid', values.brid);
-  //     formData.append('email', values.email);
-  //     formData.append('address', values.address);
-  //     formData.append('contact', values.contact);
-  //     formData.append('package', values.package);
-  //     formData.append('payment', values.payment);
-  
-  //     // Append files to the formData
-  //     formData.append('nicDoc', values.nicDoc);
-  //     formData.append('brDoc', values.brDoc);
-  
-  //     const response = await axios.post(`http://localhost:3001/customerRegister`, formData, {
-  //       headers: {
-  //         'Content-Type': 'multipart/form-data',
-  //         // Add any other headers as needed, such as authorization token
-  //       },
-  //     });
-  
-  //     // Extract customer ID from the response
-  //     const customerId = response.data._id; // Assuming the customer ID is stored in the "_id" field
-  
-  //     // Use the obtained customer ID for further actions if needed
-  //     console.log('Customer ID:', customerId);
-  
-  //     // Handle successful registration
-  //     console.log('Registration successful', response.data);
-  
-  //     // Reset the form after successful registration
-  //     resetForm();
-  //   } catch (error) {
-  //     // Handle registration error
-  //     console.error('Registration error', error);
-  //   }
+  // const handleRegister = (values: any) => {
+  //   console.log("Form values:", values);
+  //   // You can perform additional actions here, such as submitting the form data to a server.
   // };
-  
 
 
 
-
-  const handleRegister = async (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>): Promise<void> => {
+  const handleRegister = async (values: any) => {
     try {
-      const formData = new FormData();
-      formData.append('firstName', values.firstName);
-      formData.append('lastName', values.lastName);
-      formData.append('nicNo', values.nicNo);
-      formData.append('brId', values.brId);
-      formData.append('email', values.email);
-      formData.append('address', values.address);
-      formData.append('contactNo', values.contactNo);
-      formData.append('package', values.package);
-      formData.append('payment', values.payment);
+      // Extract the JWT token from local storage
+      const jwtToken = Cookies.get('jwtToken');
   
-      // Append files to the formData if they are not null
-      if (values.nicDoc !== null) {
-        formData.append('nicDoc', values.nicDoc);
+      // Construct the headers object with the bearer token
+      const headers = {
+        'Authorization': `Bearer ${jwtToken}`
+      };
+  
+      // Construct the registration data object
+      const registrationData = new FormData();
+      registrationData.append('firstname', values.firstName || "John");
+      registrationData.append('lastname', values.lastName || "Doe");
+      registrationData.append('nicNo', values.nic || "123456789");
+      registrationData.append('brId', values.brid || "234");
+      registrationData.append('email', values.email || "shanbasnayake98@gmail.com");
+      registrationData.append('phone', values.contact || "1234567890");
+      registrationData.append('address', values.address || "123 Main Street, City");
+      registrationData.append('invoice[0][paymentType]', values.payment || "Card");
+      registrationData.append('invoice[0][order][description]', "Order for invoice for A");
+      registrationData.append('invoice[0][package][package]', values.package || "Basic");
+      registrationData.append('invoice[0][package][startupFee]', "2990");
+  
+      // Append NIC file
+      if (values.nicImg) {
+        registrationData.append('nicImg', values.nicImg[0]);
       }
   
-      if (values.brDoc !== null) {
-        formData.append('brDoc', values.brDoc);
+      // Append Business Registration file
+      if (values.brFile) {
+        registrationData.append('brDoc', values.brFile[0]);
       }
   
-      const response = await axios.post(`${config.baseUrl}/customerRegister`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          // Add any other headers as needed, such as authorization token
-        },
+      // Make an HTTP POST request to the endpoint with the registration data and headers
+      const response = await fetch('http://localhost:5001/api/customers/customerReg', {
+        method: 'POST',
+        headers: headers,
+        body: registrationData
       });
-  
-      // Extract customer ID from the response
-      const customerId = response.data._id; // Assuming the customer ID is stored in the "_id" field
-  
-      // Use the obtained customer ID for further actions if needed
-      console.log('Customer ID:', customerId);
-  
-      // Handle successful registration
-      console.log('Registration successful', response.data);
-  
-      // Reset the form after successful registration
-      resetForm();
-    } catch (error) {
-      // Handle registration error
-      console.error('Registration error', error);
-    }
-  };
-  
 
+      console.log("Form values:", values);
+  
+      // Check if the request was successful
+      if (response.ok) {
+        // Log success message or handle success response
+        console.log('Registration successful!');
+      } else {
+        // Handle error response
+        console.error('Registration failed:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    console.log(values);
+  };
 
 
 
@@ -171,15 +121,14 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                 initialValues={{
                   firstName: "",
                   lastName: "",
-                  nicNo: "",
-                  brId: "",
+                  nic: "",
+                  brid: "",
                   email: "",
                   address: "",
-                  contactNo: "",
+                  contact: "",
                   package: "",
                   payment: "",
-                  nicDoc: null,  // Add these lines
-                  brDoc: null,
+                
 
                 }}
                 validationSchema={CustomerRegistrationSchema}
@@ -237,7 +186,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                     <div className='w-full flex flex-row justify-between space-x-3'>
                       <InputField
                         label="NIC"
-                        name="nicNo"
+                        name="nic"
                         type="text"
                         boxcolor="transparent"
                         placeholder="NIC"
@@ -247,7 +196,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                       />
                       <InputField
                         label="BR ID"
-                        name="brId"
+                        name="brid"
                         type="text"
                         boxcolor="transparent"
                         placeholder="BR ID"
@@ -272,7 +221,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                       />
                       <InputField
                         label="Contact"
-                        name="contactNo"
+                        name="contact"
                         type="text"
                         boxcolor="transparent"
                         placeholder="Contact"
@@ -305,7 +254,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
                     <InputFileUpload
                       label="NIC"
-                      name="nicDoc"
+                      name="nicImg"
                       type="file"
                       boxcolor="transparent"
                       placeholder="nicImg"
@@ -316,7 +265,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                      <div className='flex flex-col w-full'>
                      <InputFileUpload
                       label="Business Registration"
-                      name="brDoc"
+                      name="brFile"
                       type="file"
                       boxcolor="transparent"
                       placeholder="brFile"
