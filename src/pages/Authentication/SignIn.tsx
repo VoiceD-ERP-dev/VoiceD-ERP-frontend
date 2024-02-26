@@ -9,6 +9,7 @@ import CoverVid from '../../images/coverVideo/vidcover.mp4';
 import '../../css/parallax.css'
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { JwtPayload, jwtDecode } from "jwt-decode";
 
 interface SignInProps {
   onLogin: (role: string) => void; // Callback function to handle login with role
@@ -38,7 +39,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
       // Make an HTTP POST request to the login endpoint
-      const response = await axios.post('http://localhost:5001/api/salesmen/login', {
+      const response = await axios.post('http://localhost:5001/api/users/login', {
         email: values.email,
         password: values.password,
       });
@@ -55,7 +56,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
       Cookies.set('jwtToken', jwtToken);
 
       // Assuming you have an authentication function that returns the user role
-      const userRole = await authenticate(values.email, values.password);
+      const userRole = await authenticate(values.email, values.password, jwtToken);
   
       if (userRole === 'superadmin' || userRole === 'admin') {
         onLogin('superadmin');
@@ -72,7 +73,18 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
     }
   };
 
-  const authenticate = async (email: string, password: string) => {
+  const authenticate = async (email: string, password: string , jwtToken : string) => {
+    const decoded = jwtDecode(jwtToken);
+    const jsonUser= JSON.stringify(decoded, null, 2);
+    console.log(jsonUser);
+  
+    // Parse the JSON string to an object
+    const userObject = JSON.parse(jsonUser);
+  
+    // Extract and log the user role
+    const userRole = userObject.user.role;
+    console.log('User Role:', userRole);
+
     // Replace this with your actual authentication logic
     // For example, you might make an API call to authenticate the user
     // and retrieve the user role.
@@ -80,7 +92,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
     return new Promise<string>((resolve) => {
       setTimeout(() => {
         // Replace 'admin' with the actual user role obtained from authentication
-        resolve('admin');
+        resolve(userRole);
       }, 1000);
     });
   };

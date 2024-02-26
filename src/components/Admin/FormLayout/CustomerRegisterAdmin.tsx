@@ -93,6 +93,11 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
       if (response.ok) {
         // Log success message or handle success response
         console.log('Registration successful!');
+      } else if (response.status === 401) {
+        // Redirect to SignIn.tsx if unauthorized
+        console.error('Unauthorized! Redirecting to sign-in page...');
+        navigate('/'); // Assuming 'navigate' is a function from react-router-dom
+    
       } else {
         // Handle error response
         console.error('Registration failed:', response.statusText);
