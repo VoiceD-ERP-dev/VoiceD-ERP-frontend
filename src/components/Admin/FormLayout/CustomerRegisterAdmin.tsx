@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
 import SelectGroupOne from '../../Forms/SelectGroup/SelectGroupOne';
 import DefaultAdminLayout from '../../../layout/DefaultAdminLayout';
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Formik, Field, Form, ErrorMessage,FormikHelpers } from "formik";
 import * as Yup from "yup";
 import InputField from '../../FormElements/InputFiled';
 import PrimaryButton from '../../FormElements/PrimaryButon';
@@ -14,6 +14,19 @@ import Cookies from 'js-cookie';
 
 
 
+type CustomerFormValuesType = {
+  firstName: string;
+  lastName: string;
+  nicNo: string;
+  brid: string;
+  email: string;
+  address: string;
+  contact: string;
+  package: string;
+  payment: string;
+  nicDoc: File | null;
+  brDoc: File | null;
+};
 
 
 function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
@@ -36,7 +49,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     
   });
 
-  const handleRegister = async (values) => {
+  const handleRegister = async (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>): Promise<void> => {
     try {
       // Extract the JWT token from local storage
       const jwtToken = Cookies.get('jwtToken');
@@ -61,16 +74,14 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
       registrationData.append('invoice[0][package][package]', values.package || "Basic");
       registrationData.append('invoice[0][package][startupFee]', "2990");
   
-      // Append NIC file
-      
-        registrationData.append('nicDoc', values.nicDoc[0]);
-      
+      // Append files to the formData if they are not null
+      if (values.nicDoc !== null) {
+        registrationData.append('nicDoc', values.nicDoc);
+      }
   
-      // Append Business Registration file
-      
-        registrationData.append('brDoc', values.brFile[0]);
-      
-  
+      if (values.brDoc !== null) {
+        registrationData.append('brDoc', values.brDoc);
+      }
       // Make an HTTP POST request to the endpoint with the registration data and headers
       const response = await fetch('http://localhost:5001/api/customers/cv', {
         method: 'POST',
@@ -86,6 +97,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
         // Handle error response
         console.error('Registration failed:', response.statusText);
       }
+      resetForm();
     } catch (error) {
       console.error('Error:', error);
     }
@@ -117,7 +129,9 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                   address: "",
                   contact: "",
                   package: "",
-                  paymentType:"",
+                  payment:"",
+                  nicDoc: null,  // Add these lines
+                  brDoc: null,
                 }}
                 validationSchema={CustomerRegistrationSchema}
                 onSubmit={handleRegister}
@@ -245,21 +259,18 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                       name="nicDoc"
                       type="file"
                       boxcolor="transparent"
-                      placeholder="nicFile"
-                      handleChange={handleChange}
-                      values={values}
+                      placeholder="nicImg"
                       icon="UploadFile"
                     />
 
                      <div className='flex flex-col w-full'>
                      <InputFileUpload
                       label="Business Registration"
-                      name="brFile"
+                      name="brDoc"
                       type="file"
                       boxcolor="transparent"
                       placeholder="brFile"
-                      handleChange={handleChange}
-                      values={values}
+                
                       icon="UploadFile"
                     />
 

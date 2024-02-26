@@ -1,5 +1,5 @@
-import React, { ChangeEventHandler } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import React, { ChangeEvent } from "react";
+import { Formik, Field, Form, ErrorMessage, useFormikContext } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import * as MuiIcons from '@mui/icons-material';
@@ -10,15 +10,16 @@ interface InputFileUpload {
     label: string;
     name : string;
     boxcolor : string;
-    type: "text" | "password" | "email" | "button" | "submit" | "reset" | "file" | undefined;
+    type:  "file" | undefined;
     placeholder: string;
-    handleChange: ChangeEventHandler<HTMLInputElement>;
-    values: { [key: string]: string };
+    
+    
     icon: keyof typeof MuiIcons;
+    onChange?: (event: any) => void
   }
   
 
-function InputFileUpload({ label, name, type, placeholder, handleChange, values, boxcolor, icon }: InputFileUpload) {
+function InputFileUpload({ label, name, type, placeholder, onChange, boxcolor, icon }: InputFileUpload) {
 
     const IconComponent = MuiIcons[icon];
   const iconwrapper = {
@@ -26,6 +27,14 @@ function InputFileUpload({ label, name, type, placeholder, handleChange, values,
     
   }
 
+
+const { setFieldValue } = useFormikContext();
+
+  const handleFilechange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.files){
+      setFieldValue(name, event.currentTarget.files[0])
+    }
+  }
 
   return (
 
@@ -49,11 +58,11 @@ function InputFileUpload({ label, name, type, placeholder, handleChange, values,
        className={`w-[44px] h-[44px] rounded-bl-[6px] rounded-tl-[6px] flex justify-center items-center`}>
 <IconComponent/>
        </div>
-        <Field
+        <input
           type={type}
           name={name}
-          value={values[name]}
-          onChange={handleChange}
+          onChange={handleFilechange}
+        
           placeholder={placeholder}
           className="w-full h-full p-2 bg-transparent outline-none text-[#1a1a1a] text-[14px] form-control form-field-input"
           required
