@@ -12,6 +12,9 @@ import TextField from '../../FormElements/TextFiled';
 import InputFileUpload from '../../FormElements/InputFileUpload';
 import axios from 'axios';
 import config from '../../../js/config';
+import React, { useState } from 'react';
+
+import Succeed from '../Modal/Succeed';
 
 
 
@@ -34,6 +37,8 @@ type CustomerFormValuesType = {
 
 function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
+
+  const [showSucceedModal, setShowSucceedModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -139,6 +144,8 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
   
       // Handle successful registration
       console.log('Registration successful', response.data);
+      // Open the Succeed modal
+      setShowSucceedModal(true);
   
       // Reset the form after successful registration
       resetForm();
@@ -149,7 +156,10 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
   };
   
 
-
+  const handleCloseModal = () => {
+    // Close the Succeed modal
+    setShowSucceedModal(false);
+  };
 
 
   return (
@@ -420,7 +430,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
             </div>
           </div>
         </div>
-
+        <Succeed isOpen={showSucceedModal} onClose={handleCloseModal} />
 
       </div>
     </DefaultAdminLayout>
