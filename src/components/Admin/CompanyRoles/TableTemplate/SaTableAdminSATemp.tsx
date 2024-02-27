@@ -119,7 +119,7 @@ const SaTableAdminSATemp = ({ tablehead }: TableProps) => {
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="w-full flex justify-end items-end mb-3">
-  <div className="md:w-1/4 w-1/2 flex flex-row justify-center items-center">
+  <div className="md:w-1/4 w-full flex flex-row justify-center items-center">
   <PrimaryButton
 label="Add New Agent"
 textcolor="#ffffff"

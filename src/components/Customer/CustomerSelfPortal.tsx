@@ -1,23 +1,21 @@
 import { Link, useNavigate } from 'react-router-dom';
-import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
-import SelectGroupOne from '../../Forms/SelectGroup/SelectGroupOne';
-import DefaultLayout from '../../../layout/DefaultLayout';
-import { Formik, Field, Form, ErrorMessage , useFormikContext } from "formik";
+import Breadcrumb from '../Breadcrumbs/Breadcrumb';
+import SelectGroupOne from '../Forms/SelectGroup/SelectGroupOne';
+import DefaultAdminLayout from '../../layout/DefaultAdminLayout';
+import { Formik, Field, Form, ErrorMessage , FormikHelpers} from "formik";
 import * as Yup from "yup";
-import InputField from '../../FormElements/InputFiled';
-import PrimaryButton from '../../FormElements/PrimaryButon';
-import SelectField from '../../FormElements/SelectField';
-import CheckboxOne from '../../Checkboxes/CheckboxOne';
-import TextField from '../../FormElements/TextFiled';
-import InputFileUpload from '../../FormElements/InputFileUpload';
+import InputField from '../FormElements/InputFiled';
+import PrimaryButton from '../FormElements/PrimaryButon';
+import SelectField from '../FormElements/SelectField';
+import CheckboxOne from '../Checkboxes/CheckboxOne';
+import TextField from '../FormElements/TextFiled';
+import InputFileUpload from '../FormElements/InputFileUpload';
 import axios from 'axios';
-import config from '../../../js/config';
-import React, { useState, useEffect } from 'react';
-import Succeed from '../Modal/Succeed';
+import config from '../../js/config';
+import React, { useState } from 'react';
 
-
-
-
+import Succeed from '../Admin/Modal/Succeed';
+import VDlogo from '../../images/logo/logo.png'
 
 
 
@@ -37,7 +35,8 @@ type CustomerFormValuesType = {
 };
 
 
-function CustomerRegister({userRole} : {userRole : string}) {
+
+function CustomerSelfPortal() {
 
 
   const [showSucceedModal, setShowSucceedModal] = useState(false);
@@ -45,15 +44,11 @@ function CustomerRegister({userRole} : {userRole : string}) {
   const navigate = useNavigate();
 
   const CustomerRegistrationSchema = Yup.object().shape({
-    firstName: Yup.string()
-    .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
-    .required("Required"),
-    lastName: Yup.string()
-    .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
-    .required("Required"),
+    firstName: Yup.string().required("Required"),
+    lastName: Yup.string().required("Required"),
     nicNo: Yup.string().required("Required"),
     brId: Yup.string().required("Required"),
-    email: Yup.string().email().required("Required"),
+    email: Yup.string().required("Required"),
     package: Yup.string().required("Required"),
     payment: Yup.string().required("Required"),
     contactNo: Yup.string()
@@ -67,11 +62,13 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
 
 
-  const [loading, setLoading] = useState(false);
+
+
+
+
 
   const handleRegister = async (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>): Promise<void> => {
     try {
-      setLoading(true);
       const formData = new FormData();
       formData.append('firstName', values.firstName);
       formData.append('lastName', values.lastName);
@@ -115,11 +112,9 @@ function CustomerRegister({userRole} : {userRole : string}) {
       setShowSucceedModal(true);
   
       // Reset the form after successful registration
-      setLoading(false);
       resetForm();
     } catch (error) {
       // Handle registration error
-      setLoading(false);
       console.error('Registration error', error);
     }
   };
@@ -131,29 +126,22 @@ function CustomerRegister({userRole} : {userRole : string}) {
   };
 
 
-
-  const handleResetForm = () => {
-    // Use the formik context to access resetForm function
-    const { resetForm } = useFormikContext<CustomerFormValuesType>();
-    resetForm();
-  };
-
-
   return (
-    <DefaultLayout userRole={userRole}>
-      <Breadcrumb pageName="Customer Registration Form" />
-
-      <div className="w-full gap-9 sm:grid-cols-2 ">
+   
+    <div className='md:p-5 p-2'>
+<div className="w-full md:w-[70%] gap-9 sm:grid-cols-2 mx-auto">
         <div className="flex flex-col gap-9">
           {/* <!-- Customer Regsitration Form --> */}
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark w-full">
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark w-full">
-              <h3 className="font-medium text-black dark:text-white">
-                Please fill all the details
-              </h3>
+              
+
+              <div className='md:w-1/4 relative mx-auto w-1/2'>
+<img src={VDlogo} alt='Logo' className='object-cover w-full' />
+              </div>
             </div>
             <div className="p-6.5">
-            <Formik
+              <Formik
                 initialValues={{
                   firstName: "",
                   lastName: "",
@@ -177,23 +165,32 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
                 {({ errors, touched, handleChange, values }) => (
 
-<Form className=" w-full">
+                  <Form className=" w-full">
 
 
 <div className='w-full '>
                       <h2>Self Regsitration Portal</h2>
                     </div>
 
-                    <TextField 
-                        label=""
-                        name="portal"
+
+                    
+
+
+<div className='flex flex-col w-full'>
+<InputField
+                        label="Promo Code"
+                        name="pmcode"
                         type="text"
-                        icon="AddLink"
+                        icon="Code"
                         boxcolor="transparent"
-                        placeholder="voiced.lk/sid=?9076RtHYU6764/csr"
-                       
-                        
+                        placeholder="Promo Code"
+                        handleChange={handleChange}
+                        values={values}
                       />
+
+                    <p className='text-red-500 text-[12px]'>Note : The Promo Code will be given by the sales agent. If you don't have a Promo Code please contact your Sales Agent. </p>
+                     </div>
+
 
 
 
@@ -398,9 +395,8 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
                     <div className='w-full md:w-1/3 flex flex-row justify-between space-x-3'>
                       <PrimaryButton
-                        type="reset"
-                        // eventname={handleResetForm}
-                        eventname={handleResetForm}
+                        type="button"
+
                         textcolor="dark:text-[#fafafa]"
                         label="Clear From"
                         colorfrom='transparent'
@@ -416,7 +412,7 @@ function CustomerRegister({userRole} : {userRole : string}) {
                         colorto='#a855f7'
                       />
                     </div>
-                    {loading && <p>Please wait...</p>}
+
 
                   </Form>
 
@@ -429,12 +425,14 @@ function CustomerRegister({userRole} : {userRole : string}) {
             </div>
           </div>
         </div>
-
         <Succeed isOpen={showSucceedModal} onClose={handleCloseModal} />
-        
+
       </div>
-    </DefaultLayout>
+    </div>
+
+      
+    
   )
 }
 
-export default CustomerRegister
+export default CustomerSelfPortal

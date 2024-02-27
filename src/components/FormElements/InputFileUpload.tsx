@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect, useRef } from "react";
 import { Formik, Field, Form, ErrorMessage ,  useFormikContext } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
@@ -21,7 +21,10 @@ interface InputFileUploadProps{
 
 function InputFileUpload({ label, name, type, placeholder,  boxcolor, icon ,onChange }: InputFileUploadProps) {
 
-  const { setFieldValue } = useFormikContext();
+  
+
+  const { setFieldValue } = useFormikContext<any>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
     const IconComponent = MuiIcons[icon];
   const iconwrapper = {
@@ -37,6 +40,16 @@ function InputFileUpload({ label, name, type, placeholder,  boxcolor, icon ,onCh
     }
   };
 
+
+
+  const resetFileInput = () => {
+    // Clear the input field value
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    // Clear the formik field value
+    setFieldValue(name, null);
+  };
 
 
   return (
@@ -61,15 +74,26 @@ function InputFileUpload({ label, name, type, placeholder,  boxcolor, icon ,onCh
        className={`w-[44px] h-[44px] rounded-bl-[6px] rounded-tl-[6px] flex justify-center items-center`}>
 <IconComponent/>
        </div>
-        <input
-          type="file"
+       <input
+          ref={fileInputRef}
+          type={type}
           name={name}
-  
-          onChange={handleFileChange}
+          onChange={(e) => {
+            handleFileChange(e);
+            onChange && onChange(e);
+          }}
           placeholder={placeholder}
           className="w-full h-full p-2 bg-transparent outline-none text-[#1a1a1a] text-[14px] form-control form-field-input"
           required
         />
+
+        <button className=" flex justify-center items-center px-5"
+        
+        onMouseDown={resetFileInput}
+          type="button"
+        >
+          x
+        </button>
       </div>
       <ErrorMessage
           name={name}

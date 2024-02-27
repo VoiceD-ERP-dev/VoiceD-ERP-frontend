@@ -16,15 +16,30 @@ interface SalesAgentProps {
 
 
 
-const SignUpSchema = Yup.object().shape({
+const SalesAgentRegSchema = Yup.object().shape({
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
-    nic: Yup.string().required("Required"),
-    brid: Yup.string().required("Required"),
-    email: Yup.string().required("Required"),
-    contact: Yup.string().required("Required"),
-    address: Yup.string().required("Required"),
-    organization: Yup.string().required("Required"),
+    agentID: Yup.string()
+    .min(8, 'must contain at least 6 characters')
+    .matches(/[a-z]/, "must contain a LOWERCASE Letter")
+    .matches(/[A-Z]/, "must contain a UPPERCASE Letter")
+    .matches(/[0-9]/, "must contain a Digit")
+    .required("Required"),
+    userName: Yup.string()
+    .min(6, 'must contain at least 6 characters')
+    .matches(/[A-Z]/, "must contain a UPPERCASE Letter")
+    .matches(/[0-9]/, "must contain a Digit")
+    .required("Required"),
+    email: Yup.string().email().required("Required"),
+    contactNo: Yup.string().required("Required"),
+    password: Yup.string()
+    .min(8, 'must contain at least 6 characters')
+    .matches(/[a-z]/, "must contain a LOWERCASE Letter")
+    .matches(/[A-Z]/, "must contain a UPPERCASE Letter")
+    .matches(/[^\w]/, "Password requires a symbol")
+    .matches(/[0-9]/, "must contain a Digit")
+    .required("Required"),
+    
   });
 
   const handleRegister = () => {
@@ -33,7 +48,7 @@ const SignUpSchema = Yup.object().shape({
 
 const SalesAgentContent = ({ onClose }: SalesAgentProps) => (
   <div className='w-screen h-screen bg-[#565656] bg-opacity-40 backdrop-blur-sm relative flex justify-center items-center z-20 '>
-    <div className='modal p-5 bg-white dark:bg-black rounded-lg w-[50%] lg:w-[50%] h-auto border-[2px] border-[#b76bff]'>
+    <div className='modal p-5 bg-white dark:bg-black rounded-lg md:w-[50%] lg:w-[50%] max-h-150 border-[2px] border-[#b76bff] w-full overflow-auto'>
       <div className='flex flex-row justify-end w-full'>
         <div
           className='close w-[22px] h-[22px] rounded-full bg-[#b76bff] text-[#ffffff] flex justify-center items-center cursor-pointer'
@@ -55,14 +70,14 @@ const SalesAgentContent = ({ onClose }: SalesAgentProps) => (
                 initialValues={{
                     firstName: "",
                     lastName: "",
-                    nic: "",
-                    brid: "",
-                  email: "",
-                  address: "",
-                  contact: "",
-
+                    agentID:"",
+                    userName:"",
+                    password:"",
+                    email: "",
+                    contactNo: "",
+                   
                 }}
-                validationSchema={SignUpSchema}
+                validationSchema={SalesAgentRegSchema}
                 onSubmit={handleRegister}
               >
 
@@ -70,14 +85,28 @@ const SalesAgentContent = ({ onClose }: SalesAgentProps) => (
 
                 {({ errors, touched, handleChange, values }) => (
 
-                  <Form className=" w-full">
+                  <Form className=" w-full  overflow-auto">
+
+
+
+<div className='w-full flex md:flex-row justify-between md:space-x-3 flex-col '>
+                     
+                      <InputFieldFilled
+                        label="Agent ID"
+                        name="agentID"
+                        type="text"
+                        boxcolor="transparent"
+                        placeholder="Agent ID"
+                        handleChange={handleChange}
+                        values={values}
+                        icon="CoPresent"
+                      />
+                    </div>
 
 
 
 
-
-
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row justify-between md:space-x-3 flex-col'>
                       <InputFieldFilled
                         label="First Name"
                         name="firstName"
@@ -101,23 +130,9 @@ const SalesAgentContent = ({ onClose }: SalesAgentProps) => (
                     </div>
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
-                      <InputFieldFilled
-                        label="NIC"
-                        name="nic"
-                        type="text"
-                        boxcolor="transparent"
-                        placeholder="Nic"
-                        handleChange={handleChange}
-                        values={values}
-                        icon="ContactMail"
-                      />
-                      
-                    </div>
 
 
-
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row justify-between md:space-x-3 flex-col'>
                       <InputFieldFilled
                         label="Email"
                         name="email"
@@ -129,8 +144,8 @@ const SalesAgentContent = ({ onClose }: SalesAgentProps) => (
                         icon="AlternateEmail"
                       />
                       <InputFieldFilled
-                        label="Contact"
-                        name="contact"
+                        label="Contact Number"
+                        name="contactNo"
                         type="text"
                         boxcolor="transparent"
                         placeholder="Contact"
@@ -140,16 +155,31 @@ const SalesAgentContent = ({ onClose }: SalesAgentProps) => (
                       />
                     </div>
 
-                    <InputFieldFilled
-                      label="Address"
-                      name="address"
-                      type="text"
-                      boxcolor="transparent"
-                      placeholder="Address"
-                      handleChange={handleChange}
-                      values={values}
-                      icon="Map"
-                    />
+
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
+                      <InputFieldFilled
+                        label="User Name"
+                        name="userName"
+                        type="text"
+                        boxcolor="transparent"
+                        placeholder="User Name"
+                        handleChange={handleChange}
+                        values={values}
+                        icon="PersonAddAlt"
+                      />
+                      <InputFieldFilled
+                        label="Password"
+                        name="password"
+                        type="text"
+                        boxcolor="transparent"
+                        placeholder="Password"
+                        handleChange={handleChange}
+                        values={values}
+                        icon="Password"
+                      />
+                    </div>
+
+                    
 
 
                     

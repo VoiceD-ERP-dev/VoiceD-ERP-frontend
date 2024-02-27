@@ -17,6 +17,7 @@ import AdminInvoicesPD from './components/Admin/TableLayout/InvoicesAdminPD';
 import AdminInvoicesAccept from './components/Admin/TableLayout/InvoicesAdminAccept';
 import SalesAgentAdmin from './components/Admin/CompanyRoles/TableLayout/SalesAgentAdminSA';
 import SaTableAdminSATemp from './components/Admin/CompanyRoles/TableTemplate/SaTableAdminSATemp';
+import CustomerSelfPortal from './components/Customer/CustomerSelfPortal';
 
 
 
@@ -67,6 +68,18 @@ function App() {
           }
         />
 
+
+        <Route
+          path='/customer-self-Reg'
+          element={
+            <>
+              <PageTitle title="VoiceD | Customer Registration Portal" />
+              <CustomerSelfPortal />
+            </>
+          }
+        />
+
+
         {userRole === "superadmin" && (
 
 
@@ -77,7 +90,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard" />
-                  <AdminDashboard userRole={userRole}/>
+                  <AdminDashboard userRole={userRole} />
                 </>
               }
             />
@@ -88,51 +101,51 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Registration" />
-                  <CustomerRegisterAdmin userRole={userRole}/>
+                  <CustomerRegisterAdmin userRole={userRole} />
                 </>
               }
             />
 
 
-<Route
+            <Route
               path="/customers/customer-insight"
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <CustomerInsightAdmin userRole={userRole}/>
+                  <CustomerInsightAdmin userRole={userRole} />
                 </>
               }
             />
 
 
-<Route
+            <Route
               path="/invoices/pd-invoices"
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <AdminInvoicesPD userRole={userRole}/>
+                  <AdminInvoicesPD userRole={userRole} />
                 </>
               }
             />
 
 
-<Route
+            <Route
               path="/invoices/accepted-invoices"
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <AdminInvoicesAccept userRole={userRole}/>
+                  <AdminInvoicesAccept userRole={userRole} />
                 </>
               }
             />
 
 
-<Route
+            <Route
               path="/auth/sales-agents"
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <SalesAgentAdmin userRole={userRole}/>
+                  <SalesAgentAdmin userRole={userRole} />
                 </>
               }
             />
@@ -147,73 +160,73 @@ function App() {
 
 
 
-{userRole === "admin" && (
+        {userRole === "admin" && (
 
 
-<>
+          <>
 
-  <Route
-    path="/adminDashboard"
-    element={
-      <>
-        <PageTitle title="VoiceD | Admin Dashboard" />
-        <AdminDashboard userRole={userRole}/>
-      </>
-    }
-  />
-
-
-  <Route
-    path="/customers/customer-registration"
-    element={
-      <>
-        <PageTitle title="VoiceD | Admin Dashboard - Customer Registration" />
-        <CustomerRegisterAdmin userRole={userRole}/>
-      </>
-    }
-  />
+            <Route
+              path="/adminDashboard"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard" />
+                  <AdminDashboard userRole={userRole} />
+                </>
+              }
+            />
 
 
-<Route
-    path="/customers/customer-insight"
-    element={
-      <>
-        <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-        <CustomerInsightAdmin userRole={userRole}/>
-      </>
-    }
-  />
+            <Route
+              path="/customers/customer-registration"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Registration" />
+                  <CustomerRegisterAdmin userRole={userRole} />
+                </>
+              }
+            />
 
 
-<Route
-    path="/invoices/pd-invoices"
-    element={
-      <>
-        <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-        <AdminInvoicesPD userRole={userRole}/>
-      </>
-    }
-  />
+            <Route
+              path="/customers/customer-insight"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <CustomerInsightAdmin userRole={userRole} />
+                </>
+              }
+            />
 
 
-<Route
-    path="/invoices/accepted-invoices"
-    element={
-      <>
-        <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-        <AdminInvoicesAccept userRole={userRole}/>
-      </>
-    }
-  />
+            <Route
+              path="/invoices/pd-invoices"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <AdminInvoicesPD userRole={userRole} />
+                </>
+              }
+            />
+
+
+            <Route
+              path="/invoices/accepted-invoices"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <AdminInvoicesAccept userRole={userRole} />
+                </>
+              }
+            />
 
 
 
-<Route
+            <Route
               path="/auth/sales-agents"
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
-                  <SalesAgentAdmin userRole={userRole}/>
+                  <SalesAgentAdmin userRole={userRole} />
                 </>
               }
             />
@@ -221,9 +234,9 @@ function App() {
 
 
 
-</>
+          </>
 
-)}
+        )}
 
 
 
@@ -236,7 +249,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Sales Agent - Dashboard" />
-                  <SalesDashboard userRole={userRole}/>
+                  <SalesDashboard userRole={userRole} />
                 </>
               }
             />
@@ -245,7 +258,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Sales Agent - Dashboard" />
-                  <CustomerRegister userRole={userRole}/>
+                  <CustomerRegister userRole={userRole} />
                 </>
               }
             />
@@ -255,7 +268,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Sales Agent - Dashboard" />
-                  <CustomerInsight userRole={userRole}/>
+                  <CustomerInsight userRole={userRole} />
                 </>
               }
             />
@@ -267,7 +280,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Sales Agent - Dashboard" />
-                  <MyInvoices userRole={userRole}/>
+                  <MyInvoices userRole={userRole} />
                 </>
               }
             />
@@ -278,7 +291,7 @@ function App() {
               element={
                 <>
                   <PageTitle title="VoiceD | Sales Agent - Dashboard" />
-                  <Profile userRole={userRole}/>
+                  <Profile userRole={userRole} />
                 </>
               }
             />

@@ -26,7 +26,7 @@ function SalesAgentAdmin( {userRole} : {userRole:string}) {
 
   return (
     <DefaultAdminLayout userRole={userRole}>
-    <Breadcrumb pageName="My Invoices" />
+    <Breadcrumb pageName="Sales Agents" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">
       <div className="flex flex-col gap-9">
@@ -35,7 +35,7 @@ function SalesAgentAdmin( {userRole} : {userRole:string}) {
           
           
       <SaTableAdminSATemp 
-tablehead={["","SalesID ", "Full Name","NIC", "Contact","Email","Address","Joined Date", "Overall Customers","Overall Sales","Remain Leaves", "Employee Status", "Action"]}
+tablehead={["","Agent ID ", "Full Name","NIC", "Contact","Email","Address","Joined Date", "Overall Customers","Overall Sales","Remain Leaves", "Employee Status", "Action"]}
 />
           
         

@@ -9,6 +9,7 @@ import CoverVid from '../../images/coverVideo/vidcover.mp4';
 import '../../css/parallax.css'
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import InputFieldPassword from '../../components/FormElements/InputFieldPassword';
 
 interface SignInProps {
   onLogin: (role: string) => void; // Callback function to handle login with role
@@ -129,6 +130,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
         muted
         playsInline
         className="w-full h-full object-cover -z-1"
+        
       >
         <source src={CoverVid}  type="video/mp4" />
        
@@ -186,7 +188,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
                     values={values}
 
                   />
-                  <InputField
+                  <InputFieldPassword
                     label="Password"
                     name="password"
                     type="password"
