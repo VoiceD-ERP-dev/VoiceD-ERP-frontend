@@ -112,7 +112,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
     return new Promise<string>((resolve) => {
       setTimeout(() => {
         // Replace 'admin' with the actual user role obtained from authentication
-        resolve('superadmin');
+        resolve('sales');
       }, 1000);
     });
   };
