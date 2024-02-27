@@ -11,7 +11,8 @@ import CheckboxOne from '../../Checkboxes/CheckboxOne';
 import TextField from '../../FormElements/TextFiled';
 import InputFileUpload from '../../FormElements/InputFileUpload';
 import Cookies from 'js-cookie';
-
+import Succeed from '../Modal/Succeed';
+import { useState } from 'react';
 
 
 type CustomerFormValuesType = {
@@ -31,7 +32,7 @@ type CustomerFormValuesType = {
 
 function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
-
+  const [showSucceedModal, setShowSucceedModal] = useState(false);
   const navigate = useNavigate();
 
   const CustomerRegistrationSchema = Yup.object().shape({
@@ -93,6 +94,8 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
       if (response.ok) {
         // Log success message or handle success response
         console.log('Registration successful!');
+        // Open the Succeed modal
+        setShowSucceedModal(true);
       } else if (response.status === 401) {
         // Redirect to SignIn.tsx if unauthorized
         console.error('Unauthorized! Redirecting to sign-in page...');
@@ -108,7 +111,10 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     }
     console.log(values);
   };
-
+  const handleCloseModal = () => {
+    // Close the Succeed modal
+    setShowSucceedModal(false);
+  };
   return (
     <DefaultAdminLayout userRole={userRole}>
       <Breadcrumb pageName="Customer Registration Form" />
@@ -376,7 +382,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
           </div>
         </div>
 
-
+        <Succeed isOpen={showSucceedModal} onClose={handleCloseModal} />
       </div>
     </DefaultAdminLayout>
   )

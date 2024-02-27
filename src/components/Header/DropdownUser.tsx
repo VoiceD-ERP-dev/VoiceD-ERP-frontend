@@ -1,12 +1,42 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import Cookies from 'js-cookie';
+import { JwtPayload, jwtDecode } from "jwt-decode";
 import UserOne from '../../images/user/user-01.png';
 
 
 interface UserProps {
   userRole: string | null;
+
 }
+
+function username() {
+  // Retrieve the JWT token from cookies
+  const jwtToken: string | undefined = Cookies.get('jwtToken');
+
+  // Check if jwtToken is undefined
+  if (!jwtToken) {
+    console.error('JWT token not found');
+    return ''; // or handle the case appropriately
+  }
+
+  // Decode the JWT token
+  const decoded = jwtDecode(jwtToken);
+
+  // Stringify the decoded token to JSON format
+  const jsonUser = JSON.stringify(decoded, null, 2);
+  console.log(jsonUser);
+
+  // Parse the JSON string to an object
+  const userObject = JSON.parse(jsonUser);
+
+  // Extract and log the username
+  const username = userObject.user.name;
+  console.log('Username:', username);
+
+  return username;
+}
+
 
 const DropdownUser: React.FC<UserProps> = ({ userRole }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -50,7 +80,7 @@ const DropdownUser: React.FC<UserProps> = ({ userRole }) => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+          {username()}
           </span>
           <span className="block text-xs">{ userRole }</span>
         </span>
