@@ -31,7 +31,7 @@ function username() {
   const userObject = JSON.parse(jsonUser);
 
   // Extract and log the username
-  const username = userObject.user.name;
+  const username = userObject.user.firstname +" "+ userObject.user.lastname;
   console.log('Username:', username);
 
   return username;

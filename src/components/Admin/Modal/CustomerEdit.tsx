@@ -42,7 +42,7 @@ const SignUpSchema = Yup.object().shape({
 
 const CustomerEditContent = ({ customerData, onClose }: CustomerEditProps) => (
   <div className='w-screen h-screen bg-[#565656] bg-opacity-40 backdrop-blur-sm relative flex justify-center items-center z-20 '>
-    <div className='modal p-5 bg-white dark:bg-black rounded-lg w-[50%] lg:w-[50%] h-auto border-[2px] border-[#b76bff]'>
+    <div className='modal p-5 bg-white dark:bg-black rounded-lg md:w-[50%] lg:w-[50%] w-full max-h-150 border-[2px] border-[#b76bff] overflow-auto'>
       <div className='flex flex-row justify-end w-full'>
         <div
           className='close w-[22px] h-[22px] rounded-full bg-[#b76bff] text-[#ffffff] flex justify-center items-center cursor-pointer'
@@ -86,7 +86,7 @@ const CustomerEditContent = ({ customerData, onClose }: CustomerEditProps) => (
 
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
                       <InputFieldFilled
                         label="First Name"
                         name="firstName"
@@ -110,7 +110,7 @@ const CustomerEditContent = ({ customerData, onClose }: CustomerEditProps) => (
                     </div>
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
                       <InputFieldFilled
                         label="NIC"
                         name="nic"
@@ -135,7 +135,7 @@ const CustomerEditContent = ({ customerData, onClose }: CustomerEditProps) => (
 
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
                       <InputFieldFilled
                         label="Email"
                         name="email"
@@ -178,7 +178,7 @@ const CustomerEditContent = ({ customerData, onClose }: CustomerEditProps) => (
 
 
 
-                    <div className='w-full md:w-1/3 flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
                       
                       <PrimaryButton
                         type="submit"

@@ -2,37 +2,140 @@ import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
 import SelectGroupOne from '../../Forms/SelectGroup/SelectGroupOne';
 import DefaultLayout from '../../../layout/DefaultLayout';
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import { Formik, Field, Form, ErrorMessage , useFormikContext } from "formik";
 import * as Yup from "yup";
 import InputField from '../../FormElements/InputFiled';
 import PrimaryButton from '../../FormElements/PrimaryButon';
 import SelectField from '../../FormElements/SelectField';
 import CheckboxOne from '../../Checkboxes/CheckboxOne';
 import TextField from '../../FormElements/TextFiled';
+import InputFileUpload from '../../FormElements/InputFileUpload';
+import axios from 'axios';
+
+import React, { useState, useEffect } from 'react';
+import Succeed from '../Modal/Succeed';
+
+
+
+
+
+
+
+type CustomerFormValuesType = {
+  firstName: string;
+  lastName: string;
+  nicNo: string;
+  brId: string;
+  email: string;
+  address: string;
+  contactNo: string;
+  package: string;
+  payment: string;
+  nicDoc: File | null;
+  brDoc: File | null;
+  otherDoc: File | null;
+};
 
 
 function CustomerRegister({userRole} : {userRole : string}) {
 
 
+  const [showSucceedModal, setShowSucceedModal] = useState(false);
+
   const navigate = useNavigate();
 
-  const SignUpSchema = Yup.object().shape({
-    userName: Yup.string().required("Required"), 
-    nic: Yup.string().required("Required"),
-    email: Yup.string().required("Required"),
-    contact: Yup.string().required("Required"),
-    userID: Yup.string().required("Required"),
-    password: Yup.string()
-      .min(6, "Password must be at least 6 characters")
-      .matches(/[0-9]/, "Password requires a number")
-      .matches(/[a-z]/, "Password requires a lowercase letter")
-      .matches(/[A-Z]/, "Password requires a uppercase letter")
-      .matches(/[^\w]/, "Password requires a symbol")
-      .required("Required"),
+  const CustomerRegistrationSchema = Yup.object().shape({
+    firstName: Yup.string()
+    .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
+    .required("Required"),
+    lastName: Yup.string()
+    .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
+    .required("Required"),
+    nicNo: Yup.string().required("Required"),
+    brId: Yup.string().required("Required"),
+    email: Yup.string().email().required("Required"),
+    package: Yup.string().required("Required"),
+    payment: Yup.string().required("Required"),
+    contactNo: Yup.string()
+    .min(10, "must include a valid mobile number")
+    .matches(/[0-9]/, "must includes only digits")
+    .required("Required"),
+ 
+    
   });
 
-  const handleRegister = () => {
-    navigate("/");
+
+
+
+  const [loading, setLoading] = useState(false);
+
+  const handleRegister = async (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>): Promise<void> => {
+    try {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('firstName', values.firstName);
+      formData.append('lastName', values.lastName);
+      formData.append('nicNo', values.nicNo);
+      formData.append('brId', values.brId);
+      formData.append('email', values.email);
+      formData.append('address', values.address);
+      formData.append('contactNo', values.contactNo);
+      formData.append('package', values.package);
+      formData.append('payment', values.payment);
+  
+      // Append files to the formData if they are not null
+      if (values.nicDoc !== null) {
+        formData.append('nicDoc', values.nicDoc);
+      }
+  
+      if (values.brDoc !== null) {
+        formData.append('brDoc', values.brDoc);
+      }
+
+      if (values.otherDoc !== null) {
+        formData.append('otherDoc', values.otherDoc);
+      }
+  
+      const response = await axios.post('localhost:5001/customerRegister', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          // Add any other headers as needed, such as authorization token
+        },
+      });
+  
+      // Extract customer ID from the response
+      const customerId = response.data._id; // Assuming the customer ID is stored in the "_id" field
+  
+      // Use the obtained customer ID for further actions if needed
+      console.log('Customer ID:', customerId);
+  
+      // Handle successful registration
+      console.log('Registration successful', response.data);
+      // Open the Succeed modal
+      setShowSucceedModal(true);
+  
+      // Reset the form after successful registration
+      setLoading(false);
+      resetForm();
+    } catch (error) {
+      // Handle registration error
+      setLoading(false);
+      console.error('Registration error', error);
+    }
+  };
+  
+
+  const handleCloseModal = () => {
+    // Close the Succeed modal
+    setShowSucceedModal(false);
+  };
+
+
+
+  const handleResetForm = () => {
+    // Use the formik context to access resetForm function
+    const { resetForm } = useFormikContext<CustomerFormValuesType>();
+    resetForm();
   };
 
 
@@ -50,18 +153,23 @@ function CustomerRegister({userRole} : {userRole : string}) {
               </h3>
             </div>
             <div className="p-6.5">
-              <Formik
+            <Formik
                 initialValues={{
                   firstName: "",
                   lastName: "",
-                  nic: "",
-                  brid: "",
+                  nicNo: "",
+                  brId: "",
                   email: "",
                   address: "",
-                  contact: "",
+                  contactNo: "",
+                  package: "",
+                  payment: "",
+                  otherDoc: null,
+                  nicDoc: null,  // Add these lines
+                  brDoc: null,
 
                 }}
-                validationSchema={SignUpSchema}
+                validationSchema={CustomerRegistrationSchema}
                 onSubmit={handleRegister}
               >
 
@@ -69,7 +177,7 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
                 {({ errors, touched, handleChange, values }) => (
 
-                  <Form className=" w-full">
+<Form className=" w-full">
 
 
 <div className='w-full '>
@@ -116,7 +224,7 @@ function CustomerRegister({userRole} : {userRole : string}) {
                     <div className='w-full flex flex-row justify-between space-x-3'>
                       <InputField
                         label="NIC"
-                        name="nic"
+                        name="nicNo"
                         type="text"
                         boxcolor="transparent"
                         placeholder="NIC"
@@ -126,7 +234,7 @@ function CustomerRegister({userRole} : {userRole : string}) {
                       />
                       <InputField
                         label="BR ID"
-                        name="brid"
+                        name="brId"
                         type="text"
                         boxcolor="transparent"
                         placeholder="BR ID"
@@ -151,7 +259,7 @@ function CustomerRegister({userRole} : {userRole : string}) {
                       />
                       <InputField
                         label="Contact"
-                        name="contact"
+                        name="contactNo"
                         type="text"
                         boxcolor="transparent"
                         placeholder="Contact"
@@ -173,6 +281,68 @@ function CustomerRegister({userRole} : {userRole : string}) {
                     />
 
 
+
+
+
+
+<div className='w-full py-3 mt-5'>
+                      <h2>Documentations</h2>
+                    </div>
+                    <div className='w-full flex flex-row justify-between space-x-3 '>
+
+                    <InputFileUpload
+                      label="NIC"
+                      name="nicDoc"
+                      type="file"
+                      boxcolor="transparent"
+                      placeholder="nicDoc"
+                      icon="UploadFile"
+                    
+                    />
+
+                     <div className='flex flex-col w-full'>
+                     <InputFileUpload
+                      label="Business Registration"
+                      name="brDoc"
+                      type="file"
+                      boxcolor="transparent"
+                      placeholder="brDoc"
+                
+                      icon="UploadFile"
+                    />
+
+                    <p>Note : if you dont have a registered business yet, leave this filed.</p>
+                     </div>
+
+                     
+
+
+                    </div>
+
+                    <div className='md:w-1/2 w-full flex flex-row justify-between space-x-3 '>
+
+                    <InputFileUpload
+                      label="Other Documents"
+                      name="otherDoc"
+                      type="file"
+                      boxcolor="transparent"
+                      placeholder="otherDoc"
+                      icon="UploadFile"
+                    
+                    />
+
+                  
+
+                     
+
+
+                    </div>
+
+
+
+
+
+
                     <div className='w-full py-3 mt-5'>
                       <h2>Package Details</h2>
                     </div>
@@ -180,11 +350,12 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
                       <SelectField
                         label="Select a Package"
-                        name='Select a Package'
+                        name='package'
                         icon="Inventory"
                         boxcolor="transparent"
                         handleChange={handleChange}
                         options={["Basic", "Platinum", "Premium"]}
+                        values={values}
                       />
 
                      
@@ -205,11 +376,12 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
                       <SelectField
                         label="Select a Payment Method"
-                        name='Select a Payment Method'
+                        name='payment'
                         icon="Payments"
                         boxcolor="transparent"
                         handleChange={handleChange}
                         options={["Direct Purchase", "Bank Deposit", "Cheque"]}
+                        values={values}
                       />
 
                      
@@ -220,14 +392,15 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
 
 
-
+                    
 
 
 
                     <div className='w-full md:w-1/3 flex flex-row justify-between space-x-3'>
                       <PrimaryButton
-                        type="button"
-
+                        type="reset"
+                        // eventname={handleResetForm}
+                        eventname={handleResetForm}
                         textcolor="dark:text-[#fafafa]"
                         label="Clear From"
                         colorfrom='transparent'
@@ -236,14 +409,14 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
                       <PrimaryButton
                         type="submit"
-
+                        // eventname={handleRegister}
                         textcolor="#fafafa"
                         label="Register"
                         colorfrom='#c026d3'
                         colorto='#a855f7'
                       />
                     </div>
-
+                    {loading && <p>Please wait...</p>}
 
                   </Form>
 
@@ -257,7 +430,8 @@ function CustomerRegister({userRole} : {userRole : string}) {
           </div>
         </div>
 
-
+        <Succeed isOpen={showSucceedModal} onClose={handleCloseModal} />
+        
       </div>
     </DefaultLayout>
   )

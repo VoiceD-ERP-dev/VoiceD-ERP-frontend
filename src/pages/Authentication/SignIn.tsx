@@ -11,6 +11,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import { JwtPayload, jwtDecode } from "jwt-decode";
 import ErrorIcon from '@mui/icons-material/Error';
+import InputFieldPassword from '../../components/FormElements/InputFieldPassword';
 
 interface SignInProps {
   onLogin: (role: string) => void; // Callback function to handle login with role
@@ -27,21 +28,21 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
 
 
   const SignUpSchema = Yup.object().shape({
-    email: Yup.string().required("Required"),
+    username: Yup.string().required("Required"),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
-      //.matches(/[0-9]/, "Password requires a number")
+      .matches(/[0-9]/, "Password requires a number")
       .matches(/[a-z]/, "Password requires a lowercase letter")
       .matches(/[A-Z]/, "Password requires a uppercase letter")
-      //.matches(/[^\w]/, "Password requires a symbol")
+      .matches(/[^\w]/, "Password requires a symbol")
       .required("Required"),
   });
 
-  const handleLogin = async (values: { email: string; password: string }) => {
+  const handleLogin = async (values: { username: string; password: string }) => {
     try {
       // Make an HTTP POST request to the login endpoint
       const response = await axios.post('http://localhost:5001/api/users/login', {
-        email: values.email,
+        username: values.username,
         password: values.password,
       });
   
@@ -49,7 +50,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
       const jwtToken = response.data.accessToken;
   
       // Log the user
-      console.log('Logged in user:', values.email);
+      console.log('Logged in user:', values.username);
   
       // Log the JWT token
       console.log('JWT Token:', jwtToken);
@@ -57,7 +58,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
       Cookies.set('jwtToken', jwtToken);
 
       // Assuming you have an authentication function that returns the user role
-      const userRole = await authenticate(values.email, values.password, jwtToken);
+      const userRole = await authenticate(values.username, values.password, jwtToken);
   
       if (userRole === 'superadmin' || userRole === 'admin') {
         onLogin('superadmin');
@@ -79,7 +80,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
     }
   };
 
-  const authenticate = async (email: string, password: string , jwtToken : string) => {
+  const authenticate = async (username: string, password: string , jwtToken : string) => {
     const decoded = jwtDecode(jwtToken);
     const jsonUser= JSON.stringify(decoded, null, 2);
     console.log(jsonUser);
@@ -137,7 +138,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
 
           <Formik
             initialValues={{
-              email: "",
+              username: "",
               password: "",
             }}
             validationSchema={SignUpSchema}
@@ -156,17 +157,17 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
 
 
                   <InputField
-                    label="Email"
-                    name="email"
+                    label="Username"
+                    name="username"
                     type="text"
                     icon="AccountCircle"
                     boxcolor="transparent"
-                    placeholder="Email"
+                    placeholder="Username"
                     handleChange={handleChange}
                     values={values}
 
                   />
-                  <InputField
+                  <InputFieldPassword
                     label="Password"
                     name="password"
                     type="password"

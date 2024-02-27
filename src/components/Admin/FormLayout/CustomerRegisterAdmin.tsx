@@ -27,6 +27,7 @@ type CustomerFormValuesType = {
   payment: string;
   nicDoc: File | null;
   brDoc: File | null;
+  otherDoc: File | null;
 };
 
 
@@ -50,8 +51,12 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     
   });
 
+const [ loading, setLoading ] = useState(false);
+
   const handleRegister = async (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>): Promise<void> => {
     try {
+
+      setLoading(true);
       // Extract the JWT token from local storage
       const jwtToken = Cookies.get('jwtToken');
   
@@ -83,6 +88,13 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
       if (values.brDoc !== null) {
         registrationData.append('brDoc', values.brDoc);
       }
+
+
+      if (values.otherDoc !== null) {
+        registrationData.append('otherDoc', values.otherDoc);
+      }
+
+
       // Make an HTTP POST request to the endpoint with the registration data and headers
       const response = await fetch('http://localhost:5001/api/customers/cv', {
         method: 'POST',
@@ -105,16 +117,24 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
         // Handle error response
         console.error('Registration failed:', response.statusText);
       }
+      setLoading(false);
       resetForm();
     } catch (error) {
       console.error('Error:', error);
+      setLoading(false);
     }
     console.log(values);
   };
+
+
+
   const handleCloseModal = () => {
     // Close the Succeed modal
     setShowSucceedModal(false);
   };
+
+
+
   return (
     <DefaultAdminLayout userRole={userRole}>
       <Breadcrumb pageName="Customer Registration Form" />
@@ -143,6 +163,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                   payment:"",
                   nicDoc: null,  // Add these lines
                   brDoc: null,
+                  otherDoc : null,
                 }}
                 validationSchema={CustomerRegistrationSchema}
                 onSubmit={handleRegister}
@@ -172,7 +193,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
                       <InputField
                         label="First Name"
                         name="firstName"
@@ -196,7 +217,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                     </div>
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
                       <InputField
                         label="NIC"
                         name="nicNo"
@@ -221,7 +242,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
                       <InputField
                         label="Email"
                         name="email"
@@ -263,7 +284,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 <div className='w-full py-3 mt-5'>
                       <h2>Documentations</h2>
                     </div>
-                    <div className='w-full flex flex-row justify-between space-x-3 '>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
 
                     <InputFileUpload
                       label="NIC"
@@ -295,11 +316,34 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
+                    
+                    <div className='md:w-1/2 w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
+
+                    <InputFileUpload
+                      label="OTHER DOCUMENTS"
+                      name="otherDoc"
+                      type="file"
+                      boxcolor="transparent"
+                      placeholder="otherDoc"
+                      icon="UploadFile"
+                    />
+
+                     
+
+                     
+
+
+                    </div>
+
+
+
+
+
 
                     <div className='w-full py-3 mt-5'>
                       <h2>Package Details</h2>
                     </div>
-                    <div className='w-full flex flex-row justify-between space-x-3 '>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
 
                       <SelectField
                         label="Select a Package"
@@ -325,7 +369,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3 '>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
 
                       <SelectField
                         label="Select a Payment Method"
@@ -368,7 +412,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                         colorto='#a855f7'
                       />
                     </div>
-
+{loading && <p>Please wait...</p>}
 
                   </Form>
 

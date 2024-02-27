@@ -36,7 +36,7 @@ const SignUpSchema = Yup.object().shape({
 
 const SalesAgentEditContent = ({ salesAgentData, onClose }: SalesAgentEditProps) => (
   <div className='w-screen h-screen bg-[#565656] bg-opacity-40 backdrop-blur-sm relative flex justify-center items-center z-20 '>
-    <div className='modal p-5 bg-white dark:bg-black rounded-lg w-[50%] lg:w-[50%] h-auto border-[2px] border-[#b76bff]'>
+    <div className='modal p-5 bg-white dark:bg-black rounded-lg md:w-[50%] w-full lg:w-[50%] max-h-150 overflow-auto border-[2px] border-[#b76bff]'>
       <div className='flex flex-row justify-end w-full'>
         <div
           className='close w-[22px] h-[22px] rounded-full bg-[#b76bff] text-[#ffffff] flex justify-center items-center cursor-pointer'
@@ -75,7 +75,7 @@ const SalesAgentEditContent = ({ salesAgentData, onClose }: SalesAgentEditProps)
 
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
                       <InputFieldFilled
                         label="First Name"
                         name="fullName"
@@ -99,7 +99,7 @@ const SalesAgentEditContent = ({ salesAgentData, onClose }: SalesAgentEditProps)
                     </div>
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
                       <InputFieldFilled
                         label="NIC"
                         name="nic"
@@ -124,7 +124,7 @@ const SalesAgentEditContent = ({ salesAgentData, onClose }: SalesAgentEditProps)
 
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
                       <InputFieldFilled
                         label="Email"
                         name="email"
