@@ -96,7 +96,7 @@ const [ loading, setLoading ] = useState(false);
 
 
       // Make an HTTP POST request to the endpoint with the registration data and headers
-      const response = await fetch('http://localhost:5001/api/customers/cv', {
+      const response = await fetch('https://voiced-erp-backend.onrender.com/api/customers/cv', {
         method: 'POST',
         headers: headers,
         body: registrationData

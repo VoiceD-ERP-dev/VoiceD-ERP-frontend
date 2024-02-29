@@ -6,7 +6,9 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import InputFieldFilled from '../../FormElements/InputFiledFilled';
 import PrimaryButton from '../../FormElements/PrimaryButon';
-
+import Cookies from 'js-cookie';
+import Succeed from '../Modal/Succeed';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 interface SalesAgentProps {
@@ -42,8 +44,53 @@ const SalesAgentRegSchema = Yup.object().shape({
     
   });
 
-  const handleRegister = () => {
-    console.log('Registered');
+  const handleRegister = async (values: any) => {
+    try {
+      const jwtToken = Cookies.get('jwtToken');
+      console.log(jwtToken);
+      // Construct the headers object with the bearer token
+      const headers = {
+        'Authorization': `Bearer ${jwtToken}`,
+        'Content-Type': 'application/json' // Add this line
+      };
+      console.log('Registered:', JSON.stringify(values, null, 2));
+      
+      const jsonData = JSON.stringify({
+        firstname: values.firstName || "John",
+        lastname: values.lastName || "Doe",
+        username: values.userName || "234",
+        email: values.email || "shanbasnayake98@gmail.com",
+        password: values.password || "1234",
+        phone: values.contactNo || "1234567890",
+        agentNo: values.agentID || "123456789",
+      });
+  
+      // Make an HTTP POST request to the endpoint with the registration data and headers
+      const response = await fetch('http://localhost:5001/api/salesmen/register', {
+        method: 'POST',
+        headers: headers,
+        body: jsonData
+      });
+  
+      // Check if the request was successful
+      if (response.ok) {
+        // Log success message or handle success response
+        console.log('Registration successful!');
+  
+      } else if (response.status === 401) {
+        // Redirect to SignIn.tsx if unauthorized
+        console.error('Unauthorized! Redirecting to sign-in page...');
+  
+    
+      } else {
+        // Handle error response
+        console.error('Registration failed:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      
+    }
+  
   };
 
 const SalesAgentContent = ({ onClose }: SalesAgentProps) => (
