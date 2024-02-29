@@ -7,9 +7,10 @@ import LogoDark from '../../images/logo/logo.png';
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (arg: boolean) => void;
+  userRole: string | null;
 }
 
-const AdminSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) => {
   const location = useLocation();
   const { pathname } = location;
 
@@ -178,7 +179,7 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                           <li>
                             <NavLink
-                              to="/dashboard"
+                              to="/adminDashboard"
                               className=
                               'group relative flex hover:text-[#a855f7]  items-center gap-2.5 rounded-md px-4  font-medium  ease-in-out  dark:text-[#fafafa] text-[#161616]'
 
@@ -195,134 +196,508 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </SidebarLinkGroup>
 
 
-              {/* <!-- Menu Item Dashboard --> */}
-
-              
 
 
 
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/customers' || pathname.includes('customers')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-[#161616] dark:text-[#ffffff] duration-300 ease-in-out hover:bg-[#b76bff] dark:hover:bg-meta-4 ${(pathname === '/customers' ||
+                          pathname.includes('customers')) &&
+                          'bg-[#b76bff] dark:bg-meta-4'
+                          }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
 
-              {/* <!-- Menu Item Customer Registration --> */}
-              <li>
-                <NavLink
-                  to="/customerReg"
-                  className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
-                  ${pathname.includes('customerReg') &&
-                  'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
-                    }`}
-                >
-                  <svg
-                    className="fill-current"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+
+                        <svg className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path className='fill-black dark:fill-white' d="M12 1.2A4.8 4.8 0 1 0 16.8 6 4.805 4.805 0 0 0 12 1.2zm0 8.6A3.8 3.8 0 1 1 15.8 6 3.804 3.804 0 0 1 12 9.8zM20 22H4v-4.5A5.506 5.506 0 0 1 9.5 12h5a5.506 5.506 0 0 1 5.5 5.5zM5 21h14v-3.5a4.505 4.505 0 0 0-4.5-4.5h-5A4.505 4.505 0 0 0 5 17.5z" />
+                          <path fill="none" d="M0 0h24v24H0z" /></svg>
+
+
+
+
+                        Customers
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
+                            }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${!open && 'hidden'
+                          }`}
+                      >
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/customers/customer-registration"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('customer-registration') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Customer Registration
+                            </NavLink>
+                          </li>
+
+                          {/* <li>
+
+                         
+
+
+
+<NavLink
+  to="/customers/customer-insight"
+  className={`group relative flex items-center gap-2.5 hover:text-[#a855f7] py-2 px-4 rounded-md font-medium dark:text-[#fafafa] ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+    ${pathname.includes('customer-insight') &&
+      'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+    }`}
+  onClick={(e) => {
+    // Prevent default behavior to stop navigation
+    e.preventDefault();
+
+    // Check userRole and log "Access Denied" if it's 'admin'
+    if (userRole === 'admin') {
+      console.log("Access Denied");
+    } else {
+      // Continue with navigation if the userRole is not 'admin'
+      sidebarExpanded ? handleClick() : setSidebarExpanded(true);
+    }
+  }}
+>
+  Customer Insight
+</NavLink>
+
+
+
+                          </li> */}
+
+
+
+
+                          <li>
+                            <NavLink
+                              to="/customers/customer-insight"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7] py-2 px-4 rounded-md font-medium dark:text-[#fafafa] ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+        ${pathname.includes('customer-insight') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+                              Customer Insight
+                            </NavLink>
+                          </li>
+
+
+
+
+
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+
+
+
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/invoices' || pathname.includes('invoices')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4  font-medium text-[#161616] dark:text-[#ffffff] duration-300 ease-in-out hover:bg-[#b76bff] dark:hover:bg-meta-4 ${(pathname === '/customers' ||
+                          pathname.includes('invoices')) &&
+                          'bg-[#b76bff] dark:bg-meta-4'
+                          }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+                        {/* <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="1" d="M6 10h12v1H6zM3 1h12.29L21 6.709V23H3zm12 6h5v-.2L15.2 2H15zM4 22h16V8h-6V2H4zm2-7h12v-1H6zm0 4h9v-1H6z"/><path fill="none" d="M0 0h24v24H0z"/></svg> */}
+
+
+                        <svg className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path className='fill-black dark:fill-white' d="M6 10h12v1H6zM3 1h12.29L21 6.709V23H3zm12 6h5v-.2L15.2 2H15zM4 22h16V8h-6V2H4zm2-7h12v-1H6zm0 4h9v-1H6z" />
+                          <path fill="none" d="M0 0h24v24H0z" />
+                        </svg>
+
+                        Invoices
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
+                            }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${!open && 'hidden'
+                          }`}
+                      >
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/invoices/pd-invoices"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('pd-invoices') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Pending Invoices
+                            </NavLink>
+                          </li>
+                          <li>
+
+                            <NavLink
+                              to="/invoices/accepted-invoices"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('accepted-invoices') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Accepted Invoices
+                            </NavLink>
+                          </li>
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+
+              <h3 className="mb-4 mt-4 ml-4 text-sm font-bold text-[#161616] dark:text-[#fafafa] ">
+                COMPANY ROLES
+              </h3>
+
+
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/auth' || pathname.includes('auth')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4  font-medium text-[#161616] dark:text-[#ffffff] duration-300 ease-in-out hover:bg-[#b76bff] dark:hover:bg-meta-4 ${(pathname === '/customers' ||
+                          pathname.includes('auth')) &&
+                          'bg-[#b76bff] dark:bg-meta-4'
+                          }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+
+                        <svg className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path className='fill-black dark:fill-white' d="M20.76 3.854l-.87-.042c-3.31-.166-5.67-.934-7.21-2.35L12 .838l-.68.624c-1.54 1.416-3.9 2.184-7.209 2.35l-.87.042-.08.87c-.574 6.312-.029 13.382 8.358 17.957l.481.262.48-.262c8.388-4.575 8.933-11.645 8.36-17.958zm-8.762 17.95c-7.879-4.3-8.381-11.005-7.837-16.993 3.552-.178 6.122-1.033 7.842-2.613 1.72 1.58 4.287 2.438 7.84 2.615.544 5.99.034 12.692-7.845 16.99zm5.524-13.946l.637.636L10.5 16 7 12.689l.637-.636 2.863 2.674z" />
+                          <path fill="none" d="M0 0h24v24H0z" /></svg>
+
+
+
+                        User Authentications
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
+                            }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${!open && 'hidden'
+                          }`}
+                      >
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/auth/super-admin"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('super-admin') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Super Admin
+                            </NavLink>
+                          </li>
+                          <li>
+
+                            <NavLink
+                              to="/auth/sub-admin"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('sub-admin') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Sub Admin
+                            </NavLink>
+                          </li>
+
+                          <li>
+
+                            <NavLink
+                              to="/auth/sales-agents"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('sales-agents') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Sales Agents
+                            </NavLink>
+                          </li>
+
+
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+
+
+              {userRole === 'superadmin' && (
+
+                <>
+
+                  <h3 className="mb-4 mt-4 ml-4 text-sm font-bold text-[#161616] dark:text-[#fafafa] ">
+                    SETTINGS
+                  </h3>
+
+
+                  <SidebarLinkGroup
+                    activeCondition={
+                      pathname === '/settings' || pathname.includes('settings')
+                    }
                   >
-                    <path
-                      d="M9.0002 7.79065C11.0814 7.79065 12.7689 6.1594 12.7689 4.1344C12.7689 2.1094 11.0814 0.478149 9.0002 0.478149C6.91895 0.478149 5.23145 2.1094 5.23145 4.1344C5.23145 6.1594 6.91895 7.79065 9.0002 7.79065ZM9.0002 1.7719C10.3783 1.7719 11.5033 2.84065 11.5033 4.16252C11.5033 5.4844 10.3783 6.55315 9.0002 6.55315C7.62207 6.55315 6.49707 5.4844 6.49707 4.16252C6.49707 2.84065 7.62207 1.7719 9.0002 1.7719Z"
-                      fill=""
-                    />
-                    <path
-                      d="M10.8283 9.05627H7.17207C4.16269 9.05627 1.71582 11.5313 1.71582 14.5406V16.875C1.71582 17.2125 1.99707 17.5219 2.3627 17.5219C2.72832 17.5219 3.00957 17.2407 3.00957 16.875V14.5406C3.00957 12.2344 4.89394 10.3219 7.22832 10.3219H10.8564C13.1627 10.3219 15.0752 12.2063 15.0752 14.5406V16.875C15.0752 17.2125 15.3564 17.5219 15.7221 17.5219C16.0877 17.5219 16.3689 17.2407 16.3689 16.875V14.5406C16.2846 11.5313 13.8377 9.05627 10.8283 9.05627Z"
-                      fill=""
-                    />
-                  </svg>
-                  Customer Registration
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Customer Registration --> */}
+                    {(handleClick, open) => {
+                      return (
+                        <React.Fragment>
+                          <NavLink
+                            to="#"
+                            className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4  font-medium text-[#161616] dark:text-[#ffffff] duration-300 ease-in-out hover:bg-[#b76bff] dark:hover:bg-meta-4 ${(pathname === '/customers' ||
+                              pathname.includes('settings')) &&
+                              'bg-[#b76bff] dark:bg-meta-4'
+                              }`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              sidebarExpanded
+                                ? handleClick()
+                                : setSidebarExpanded(true);
+                            }}
+                          >
+
+
+
+                            <svg version="1.1" id="SETTINGS" xmlns="http://www.w3.org/2000/svg" xmlns: xlink="http://www.w3.org/1999/xlink"
+                              className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 1800 1800" enable-background="new 0 0 1800 1800" xml: space="preserve" fill='none'>
+                              <g>
+                                <path className='fill-black dark:fill-white' d="M1468.436,32.467v188.211c-98.748,15.249-174.595,100.822-174.595,203.777s75.847,188.521,174.595,203.777
+		v1139.302c0,17.453,14.146,31.608,31.607,31.608c17.454,0,31.609-14.155,31.609-31.608V628.232
+		c98.748-15.257,174.59-100.822,174.59-203.777s-75.842-188.529-174.59-203.777V32.467c0-17.454-14.155-31.608-31.609-31.608
+		C1482.581,0.858,1468.436,15.013,1468.436,32.467z M1643.029,424.455c0,67.979-47.703,124.986-111.377,139.423
+		c-10.179,2.302-20.744,3.563-31.609,3.563s-21.43-1.261-31.607-3.563c-63.684-14.438-111.378-71.444-111.378-139.423
+		c0-67.988,47.694-124.995,111.378-139.424c10.178-2.311,20.742-3.563,31.607-3.563s21.431,1.252,31.609,3.563
+		C1595.326,299.46,1643.029,356.467,1643.029,424.455z"/>
+                                <path className='fill-black dark:fill-white' d="M331.574,1767.534V628.232c98.758-15.257,174.603-100.822,174.603-203.777s-75.845-188.529-174.603-203.777
+		V32.467c0-17.454-14.146-31.608-31.608-31.608c-17.454,0-31.608,14.155-31.608,31.608v188.211
+		C169.609,235.926,93.763,321.5,93.763,424.455s75.846,188.521,174.594,203.777v1139.302c0,17.453,14.155,31.608,31.608,31.608
+		C317.428,1799.143,331.574,1784.987,331.574,1767.534z M156.98,424.455c0-67.988,47.703-124.995,111.377-139.424
+		c10.178-2.311,20.752-3.563,31.608-3.563c10.865,0,21.431,1.252,31.608,3.563c63.684,14.429,111.387,71.436,111.387,139.424
+		c0,67.979-47.703,124.986-111.387,139.423c-10.178,2.302-20.743,3.563-31.608,3.563c-10.856,0-21.431-1.261-31.608-3.563
+		C204.683,549.441,156.98,492.434,156.98,424.455z"/>
+                                <path className='fill-black dark:fill-white' d="M931.617,1767.534V1419.51c98.748-15.257,174.594-100.822,174.594-203.777s-75.846-188.529-174.594-203.777
+		V32.467c0-17.454-14.154-31.608-31.608-31.608c-17.462,0-31.608,14.155-31.608,31.608v979.488
+		c-98.757,15.248-174.603,100.822-174.603,203.777s75.846,188.521,174.603,203.777v348.024c0,17.453,14.146,31.608,31.608,31.608
+		C917.463,1799.143,931.617,1784.987,931.617,1767.534z M757.015,1215.732c0-67.986,47.703-124.995,111.386-139.424
+		c10.177-2.309,20.743-3.563,31.608-3.563c10.865,0,21.431,1.254,31.608,3.563c63.676,14.429,111.378,71.438,111.378,139.424
+		c0,67.979-47.702,124.986-111.378,139.424c-10.178,2.303-20.743,3.563-31.608,3.563c-10.865,0-21.431-1.26-31.608-3.563
+		C804.717,1340.719,757.015,1283.711,757.015,1215.732z"/>
+                              </g>
+                            </svg>
+
+
+
+                            System Settings
+                            <svg
+                              className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
+                                }`}
+                              width="20"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                                fill=""
+                              />
+                            </svg>
+                          </NavLink>
+                          {/* <!-- Dropdown Menu Start --> */}
+                          <div
+                            className={`translate transform overflow-hidden ${!open && 'hidden'
+                              }`}
+                          >
+                            <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                              <li>
+
+                                <NavLink
+                                  to="/settings/company-bio"
+                                  className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+${pathname.includes('company-bio') &&
+                                    'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                    }`}
+                                >
+
+                                  Company Profile
+                                </NavLink>
+                              </li>
+
+
+
+
+                              <li>
+                                <NavLink
+                                  to="/settings/features"
+                                  className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('features') &&
+                                    'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                    }`}
+                                >
+
+                                  Features
+                                </NavLink>
+                              </li>
+                              <li>
+
+                                <NavLink
+                                  to="/settings/packages"
+                                  className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('packages') &&
+                                    'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                    }`}
+                                >
+
+                                  Packages
+                                </NavLink>
+                              </li>
+
+                              <li>
+
+                                <NavLink
+                                  to="/settings/access"
+                                  className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('access') &&
+                                    'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                    }`}
+                                >
+
+                                  Access
+                                </NavLink>
+                              </li>
+
+
+                            </ul>
+                          </div>
+                          {/* <!-- Dropdown Menu End --> */}
+                        </React.Fragment>
+                      );
+                    }}
+                  </SidebarLinkGroup>
+                </>
+
+
+              )}
 
 
 
 
 
-              {/* <!-- Menu Item Customer Insight --> */}
-              <li>
-                <NavLink
-                  to="/customerInsight"
-                  className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
-                  ${pathname.includes('customerInsight') &&
-                  'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
-                    }`}
-                >
-                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-width="1" d="M16 19h4c.6 0 1-.4 1-1v-1a3 3 0 0 0-3-3h-2m-2.2-4A3 3 0 0 0 19 8a3 3 0 0 0-5.2-2M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1c0 .6-.4 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  </svg>
+              <h3 className="mb-4 mt-4 ml-4 text-sm font-bold text-[#161616] dark:text-[#fafafa] ">
+                User Role: {userRole}
+              </h3>
 
-
-
-
-
-
-                  Customer Insight
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Customer Insight --> */}
-
-
-
-              {/* <!-- Menu Item Customer Insight --> */}
-              <li>
-                <NavLink
-                  to="/myInvoices"
-                  className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
-                  ${pathname.includes('myInvoices') &&
-                  'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
-                    }`}
-                >
-                  <svg className ="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-    <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M10 3v4c0 .6-.4 1-1 1H5m14-4v16c0 .6-.4 1-1 1H6a1 1 0 0 1-1-1V8c0-.4.1-.6.3-.8l4-4 .6-.2H18c.6 0 1 .4 1 1Z"/>
-  </svg>
-
-
-My Invoices
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Customer Insight --> */}
-
-
-
-
-
-
-
-
-              {/* <!-- Menu Item Profile --> */}
-              <li>
-                <NavLink
-                  to="/profile"
-                  className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
-                  ${pathname.includes('profile') &&
-                  'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
-                    }`}
-                >
-                  <svg
-                    className="fill-current"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 18 18"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9.0002 7.79065C11.0814 7.79065 12.7689 6.1594 12.7689 4.1344C12.7689 2.1094 11.0814 0.478149 9.0002 0.478149C6.91895 0.478149 5.23145 2.1094 5.23145 4.1344C5.23145 6.1594 6.91895 7.79065 9.0002 7.79065ZM9.0002 1.7719C10.3783 1.7719 11.5033 2.84065 11.5033 4.16252C11.5033 5.4844 10.3783 6.55315 9.0002 6.55315C7.62207 6.55315 6.49707 5.4844 6.49707 4.16252C6.49707 2.84065 7.62207 1.7719 9.0002 1.7719Z"
-                      fill=""
-                    />
-                    <path
-                      d="M10.8283 9.05627H7.17207C4.16269 9.05627 1.71582 11.5313 1.71582 14.5406V16.875C1.71582 17.2125 1.99707 17.5219 2.3627 17.5219C2.72832 17.5219 3.00957 17.2407 3.00957 16.875V14.5406C3.00957 12.2344 4.89394 10.3219 7.22832 10.3219H10.8564C13.1627 10.3219 15.0752 12.2063 15.0752 14.5406V16.875C15.0752 17.2125 15.3564 17.5219 15.7221 17.5219C16.0877 17.5219 16.3689 17.2407 16.3689 16.875V14.5406C16.2846 11.5313 13.8377 9.05627 10.8283 9.05627Z"
-                      fill=""
-                    />
-                  </svg>
-                  Profile
-                </NavLink>
-              </li>
-              {/* <!-- Menu Item Profile --> */}
 
             </ul>
+
+
           </div>
 
-         
+
+
+
+
+
+
+
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>

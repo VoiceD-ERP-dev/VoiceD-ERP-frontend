@@ -1,6 +1,6 @@
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import TableOne from '../components/Tables/TableOne';
-import TableThree from '../components/Tables/InvoiceTable';
+import TableThree from '../components/Salesman/TableTemplate/InvoiceTable';
 import TableTwo from '../components/Tables/TableTwo';
 import DefaultLayout from '../layout/DefaultLayout';
 

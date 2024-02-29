@@ -1,36 +1,55 @@
-import React, { ChangeEventHandler } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
+import React, { ChangeEvent, useEffect, useRef } from "react";
+import { Formik, Field, Form, ErrorMessage ,  useFormikContext } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import * as MuiIcons from '@mui/icons-material';
-// YourComponent.ts
-
-import { CustomerFormValuesType } from './CustomerFormValuesType';
-
-// Now you can use CustomerFormValuesType in this file
 
 
 
-interface InputFieldProps {
-  label: string;
-  name: keyof CustomerFormValuesType; // Use keyof to specify keys from CustomerFormValuesType
-  boxcolor: string;
-  type: "text" | "password" | "email" | "button" | "submit" | "reset" | undefined;
-  placeholder: string;
-  handleChange: ChangeEventHandler<HTMLInputElement>;
-  values: CustomerFormValuesType; // Change the type here
-  icon: keyof typeof MuiIcons;
-}
+
+interface InputFileUploadProps{
+    label: string;
+    name : string;
+    boxcolor : string;
+    type:  "file";
+    placeholder: string;
+    
+    icon: keyof typeof MuiIcons;
+    onChange?: (event: any) => void
+  }
+  
+
+function InputFileUpload({ label, name, type, placeholder,  boxcolor, icon ,onChange }: InputFileUploadProps) {
 
   
 
-function InputField({ label, name, type, placeholder, handleChange, values, boxcolor, icon }: InputFieldProps) {
+  const { setFieldValue } = useFormikContext<any>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
     const IconComponent = MuiIcons[icon];
   const iconwrapper = {
     backgroundColor: boxcolor,
     
   }
+
+
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.currentTarget.files) {
+      setFieldValue(name, event.currentTarget.files[0]);
+    }
+  };
+
+
+
+  const resetFileInput = () => {
+    // Clear the input field value
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    // Clear the formik field value
+    setFieldValue(name, null);
+  };
 
 
   return (
@@ -55,15 +74,26 @@ function InputField({ label, name, type, placeholder, handleChange, values, boxc
        className={`w-[44px] h-[44px] rounded-bl-[6px] rounded-tl-[6px] flex justify-center items-center`}>
 <IconComponent/>
        </div>
-        <Field
+       <input
+          ref={fileInputRef}
           type={type}
           name={name}
-          value={values[name]}
-          onChange={handleChange}
+          onChange={(e) => {
+            handleFileChange(e);
+            onChange && onChange(e);
+          }}
           placeholder={placeholder}
           className="w-full h-full p-2 bg-transparent outline-none text-[#1a1a1a] text-[14px] form-control form-field-input"
           required
         />
+
+        <button className=" flex justify-center items-center px-5"
+        
+        onMouseDown={resetFileInput}
+          type="button"
+        >
+          x
+        </button>
       </div>
       <ErrorMessage
           name={name}
@@ -79,4 +109,4 @@ function InputField({ label, name, type, placeholder, handleChange, values, boxc
   );
 }
 
-export default InputField;
+export default InputFileUpload;

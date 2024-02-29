@@ -3,28 +3,22 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import * as MuiIcons from '@mui/icons-material';
-// YourComponent.ts
-
-import { CustomerFormValuesType } from './CustomerFormValuesType';
-
-// Now you can use CustomerFormValuesType in this file
 
 
 
 interface InputFieldProps {
-  label: string;
-  name: keyof CustomerFormValuesType; // Use keyof to specify keys from CustomerFormValuesType
-  boxcolor: string;
-  type: "text" | "password" | "email" | "button" | "submit" | "reset" | undefined;
-  placeholder: string;
-  handleChange: ChangeEventHandler<HTMLInputElement>;
-  values: CustomerFormValuesType; // Change the type here
-  icon: keyof typeof MuiIcons;
-}
-
+    label: string;
+    name : string;
+    boxcolor : string;
+    type: "text" | "password" | "email" | "button" | "submit" | "reset" | undefined;
+    placeholder: string;
+    handleChange: ChangeEventHandler<HTMLInputElement>;
+    values: { [key: string]: string };
+    icon: keyof typeof MuiIcons;
+  }
   
 
-function InputField({ label, name, type, placeholder, handleChange, values, boxcolor, icon }: InputFieldProps) {
+function InputFieldFilled({ label, name, type, placeholder, handleChange, values, boxcolor, icon }: InputFieldProps) {
 
     const IconComponent = MuiIcons[icon];
   const iconwrapper = {
@@ -79,4 +73,4 @@ function InputField({ label, name, type, placeholder, handleChange, values, boxc
   );
 }
 
-export default InputField;
+export default InputFieldFilled;

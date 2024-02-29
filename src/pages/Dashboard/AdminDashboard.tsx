@@ -8,9 +8,16 @@ import MapOne from '../../components/Maps/MapOne';
 import TableOne from '../../components/Tables/TableOne';
 import DefaultAdminLayout from '../../layout/DefaultAdminLayout';
 
-const AdminDashboard: React.FC = () => {
+
+
+interface AdminDashboardProps {
+  userRole: string | null;
+}
+
+
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ userRole }) => {
   return (
-    <DefaultAdminLayout>
+    <DefaultAdminLayout userRole={userRole}>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats title="Total Customers (Last 30 Days)" total="15" rate="0.43%" levelUp>
           <svg
