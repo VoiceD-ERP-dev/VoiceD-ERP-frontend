@@ -93,6 +93,7 @@ const [ loading, setLoading ] = useState(false);
       if (values.otherDoc !== null) {
         registrationData.append('otherDoc', values.otherDoc);
       }
+      
 
 
       // Make an HTTP POST request to the endpoint with the registration data and headers
