@@ -231,6 +231,7 @@ function App() {
         {userRole === "sales" && (
 
           <>
+
             <Route
               path="/dashboard"
               element={
@@ -282,6 +283,7 @@ function App() {
                 </>
               }
             />
+
 
 
           </>
