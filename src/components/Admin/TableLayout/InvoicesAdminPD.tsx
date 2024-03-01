@@ -6,6 +6,9 @@ import * as Yup from "yup";
 
 import InvoiceTableAdminPDTemp from '../TableTemplate/InvoiceTableAdminPDTemp';
 
+
+
+
 function AdminInvoicesPD( { userRole} : { userRole : string}) {
 
 
@@ -36,7 +39,7 @@ function AdminInvoicesPD( { userRole} : { userRole : string}) {
           
           
       <InvoiceTableAdminPDTemp 
-tablehead={["","CustomerID", "Customer Name", "InvoiceID", "Invoice Date","Payment Status", "Action"]}
+tablehead={["","CustomerID", "Customer Name", "InvoiceID", "Invoice Date","Payment Method","Payment Status", "Action"]}
 />
           
         
