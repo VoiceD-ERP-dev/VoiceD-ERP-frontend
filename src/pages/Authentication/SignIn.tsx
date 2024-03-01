@@ -38,11 +38,17 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
       .required("Required"),
   });
 
+
+  const [ loading, setLoading ] = useState(false);
+
+
   const handleLogin = async (values: { username: string; password: string }) => {
     
     try {
+
+      setLoading(true);
       // Make an HTTP POST request to the login endpoint
-      const response = await axios.post('https://voiced-erp-backend.onrender.com/api/users/login', {
+      const response = await axios.post('http://localhost:5001/api/users/login', {
         username: values.username,
         password: values.password,
       });
@@ -60,6 +66,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
 
       // Assuming you have an authentication function that returns the user role
       const userRole = await authenticate(values.username, values.password, jwtToken);
+      setLoading(false);
   
       if (userRole === 'superadmin' || userRole === 'admin') {
         onLogin('superadmin');
@@ -72,6 +79,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
         console.error('Unknown user role:', userRole);
       }
     } catch (error) {
+      setLoading(false);
       console.error('Error:', error);
       if (error.response && error.response.data && error.response.data.message) {
         setError(error.response.data.message);
@@ -203,7 +211,14 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
                   colorfrom='#1847a1'
                   colorto='#802686'
                 />
+{loading && 
 
+<div className='w-full mt-2 text-center'>
+<p className='text-[12px]'>Please wait...</p>
+</div>
+
+
+}
 
 
               </Form>

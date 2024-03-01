@@ -413,7 +413,14 @@ const [ loading, setLoading ] = useState(false);
                         colorto='#a855f7'
                       />
                     </div>
-{loading && <p>Please wait...</p>}
+                    {loading && 
+
+<div className='w-full mt-2 text-center'>
+<p className='text-[12px]'>Please wait...</p>
+</div>
+
+
+}
 
                   </Form>
 

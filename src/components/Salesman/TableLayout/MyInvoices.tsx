@@ -36,7 +36,7 @@ function MyInvoices({userRole} : {userRole : string}) {
           
           
       <InvoiceTable 
-tablehead={["","CustomerID", "Customer Name", "InvoiceID", "Invoice Date", "Action"]}
+tablehead={["","CustomerID", "Customer Name", "InvoiceID","Payment Method","Payment Status", "Invoice Date", "Action"]}
 />
           
         

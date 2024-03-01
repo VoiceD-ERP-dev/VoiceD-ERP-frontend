@@ -272,9 +272,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) => {
                   'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
                     }`}
                 >
-                  <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-width="1" d="M16 19h4c.6 0 1-.4 1-1v-1a3 3 0 0 0-3-3h-2m-2.2-4A3 3 0 0 0 19 8a3 3 0 0 0-5.2-2M3 18v-1a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1c0 .6-.4 1-1 1H4a1 1 0 0 1-1-1Zm8-10a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  </svg>
+                  <svg className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path className='fill-black dark:fill-white' d="M12 1.2A4.8 4.8 0 1 0 16.8 6 4.805 4.805 0 0 0 12 1.2zm0 8.6A3.8 3.8 0 1 1 15.8 6 3.804 3.804 0 0 1 12 9.8zM20 22H4v-4.5A5.506 5.506 0 0 1 9.5 12h5a5.506 5.506 0 0 1 5.5 5.5zM5 21h14v-3.5a4.505 4.505 0 0 0-4.5-4.5h-5A4.505 4.505 0 0 0 5 17.5z" />
+                          <path fill="none" d="M0 0h24v24H0z" /></svg>
 
 
 
@@ -297,9 +297,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) => {
                   'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
                     }`}
                 >
-                  <svg className ="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-    <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M10 3v4c0 .6-.4 1-1 1H5m14-4v16c0 .6-.4 1-1 1H6a1 1 0 0 1-1-1V8c0-.4.1-.6.3-.8l4-4 .6-.2H18c.6 0 1 .4 1 1Z"/>
-  </svg>
+
+                  <svg className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path className='fill-black dark:fill-white' d="M6 10h12v1H6zM3 1h12.29L21 6.709V23H3zm12 6h5v-.2L15.2 2H15zM4 22h16V8h-6V2H4zm2-7h12v-1H6zm0 4h9v-1H6z" />
+                          <path fill="none" d="M0 0h24v24H0z" />
+                        </svg>
 
 
 My Invoices
