@@ -57,7 +57,7 @@ function InputFileUpload({ label, name, type, placeholder,  boxcolor, icon ,onCh
     
 
     <div className="form-field-container flex flex-col sm:mt-5 mt-2 w-full space-y-2">
-      <div className="form-field-label sm:flex justify-between w-full hidden">
+      <div className="form-field-label flex justify-between w-full ">
         <span className="text-[#1a1a1a] text-[12px] uppercase font-semibold dark:text-white">
           {label}
         </span>

@@ -1,11 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
+import InvoiceEdit from "../Modal/InvoiceEdit";
+
+
+
+
+
+
+interface InvoiceData {
+ 
+  payementMethod: string;
+    paymentProof: File | null;
+}
 
 const invoiceData = [
   {
     customerid: "Reg-00078C24",
     name: "Nissanka Konara",
-    registeredon: "02/Feb/2024",
+    invoiceDate: "02/Feb/2024",
     paymentMethod: "Bank Deposit",
     payementStatus: "Pending",
     invoiceid: "VDG000001/24"
@@ -13,7 +25,7 @@ const invoiceData = [
   {
     customerid: "Reg-00080C24",
     name: "Asela Pradeepan",
-    registeredon: "11/Feb/2024",
+    invoiceDate: "11/Feb/2024",
     paymentMethod: "Cash",
     payementStatus: "Complete",
     invoiceid: "VDG000003/24"
@@ -21,7 +33,7 @@ const invoiceData = [
   {
     customerid: "Reg-00092C24",
     name: "Kasuni Jayathilake",
-    registeredon: "08/Feb/2024",
+    invoiceDate: "08/Feb/2024",
     paymentMethod: "Bank Deposit",
     payementStatus: "Pending",
     invoiceid: "VDG000005/24"
@@ -46,10 +58,10 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
   const [checkedRows, setCheckedRows] = useState<CheckedRows>({});
 
 
-  const [selectedCustomer, setSelectedCustomer] = useState<invoiceData| null>(null);
+  const [selectedInvoice, setSelectedInvoice] = useState<InvoiceData| null>(null);
 
-  const handleEdit = (invoiceDataItem: invoiceData) => {
-    setSelectedCustomer(invoiceDataItem);
+  const handleEdit = (invoiceDataItem: InvoiceData) => {
+    setSelectedInvoice(invoiceDataItem);
   };
 
 
@@ -207,7 +219,7 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {invoiceDataItem.registeredon}
+                    {invoiceDataItem.invoiceDate}
                   </h5>
 
                 </td>
@@ -217,7 +229,8 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
                   <div className="flex items-center space-x-3.5">
 
                   {invoiceDataItem.paymentMethod === "Bank Deposit" && (
-      <button className="invoice-edit px-4 py-2 rounded-md bg-purple-700 text-white">
+      <button className="invoice-edit px-4 py-2 rounded-md bg-purple-700 text-white"
+      onClick={() => handleEdit(invoiceDataItem)}>
         Edit
       </button>
     )}
@@ -234,6 +247,13 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
           </tbody>
         </table>
       </div>
+
+
+      {selectedInvoice && (
+        <InvoiceEdit invoiceData={selectedInvoice} onClose={() => setSelectedInvoice(null)} />
+      )}
+
+
     </div>
   );
 };
