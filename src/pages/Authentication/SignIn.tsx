@@ -25,7 +25,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   
-
+  const [ loading, setLoading ] = useState(false);
 
   const SignUpSchema = Yup.object().shape({
     username: Yup.string().required("Required"),
@@ -41,6 +41,7 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
   const handleLogin = async (values: { username: string; password: string }) => {
     
     try {
+      setLoading(true);
       // Make an HTTP POST request to the login endpoint
       const response = await axios.post('https://voiced-erp-backend.onrender.com/api/users/login', {
         username: values.username,
@@ -71,8 +72,10 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
         // Handle other roles or scenarios as needed
         console.error('Unknown user role:', userRole);
       }
+      setLoading(false);
     } catch (error) {
       console.error('Error:', error);
+      setLoading(false);
       if (error.response && error.response.data && error.response.data.message) {
         setError(error.response.data.message);
       } else {
@@ -204,7 +207,12 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
                   colorto='#802686'
                 />
 
+{loading && 
+<div className='w-full text-center mt-2'>
+<p className='text-[12px]'>Please wait...</p>
+</div>
 
+}
 
               </Form>
 
