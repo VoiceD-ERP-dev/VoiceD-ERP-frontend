@@ -16,7 +16,7 @@ function CustomerInsightAdmin({userRole} : {userRole : string}) {
     <Breadcrumb pageName="Customer Insight" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">
-      <div className="flex flex-col gap-9">
+      <div className="flex  flex-col gap-9">
     
         
           
@@ -24,11 +24,10 @@ function CustomerInsightAdmin({userRole} : {userRole : string}) {
 <CustomerTableAdmin
 tablehead={
   [
-    "Sales Agent",
+    "Registered Agent",
     "Customer ID", 
     "Customer First Name",
     "Customer Last Name",
-    "Organization",
     "NIC",
     "BR ID",
     "Contact No",
