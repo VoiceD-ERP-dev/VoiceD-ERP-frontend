@@ -11,6 +11,7 @@ import CheckboxOne from '../../Checkboxes/CheckboxOne';
 import TextField from '../../FormElements/TextFiled';
 import InputFileUpload from '../../FormElements/InputFileUpload';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 import React, { useState, useEffect } from 'react';
 import Succeed from '../Modal/Succeed';
@@ -67,61 +68,80 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
 
 
-  const [loading, setLoading] = useState(false);
+  const [ loading, setLoading ] = useState(false);
 
   const handleRegister = async (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>): Promise<void> => {
     try {
+
       setLoading(true);
-      const formData = new FormData();
-      formData.append('firstName', values.firstName);
-      formData.append('lastName', values.lastName);
-      formData.append('nicNo', values.nicNo);
-      formData.append('brId', values.brId);
-      formData.append('email', values.email);
-      formData.append('address', values.address);
-      formData.append('contactNo', values.contactNo);
-      formData.append('package', values.package);
-      formData.append('payment', values.payment);
+      // Extract the JWT token from local storage
+      const jwtToken = Cookies.get('jwtToken');
+  
+      // Construct the headers object with the bearer token
+      const headers = {
+        'Authorization': `Bearer ${jwtToken}`,
+        
+      };
+  
+      // Construct the registration data object
+      const registrationData = new FormData();
+      registrationData.append('firstname', values.firstName || "John");
+      registrationData.append('lastname', values.lastName || "Doe");
+      registrationData.append('nicNo', values.nicNo || "123456789");
+      registrationData.append('brId', values.brId || "234");
+      registrationData.append('email', values.email || "shanbasnayake98@gmail.com");
+      registrationData.append('phone', values.contactNo || "1234567890");
+      registrationData.append('address', values.address || "123 Main Street, City");
+      registrationData.append('invoice[0][paymentType]', values.payment || "Card");
+      registrationData.append('invoice[0][order][description]', "Order for invoice for A");
+      registrationData.append('invoice[0][package][package]', values.package || "Basic");
+      registrationData.append('invoice[0][package][startupFee]', "2990");
   
       // Append files to the formData if they are not null
       if (values.nicDoc !== null) {
-        formData.append('nicDoc', values.nicDoc);
+        registrationData.append('nicDoc', values.nicDoc);
       }
   
       if (values.brDoc !== null) {
-        formData.append('brDoc', values.brDoc);
+        registrationData.append('brDoc', values.brDoc);
       }
 
+
       if (values.otherDoc !== null) {
-        formData.append('otherDoc', values.otherDoc);
+        registrationData.append('otherDoc', values.otherDoc);
       }
-  
-      const response = await axios.post('localhost:5001/customerRegister', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          // Add any other headers as needed, such as authorization token
-        },
+      
+
+
+      // Make an HTTP POST request to the endpoint with the registration data and headers
+      const response = await fetch('http://localhost:5001/api/customers/cv', {
+        method: 'POST',
+        headers: headers,
+        body: registrationData
       });
   
-      // Extract customer ID from the response
-      const customerId = response.data._id; // Assuming the customer ID is stored in the "_id" field
-  
-      // Use the obtained customer ID for further actions if needed
-      console.log('Customer ID:', customerId);
-  
-      // Handle successful registration
-      console.log('Registration successful', response.data);
-      // Open the Succeed modal
-      setShowSucceedModal(true);
-  
-      // Reset the form after successful registration
+      // Check if the request was successful
+      if (response.ok) {
+        // Log success message or handle success response
+        console.log('Registration successful!');
+        // Open the Succeed modal
+        setShowSucceedModal(true);
+      } else if (response.status === 401) {
+        // Redirect to SignIn.tsx if unauthorized
+        console.error('Unauthorized! Redirecting to sign-in page...');
+        navigate('/'); // Assuming 'navigate' is a function from react-router-dom
+    
+      } else {
+        // Handle error response
+        console.error('Registration failed:', response.statusText);
+      }
       setLoading(false);
       resetForm();
     } catch (error) {
-      // Handle registration error
+      console.error('Error:', error);
       setLoading(false);
-      console.error('Registration error', error);
     }
+    console.log(values);
   };
   
 
