@@ -28,7 +28,7 @@ function AdminInvoicesAccept( {userRole} : {userRole :  string}) {
 
   return (
     <DefaultAdminLayout userRole={userRole}>
-    <Breadcrumb pageName="My Invoices" />
+    <Breadcrumb pageName="Closed Invoices" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">
       <div className="flex flex-col gap-9">

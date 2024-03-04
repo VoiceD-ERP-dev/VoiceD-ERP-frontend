@@ -30,7 +30,7 @@ function AdminInvoicesPD( { userRole} : { userRole : string}) {
 
   return (
     <DefaultAdminLayout userRole={userRole}>
-    <Breadcrumb pageName="My Invoices" />
+    <Breadcrumb pageName="Pending Invoices" />
 
     <div className="w-full gap-9 sm:grid-cols-2 ">
       <div className="flex flex-col gap-9">
@@ -39,7 +39,7 @@ function AdminInvoicesPD( { userRole} : { userRole : string}) {
           
           
       <InvoiceTableAdminPDTemp 
-tablehead={["","CustomerID", "Customer Name", "InvoiceID", "Invoice Date","Payment Method","Payment Status", "Action"]}
+tablehead={["","CustomerID","Agent ID", "Customer Name", "InvoiceID", "Invoice Date","Payment Method","Payment Status", "Action"]}
 />
           
         

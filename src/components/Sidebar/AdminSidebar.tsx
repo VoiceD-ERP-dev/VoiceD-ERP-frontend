@@ -403,7 +403,7 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) =
                                 }`}
                             >
 
-                              Accepted Invoices
+                              Closed Invoices
                             </NavLink>
                           </li>
                         </ul>
