@@ -42,12 +42,14 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
 
   const [showDecisionPop, setShowDecisionPop] = React.useState<{ isOpen: boolean }>({ isOpen: false });
 
-  const handleEdit = (values: { reason: string; decision: string }) => {
+  const handleRegister = (values: { reason: string; decision: string }) => {
     console.log('Registered', values);
-  
-    if (values.decision == "Reject")
-    {
+    // Add logic to open DecisionPop based on your conditions
+    if (values.decision === 'Reject' && values.reason.trim() !== '') {
       setShowDecisionPop({ isOpen: true });
+    } else {
+      // Handle other cases
+      onClose();
     }
   };
 
@@ -75,12 +77,22 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
 
         <Formik
           initialValues={{
+
             reason: "",
             decision: "",
           }}
           validationSchema={SignUpSchema}
-          onSubmit={handleEdit}
+          onSubmit={(values) => {
          
+            if (values.decision === 'Reject' && values.reason.trim() !== '') {
+              setShowDecisionPop(true);
+            } else {
+            
+              handleRegister();
+         
+              onClose();
+            }
+          }}
         >
 
 
@@ -108,7 +120,22 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                 />
 
 
-              
+                {values.decision !== 'Accept' && (
+                  <div className='des-making flex w-full flex-col space-y-2'>
+                    <span className="text-[#1a1a1a] text-[12px] uppercase font-semibold dark:text-white">
+                      Reason
+                    </span>
+
+                    <textarea
+                      className='p-2 outline-none resize-none rounded-md'
+                      rows={5}
+                      cols={4}
+                      name="reason"
+                      value={values.reason}
+                      onChange={handleChange}
+                    />
+                  </div>
+                )}
               </div>
 
 
@@ -117,23 +144,18 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
 
               <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
 
-              <PrimaryButton
-  label='Submit'
-  type='submit'
-  colorfrom='#c026d3'
-  colorto='#a855f7'
-  textcolor='#f5f5f5'
-/>
+              <button
+  
+  onClick={() => {
+    onClose();
+    close();
+  }}
+>Reg </button>
               </div>
 
               {showDecisionPop.isOpen && (
-  <DecisionPop
-    onClose={() => setShowDecisionPop({ isOpen: false })}
-    isOpen={showDecisionPop.isOpen}
-    values={values}
-  />
+  <DecisionPop onClose={() => setShowDecisionPop({ isOpen: false })} isOpen={showDecisionPop.isOpen} values={values} />
 )}
-     
 
             </Form>
 
@@ -143,9 +165,6 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
 
 
         </Formik>
-
-
-        
       </div>
     </div>
   );

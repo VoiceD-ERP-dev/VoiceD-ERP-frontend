@@ -231,7 +231,7 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
                   {invoiceDataItem.paymentMethod === "Bank Deposit" && (
       <button className="invoice-edit px-4 py-2 rounded-md bg-purple-700 text-white"
       onClick={() => handleEdit(invoiceDataItem)}>
-        Edit
+        Upload Payment Slip
       </button>
     )}
 
