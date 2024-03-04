@@ -1,29 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
+import axios from "axios";
+import Cookies from 'js-cookie';
+interface CustomerData {
+  _id: string;
+  firstname: string;
+  lastname: string;
+  createdAt: string;
+}
 
-const customerData = [
-  {
-    customerid: "Reg-00078C24",
-    name: "Nissanka Konara",
-    registeredon: "02/Feb/2024",
-    invoiceid: "VDG000001/24",
-    status: "Pending",
-  },
-  {
-    customerid: "Reg-00080C24",
-    name: "Asela Pradeepan",
-    registeredon: "11/Feb/2024",
-    invoiceid: "VDG000003/24",
-    status: "Pending",
-  },
-  {
-    customerid: "Reg-00092C24",
-    name: "Kasuni Jayathilake",
-    registeredon: "08/Feb/2024",
-    invoiceid: "VDG000005/24",
-    status: "Completed",
-  }
-];
+
 
 interface TableProps {
   tablehead: string[];
@@ -34,20 +20,47 @@ interface CheckedRows {
   all?: boolean;
 }
 
-
+const getCookie = (name: string) => {
+  return Cookies.get(name);
+}
 
 const CustomerTableSales = ({ tablehead }: TableProps) => {
+  const [selectedCustomer, setSelectedCustomer] = useState<CustomerData | null>(null);
+  const [customerData, setCustomerData] = useState<CustomerData[]>([]);
 
+  const fetchCustomers = async () => {
+    try {
+          // Retrieve the JWT token from the cookie
+    const token = getCookie('jwtToken');
 
+    // Set the request headers with the JWT token
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
 
-  
+    // Make the GET request with the token included in the headers
+    const response = await axios.get<CustomerData[]>('http://localhost:5001/api/customers/cv', {
+      headers: headers,
+    });
+      console.log('Response from the server:', response.data);
+      const formattedData = response.data.map((customer: CustomerData) => ({
+        ...customer,
+        createdAt: formatCreatedAt(customer.createdAt),
+      }));
+      setCustomerData(formattedData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
 
-
-
-
-
-
-
+  const formatCreatedAt = (createdAt: string): string => {
+    const date = new Date(createdAt);
+    const formattedDate = `${date.toISOString().split('T')[0]} @ ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    return formattedDate;
+  };
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto">
@@ -66,37 +79,33 @@ const CustomerTableSales = ({ tablehead }: TableProps) => {
             </tr>
           </thead>
 
-
           <tbody>
-          
-
             {customerData.map((customerDataItem, index) => {
+              // const [statusColor, setStatusColor] = useState('green-600');
 
-const [statusColor, setStatusColor] = useState('green-600');
+              // useEffect(() => {
+              //   if (customerDataItem.status === 'Completed') {
+              //     setStatusColor('green-600');
+              //   } else if (customerDataItem.status === 'Pending') {
+              //     setStatusColor('red-600');
+              //   }
+              // }, [customerDataItem.status]);
 
-useEffect(() => {
-  if (customerDataItem.status === 'Completed') {
-    setStatusColor('green-600');
-  } else if (customerDataItem.status === 'Pending') {
-    setStatusColor('red-600');
-  }
-}, [customerDataItem.status]);
+              return(
 
-return(
-
-<tr key={index}>
+              <tr key={index}>
                 
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {customerDataItem.customerid}
+                    {customerDataItem._id}
                   </h5>
 
                  </td>
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {customerDataItem.name}
+                    {customerDataItem.firstname}
                   </h5>
 
                  </td>
@@ -107,14 +116,14 @@ return(
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {customerDataItem.registeredon}
+                    {customerDataItem.createdAt}
                   </h5>
 
                  </td>
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                  <h5 className={`font-medium  text-${statusColor}`}>
-                    {customerDataItem.status}
+                  <h5 className={`font-medium  text-green-600`}>
+                    Pending
                   </h5>
 
                  </td>
