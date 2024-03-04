@@ -107,7 +107,23 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                   handleChange={handleChange}
                 />
 
+{values.decision !== 'Accept' && (
+                  <div className='des-making flex w-full flex-col space-y-2'>
+                    <span className="text-[#1a1a1a] text-[12px] uppercase font-semibold dark:text-white">
+                      Reason
+                    </span>
 
+                    <textarea
+                      className='p-2 outline-none resize-none rounded-md border-[1px] border-[#565656] border-opacity-25'
+                      rows={5}
+                      cols={4}
+                      name="reason"
+                      value={values.reason}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                )}
               
               </div>
 
