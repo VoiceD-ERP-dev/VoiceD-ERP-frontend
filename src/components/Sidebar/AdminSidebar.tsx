@@ -197,6 +197,9 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) =
 
 
 
+              <h3 className="mb-4 mt-4 ml-4 text-sm font-bold text-[#161616] dark:text-[#fafafa] uppercase">
+                Sales
+              </h3>
 
 
               <SidebarLinkGroup
@@ -265,39 +268,6 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) =
                               Customer Registration
                             </NavLink>
                           </li>
-
-                          {/* <li>
-
-                         
-
-
-
-<NavLink
-  to="/customers/customer-insight"
-  className={`group relative flex items-center gap-2.5 hover:text-[#a855f7] py-2 px-4 rounded-md font-medium dark:text-[#fafafa] ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
-    ${pathname.includes('customer-insight') &&
-      'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
-    }`}
-  onClick={(e) => {
-    // Prevent default behavior to stop navigation
-    e.preventDefault();
-
-    // Check userRole and log "Access Denied" if it's 'admin'
-    if (userRole === 'admin') {
-      console.log("Access Denied");
-    } else {
-      // Continue with navigation if the userRole is not 'admin'
-      sidebarExpanded ? handleClick() : setSidebarExpanded(true);
-    }
-  }}
->
-  Customer Insight
-</NavLink>
-
-
-
-                          </li> */}
-
 
 
 
@@ -381,6 +351,18 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) =
                           }`}
                       >
                         <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                        <li>
+                            <NavLink
+                              to="/invoices/ad-invoices"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('ad-invoices') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Create Invoice
+                            </NavLink>
+                          </li>
                           <li>
                             <NavLink
                               to="/invoices/pd-invoices"

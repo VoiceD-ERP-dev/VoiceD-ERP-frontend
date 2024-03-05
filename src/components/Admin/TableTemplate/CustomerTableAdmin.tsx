@@ -3,68 +3,30 @@ import { saveAs } from "file-saver";
 import CustomerEdit from "../Modal/CustomerEdit";
 import { faClose , faCloudArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import axios from "axios";
 
 
 interface CustomerData {
-  salesagent: string;
-  customerid: string;
+  salesman: string;
+  _id: string;
   firstname: string;
   lastname: string;
-  nic: string;
-  brid: string;
-  organization: string;
-  registeredon: string;
-  contactno: string;
+  nicNo: string;
+  brId: string;
+  createdAt: string;
+  phone: string;
   email: string;
   address: string;
+  otherDoc: string[];
+  brDoc: string[];
+  nicDoc: string[];
 }
 
 
-const customerData = [
-  {
-    salesagent: "VDS-00089S24",
-    customerid: "Reg-00078C24",
-    firstname: "Nissanka",
-    lastname: "Konara",
-    nic: "199863525569",
-    brid: "PPY890NB60",
-    organization: "Gagana Holdings",
-    registeredon: "02/Feb/2024",
-    contact: "0778484888",
-    email: "nissanka@gmail.com",
-    address: "No 23/1, Highlevel Road, Kottawa"
-  },
-
-  {
-    salesagent: "VDS-00078S24",
-    customerid: "Reg-00047C24",
-    firstname: "Amal",
-    lastname: "Dissanayake",
-    nic: "198063565582",
-    brid: "PPY111NB60",
-    organization: "Janahitha Mortors",
-    registeredon: "08/Feb/2024",
-    contact: "0777515155",
-    email: "dissanayake@gmail.com",
-    address: "No 59/2, Highlevel Road, Maharagama"
-  },
-
-  {
-    salesagent: "VDS-00089S24",
-    customerid: "Reg-00044C24",
-    firstname: "Gihan",
-    lastname: "Rathnayaka",
-    nic: "199754858879",
-    brid: "PPY425LL48",
-    organization: "Blue Aqua Fish",
-    registeredon: "11/Feb/2024",
-    contact: "0778999986",
-    email: "rathnayaka@gmail.com",
-    address: "No 38/1, Highlevel Road, Nawala"
-  },
 
 
-];
+
+
 
 interface TableProps {
   tablehead: string[];
@@ -81,13 +43,34 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
 
 
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerData | null>(null);
+  const [customerData, setCustomerData] = useState<CustomerData[]>([]);
 
   const handleEdit = (customerDataItem: CustomerData) => {
     setSelectedCustomer(customerDataItem);
+  }
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await axios.get<CustomerData[]>('http://localhost:5001/api/customers/all');
+      console.log('Response from the server:', response.data);
+      const formattedData = response.data.map((customer: CustomerData) => ({
+        ...customer,
+        createdAt: formatCreatedAt(customer.createdAt),
+      }));
+      setCustomerData(formattedData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
 
-
-
+  const formatCreatedAt = (createdAt: string): string => {
+    const date = new Date(createdAt);
+    const formattedDate = `${date.toISOString().split('T')[0]} @ ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    return formattedDate;
+  };
 
 
 
@@ -106,7 +89,7 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
               {tablehead.map((tableh, index) => (
                 <th
                   key={index}
-                  className={`py-4 px-4 font-medium text-black dark:text-white xl:pl-11 min-w-[220px]`}
+                  className={`py-4 px-4 font-medium text-black dark:text-white xl:pl-11 min-w-[220px] text-center`}
                 >
                   {tableh}
                 </th>
@@ -136,8 +119,8 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
 
 
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {customerDataItem.salesagent}
+                    <h5 className="font-medium text-black dark:text-white text-center">
+                      {customerDataItem.salesman}
                     </h5>
 
                   </td>
@@ -145,15 +128,15 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
 
 
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {customerDataItem.customerid}
+                    <h5 className="font-medium text-black dark:text-white text-center">
+                      {customerDataItem._id}
                     </h5>
 
                   </td>
 
 
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
+                    <h5 className="font-medium text-black dark:text-white text-center">
                       {customerDataItem.firstname}
                     </h5>
 
@@ -162,7 +145,7 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
 
 
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
+                    <h5 className="font-medium text-black dark:text-white text-center">
                       {customerDataItem.lastname}
                     </h5>
 
@@ -170,8 +153,16 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
 
 
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {customerDataItem.organization}
+                    <h5 className="font-medium text-black dark:text-white text-center">
+                      {customerDataItem.nicNo}
+                    </h5>
+
+                  </td>
+
+
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
+                    <h5 className="font-medium text-black dark:text-white text-center">
+                      {customerDataItem.brId}
                     </h5>
 
                   </td>
@@ -179,16 +170,8 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
 
 
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {customerDataItem.nic}
-                    </h5>
-
-                  </td>
-
-
-                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {customerDataItem.brid}
+                    <h5 className="font-medium text-black dark:text-white text-center">
+                      {customerDataItem.phone}
                     </h5>
 
                   </td>
@@ -196,16 +179,7 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
 
 
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {customerDataItem.contact}
-                    </h5>
-
-                  </td>
-
-
-
-                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
+                    <h5 className="font-medium text-black dark:text-white text-center">
                       {customerDataItem.email}
                     </h5>
 
@@ -213,7 +187,7 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
 
 
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
+                    <h5 className="font-medium text-black dark:text-white text-center">
                       {customerDataItem.address}
                     </h5>
 
@@ -222,22 +196,35 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
 
 
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {customerDataItem.registeredon}
+                    <h5 className="font-medium text-black dark:text-white text-center">
+                      {customerDataItem.createdAt}
                     </h5>
 
                   </td>
 
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                    <h5 className="font-medium text-black dark:text-white text-center">
+                      {customerDataItem.nicDoc.length > 0 && "NIC "}
+                      {customerDataItem.brDoc.length > 0 && ", Br "}
+                      {customerDataItem.otherDoc.length > 0 && ", Other "}
+                    </h5>
+                  </td>
+                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
+                  <div className="w-full rounded-md px-4 py-2 flex justify-center items-center dark:bg-white bg-slate-100">
+                  <h5 className={`font-medium text-[14px] text-green-600` }>
+                    Active
+                  </h5>
+                  </div>
+              
 
+                 </td>
 
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                     <h5 className="font-normal text-[#ffffff] dark:text-white text-[14px] md:text-[24px]">
                     <FontAwesomeIcon
-          
-          className="hover:text-[#c026d3] cursor-pointer"
-          icon={faCloudArrowDown} />
+                      className="hover:text-[#c026d3] cursor-pointer"
+                      icon={faCloudArrowDown} />
                     </h5>
-
                   </td>
 
 

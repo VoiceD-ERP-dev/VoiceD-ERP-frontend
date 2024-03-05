@@ -6,6 +6,7 @@ export type CustomerFormValuesType = {
     nicNo: string;
     brid: string;
     email: string;
+    otp: string;
     address: string;
     contact: string;
     package: string;

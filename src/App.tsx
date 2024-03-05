@@ -17,6 +17,8 @@ import AdminInvoicesPD from './components/Admin/TableLayout/InvoicesAdminPD';
 import AdminInvoicesAccept from './components/Admin/TableLayout/InvoicesAdminAccept';
 import SalesAgentAdmin from './components/Admin/CompanyRoles/TableLayout/SalesAgentAdminSA';
 import SaTableAdminSATemp from './components/Admin/CompanyRoles/TableTemplate/SaTableAdminSATemp';
+import CustomerSelfPortal from './components/Customer/CustomerSelfPortal';
+import CreateInvoice from './components/Admin/FormLayout/CreateInvoice';
 
 
 
@@ -63,6 +65,17 @@ function App() {
             <>
               <PageTitle title="VoiceD | Sales Agent - Dashboard" />
               <SignIn onLogin={handleLogin} />
+            </>
+          }
+        />
+
+
+<Route
+          path='/customer-self-Reg'
+          element={
+            <>
+              <PageTitle title="VoiceD | Customer Registration Portal" />
+              <CustomerSelfPortal />
             </>
           }
         />
@@ -114,6 +127,18 @@ function App() {
                 </>
               }
             />
+
+<Route
+              path="/invoices/ad-invoices"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Create Invoice" />
+                  <CreateInvoice userRole={userRole}/>
+                </>
+              }
+            />
+
+
 
 
 <Route
