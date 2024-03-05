@@ -295,8 +295,6 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) =
                 }}
               </SidebarLinkGroup>
 
-
-
               <SidebarLinkGroup
                 activeCondition={
                   pathname === '/invoices' || pathname.includes('invoices')
@@ -307,7 +305,7 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) =
                     <React.Fragment>
                       <NavLink
                         to="#"
-                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4  font-medium text-[#161616] dark:text-[#ffffff] duration-300 ease-in-out hover:bg-[#b76bff] dark:hover:bg-meta-4 ${(pathname === '/customers' ||
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4  font-medium text-[#161616] dark:text-[#ffffff] duration-300 ease-in-out hover:bg-[#b76bff] dark:hover:bg-meta-4 ${(pathname === '/invoices' ||
                           pathname.includes('invoices')) &&
                           'bg-[#b76bff] dark:bg-meta-4'
                           }`}
@@ -395,6 +393,303 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) =
                   );
                 }}
               </SidebarLinkGroup>
+
+
+              <h3 className="mb-4 mt-4 ml-4 text-sm font-bold text-[#161616] dark:text-[#fafafa] uppercase">
+                Purchase
+              </h3>
+
+
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/purchase' || pathname.includes('purchase')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-[#161616] dark:text-[#ffffff] duration-300 ease-in-out hover:bg-[#b76bff] dark:hover:bg-meta-4 ${(pathname === '/customers' ||
+                          pathname.includes('purchase')) &&
+                          'bg-[#b76bff] dark:bg-meta-4'
+                          }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+
+
+                        {/* <svg className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path className='fill-black dark:fill-white' d="M12 1.2A4.8 4.8 0 1 0 16.8 6 4.805 4.805 0 0 0 12 1.2zm0 8.6A3.8 3.8 0 1 1 15.8 6 3.804 3.804 0 0 1 12 9.8zM20 22H4v-4.5A5.506 5.506 0 0 1 9.5 12h5a5.506 5.506 0 0 1 5.5 5.5zM5 21h14v-3.5a4.505 4.505 0 0 0-4.5-4.5h-5A4.505 4.505 0 0 0 5 17.5z" />
+                          <path fill="none" d="M0 0h24v24H0z" /></svg> */}
+
+
+
+
+                          <svg className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path className='fill-black dark:fill-white' d="M23 21v-9H10v9h5v1h-2v1h7v-1h-2v-1zm-12-1v-7h11v7zm6 2h-1v-1h1zm4-7h-9v-1h9zM15.5 3H14V2h1.5A3.504 3.504 0 0 1 19 5.5v2.693l1.646-1.647.707.707-2.853 2.854-2.854-2.854.707-.707L18 8.193V5.5A2.503 2.503 0 0 0 15.5 3zm-8 18H9v1H7.5A3.504 3.504 0 0 1 4 18.5v-2.693l-1.646 1.647-.707-.707L4.5 13.893l2.854 2.854-.707.707L5 15.807V18.5A2.503 2.503 0 0 0 7.5 21zM8 3.5A2.5 2.5 0 1 0 5.5 6 2.503 2.503 0 0 0 8 3.5zM5.5 5A1.5 1.5 0 1 1 7 3.5 1.502 1.502 0 0 1 5.5 5zm2 1h-4A2.503 2.503 0 0 0 1 8.5V11h9V8.5A2.503 2.503 0 0 0 7.5 6zM9 10H2V8.5A1.502 1.502 0 0 1 3.5 7h4A1.502 1.502 0 0 1 9 8.5z"/>
+                            <path fill="none" d="M0 0h24v24H0z"/>
+                          </svg>
+
+
+
+
+
+                        Suppliers
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
+                            }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${!open && 'hidden'
+                          }`}
+                      >
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/purchase/mn-vendors"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('mn-vendors') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Manage Suppliers
+                            </NavLink>
+                          </li>
+
+
+
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/supplierin' || pathname.includes('supplierin')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-[#161616] dark:text-[#ffffff] duration-300 ease-in-out hover:bg-[#b76bff] dark:hover:bg-meta-4 ${(pathname === '/supplierin' ||
+                          pathname.includes('supplierin')) &&
+                          'bg-[#b76bff] dark:bg-meta-4'
+                          }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+
+
+<svg className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path className='fill-black dark:fill-white' d="M6 10h12v1H6zM3 1h12.29L21 6.709V23H3zm12 6h5v-.2L15.2 2H15zM4 22h16V8h-6V2H4zm2-7h12v-1H6zm0 4h9v-1H6z" />
+                          <path fill="none" d="M0 0h24v24H0z" />
+                        </svg>
+
+
+
+
+                        Invoices
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
+                            }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${!open && 'hidden'
+                          }`}
+                      >
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/supplierin/adsup-in"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('adsup-in') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Purchase Invoice
+                            </NavLink>
+                          </li>
+
+                          <li>
+                            <NavLink
+                              to="/supplierin/adsup-pay"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('adsup-pay') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Supplier Payments
+                            </NavLink>
+                          </li>
+
+
+
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+
+              <SidebarLinkGroup
+                activeCondition={
+                  pathname === '/supplierord' || pathname.includes('supplierord')
+                }
+              >
+                {(handleClick, open) => {
+                  return (
+                    <React.Fragment>
+                      <NavLink
+                        to="#"
+                        className={`group relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-[#161616] dark:text-[#ffffff] duration-300 ease-in-out hover:bg-[#b76bff] dark:hover:bg-meta-4 ${(pathname === '/supplierord' ||
+                          pathname.includes('supplierord')) &&
+                          'bg-[#b76bff] dark:bg-meta-4'
+                          }`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          sidebarExpanded
+                            ? handleClick()
+                            : setSidebarExpanded(true);
+                        }}
+                      >
+
+
+                        {/* <svg className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path className='fill-black dark:fill-white' d="M12 1.2A4.8 4.8 0 1 0 16.8 6 4.805 4.805 0 0 0 12 1.2zm0 8.6A3.8 3.8 0 1 1 15.8 6 3.804 3.804 0 0 1 12 9.8zM20 22H4v-4.5A5.506 5.506 0 0 1 9.5 12h5a5.506 5.506 0 0 1 5.5 5.5zM5 21h14v-3.5a4.505 4.505 0 0 0-4.5-4.5h-5A4.505 4.505 0 0 0 5 17.5z" />
+                          <path fill="none" d="M0 0h24v24H0z" /></svg> */}
+
+
+
+                          <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+<g>
+	<path className='fill-black dark:fill-white' d="M60,0H4C1.789,0,0,1.789,0,4v8c0,2.211,1.789,4,4,4v44c0,2.211,1.789,4,4,4h48c2.211,0,4-1.789,4-4V16
+		c2.211,0,4-1.789,4-4V4C64,1.789,62.211,0,60,0z M58,50.587L46.586,62H17.414L6,50.587V16h52V50.587z M6,60v-6.586L14.586,62H8
+		C6.896,62,6,61.104,6,60z M56,62h-6.586L58,53.414V60C58,61.104,57.104,62,56,62z M62,12c0,1.104-0.896,2-2,2H4
+		c-1.104,0-2-0.896-2-2V4c0-1.104,0.896-2,2-2h56c1.104,0,2,0.896,2,2V12z"/>
+	<path className='fill-black dark:fill-white' d="M21,32h22c1.657,0,3-1.344,3-3s-1.343-3-3-3H21c-1.657,0-3,1.344-3,3S19.343,32,21,32z M21,28h22
+		c0.553,0,1,0.447,1,1s-0.447,1-1,1H21c-0.553,0-1-0.447-1-1S20.447,28,21,28z"/>
+</g>
+</svg>
+
+
+
+
+
+
+                        Orders
+                        <svg
+                          className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
+                            }`}
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                            fill=""
+                          />
+                        </svg>
+                      </NavLink>
+                      {/* <!-- Dropdown Menu Start --> */}
+                      <div
+                        className={`translate transform overflow-hidden ${!open && 'hidden'
+                          }`}
+                      >
+                        <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                          <li>
+                            <NavLink
+                              to="/supplierord/supord-ad"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('adsup-in') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Purchase Orders
+                            </NavLink>
+                          </li>
+
+                          <li>
+                            <NavLink
+                              to="/supplierord/supord-ret"
+                              className={`group relative flex items-center gap-2.5 hover:text-[#a855f7]  py-2 px-4 rounded-md font-medium  dark:text-[#fafafa]  ease-in-out hover:bg-[#ffffff] dark:hover:bg-[#b76bff] 
+                  ${pathname.includes('adsup-pay') &&
+                                'bg-gradient-to-r from-fuchsia-600 to-purple-600 text-[#fafafa] hover:text-[#fafafa] : dark:bg-gradient-to-r dark:from-fuchsia-600 dark:to-purple-600'
+                                }`}
+                            >
+
+                              Returns
+                            </NavLink>
+                          </li>
+
+
+
+                        </ul>
+                      </div>
+                      {/* <!-- Dropdown Menu End --> */}
+                    </React.Fragment>
+                  );
+                }}
+              </SidebarLinkGroup>
+
+         
+
+
+
+
+
+             
 
               <h3 className="mb-4 mt-4 ml-4 text-sm font-bold text-[#161616] dark:text-[#fafafa] ">
                 COMPANY ROLES

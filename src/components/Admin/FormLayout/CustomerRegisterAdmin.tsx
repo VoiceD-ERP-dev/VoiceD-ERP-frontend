@@ -12,7 +12,7 @@ import TextField from '../../FormElements/TextFiled';
 import InputFileUpload from '../../FormElements/InputFileUpload';
 import Cookies from 'js-cookie';
 import Succeed from '../Modal/Succeed';
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import OtpInput from 'react-otp-input';
 
 
@@ -24,6 +24,7 @@ type CustomerFormValuesType = {
   brid: string;
   email: string;
   address: string;
+  otp: string;
   contact: string;
   nicDoc: File | null;
   brDoc: File | null;
@@ -34,16 +35,22 @@ type CustomerFormValuesType = {
 function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
   const [showSucceedModal, setShowSucceedModal] = useState(false);
-  const [showMobileVerifyModal, setShowMobileVerifyModal] = useState(false);
+  const [otpCode, setOtpCode] = useState<string | null>(null);
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [showOTPWarning, setShowOTPWarning] = useState(false);
+  const [confirmVerify, setConfirmVerify] = useState(false);
+  const [timer, setTimer] = useState({ minutes: 5, seconds: 0 });
+  const [loading, setLoading] = useState(false);
+  const [showVerifyBox, setShowVerifyBox] = useState(false);
+
 
   const CustomerRegistrationSchema = Yup.object().shape({
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
     nicNo: Yup.string().required("Required"),
     otp: Yup.string()
-    .min(6, "Required 6 Digits")
-    .max(6, "Required 6 Digits") 
-    .required("Required"),
+      .min(6, "Required 6 Digits")
+      .max(6, "Required 6 Digits"),
     brid: Yup.string().required("Required"),
     email: Yup.string().required("Required"),
     contact: Yup.string()
@@ -53,26 +60,73 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
   });
 
-  const [loading, setLoading] = useState(false);
+  
 
   const handleCloseModal = () => {
-
     // Close the Succeed modal
     setShowSucceedModal(false);
   };
 
-  const handleRegister = () => {
-    console.log('Now verify the mobile number')
-   
-  }
+
+
+  const startTimer = () => {
+    const interval = setInterval(() => {
+      if (timer.minutes === 0 && timer.seconds === 0) {
+        clearInterval(interval);
+        // Handle timer expiration, e.g., show a message or resend OTP
+      } else {
+        setTimer((prevTimer) => {
+          const newSeconds = prevTimer.seconds === 0 ? 59 : prevTimer.seconds - 1;
+          const newMinutes = prevTimer.seconds === 0 ? prevTimer.minutes - 1 : prevTimer.minutes;
+          return { minutes: newMinutes, seconds: newSeconds };
+        });
+      }
+    }, 2000); 
+  };
 
 
 
 
-  const [showVerifyBox, setShowVerifyBox] = useState(false);
-  const handleVerify = () => {
+  const handleRegister = ( values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType> ) => {
+    if (!confirmVerify) {
+      // The mobile number is not verified
+      setShowOTPWarning(true);
+      return;
+    }
+  
+    setShowOTPWarning(false); // Reset the warning flag
+    console.log('Now register the customer');
+    // Additional logic for customer registration
+    setShowSucceedModal(true);
+    resetForm();
+    setConfirmVerify(false);
+  };
+  
+
+
+
+
+  const showVerifyEdit = () => {
+    setTimer({ minutes: 5, seconds: 0 }); // Reset the timer when triggered
     setShowVerifyBox(true);
-  }
+    setShowOTPWarning(false);
+    startTimer();
+  };
+
+  useEffect(() => {
+    if (showVerifyBox) {
+      startTimer();
+    }
+  }, [showVerifyBox]);
+
+  const handleVerify = (values: any) => {
+    setConfirmVerify(true);
+    setShowOTPWarning(false);
+    console.log('Mobile Number Verified!');
+    // Additional logic for OTP verification
+  };
+
+
   return (
     <DefaultAdminLayout userRole={userRole}>
       <Breadcrumb pageName="Customer Registration Form" />
@@ -97,7 +151,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                   email: "",
                   address: "",
                   contact: "",
-                  
+otp:"",
                   nicDoc: null,  // Add these lines
                   brDoc: null,
                   otherDoc: null,
@@ -206,14 +260,16 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                         </div>
 
                         <div className='w-1/4 ' >
-                          <PrimaryButton
+                          <button
                             type="button"
-                            eventname={handleVerify}
-                            textcolor="#fafafa"
-                            label="Send OTP"
-                            bgcolor='#40d659'
-                          />
+                            onClick={showVerifyEdit}
+                            className='text-[#40d659] bg-transparent border-[1px] rounded-md border-[#40d659] px-4 py-2 h-[44px]'
+                            
+                            
+                          >Send OTP</button>
                         </div>
+
+
                       </div>
 
 
@@ -224,18 +280,53 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                         <div className='w-1/2 flex justify-start items-end flex-row space-x-2'>
                           <h2 className='text-[#161616] dark:text-[#fafafa] font-semibold'>Verify Your Mobile Number</h2>
                         </div>
-                        <div className='w-1/2  flex-col -mt-5'>
-                          <InputField
-                       
-                            name="otp"
-                            type="text"
-                            boxcolor="transparent"
-                            placeholder="OTP"
-                            handleChange={handleChange}
-                            values={values}
-                            icon="Pin"
-                          />
+
+                        <div className='w-1/2 flex flex-row justify-between items-center '>
+                          <div className='w-3/4 flex flex-col space-y-2'>
+                            <div className='w-full flex justify-between items-end space-x-2 flex-row -mt-5'>
+                              <InputField
+
+                                name="otp"
+                                type="text"
+                                boxcolor="transparent"
+                                placeholder="OTP"
+                                handleChange={handleChange}
+                                values={values}
+                                icon="Pin"
+                              />
+                              <div className='w-1/4 ' >
+                                <PrimaryButton
+                                  type="button"
+                                  eventname={handleVerify}
+                                  textcolor="#fafafa"
+                                  label="Verify"
+                                  bgcolor='#40d659'
+                                />
+                              </div>
+
+                            </div>
+
+                            <div className=' w-full flex md:flex-row justify-between flex-col mt-2'>
+                              <span className='font-semibold text-[#a855f7]'>
+                              <span className='font-semibold text-[#a855f7]'>
+              {`${String(timer.minutes).padStart(2, '0')}:${String(timer.seconds).padStart(2, '0')}`}
+            </span>
+            
+                              </span>
+                              <span className='text-[#a855f7] cursor-pointer'>Resend Code</span>
+                            </div>
+                            {
+                              confirmVerify && (
+                                <p className='text-[12px] text-green-600'>Mobile number Verified!</p>
+                              )
+                            }
+                          </div>
+
+
+
                         </div>
+
+
 
                       </div>
                     )}
@@ -243,7 +334,9 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
-                    <p className='text-red-600 text-[12px] mt-2'>Please Verify the Mobile Number before continue</p>
+{showOTPWarning && (
+              <p className='text-red-600 text-[12px] mt-2'>Please Verify the Mobile Number before continuing</p>
+            )}
 
 
 
@@ -295,11 +388,6 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                         icon="UploadFile"
                       />
 
-
-
-
-
-
                     </div>
 
 
@@ -345,7 +433,6 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
           </div>
         </div>
 
-        {showMobileVerifyModal && <MobileVerifyPOP />}
         <Succeed isOpen={showSucceedModal} onClose={handleCloseModal} />
 
       </div>

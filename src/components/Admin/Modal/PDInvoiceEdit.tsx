@@ -10,7 +10,7 @@ import InputFileUpload from '../../FormElements/InputFileUpload';
 import SelectField from '../../FormElements/SelectField';
 import InputFieldInvoice from '../../FormElements/InputFiledInvoice';
 import DecisionPop from './DecisionPop';
-
+import InputField from '../../FormElements/InputFiled';
 
 
 interface InvoiceEditContentProps {
@@ -106,6 +106,48 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                   values={values}
                   handleChange={handleChange}
                 />
+
+
+{values.decision === 'Accept' && (
+                  <div className='des-making flex w-full flex-col  mt-5 border-t-[1px] border-[#565656] border-opacity-25'>
+
+                    <span className="text-[#1a1a1a] text-[14px] uppercase font-semibold dark:text-white mt-5">
+                      Order Configuration
+                    </span>
+
+                    <div className='w-full flex flex-row justify-between space-x-3 -mt-3'>
+                      <h3 className='md:text-[14px] text-[12px] text-[#161616] dark:text-[#fafafa]'>Package : Basic</h3>
+                    </div>
+
+                   <div className='w-full flex flex-row justify-between space-x-3 -mt-3'>
+<SelectField
+label='Responsible Department'
+boxcolor='transparent'
+options={["Graphic Designing Team","Sales Department"]}
+name='package'
+icon='Inventory'
+handleChange={handleChange}
+values={values}
+/>
+
+<SelectField
+label='Manager Incharge'
+boxcolor='transparent'
+options={["Mr. Krishanth ","Ms. Dilhani"]}
+name='package'
+icon='Inventory'
+handleChange={handleChange}
+values={values}
+/>
+
+
+                   </div>
+
+                  </div>
+                )}
+
+
+
 
 {values.decision !== 'Accept' && (
                   <div className='des-making flex w-full flex-col space-y-2'>
