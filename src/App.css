@@ -45,3 +45,8 @@ body{
 .read-the-docs {
   color: #888;
 }
+
+.react-datepicker-wrapper {
+
+    width: 100%;
+}

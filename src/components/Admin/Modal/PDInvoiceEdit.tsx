@@ -11,6 +11,7 @@ import SelectField from '../../FormElements/SelectField';
 import InputFieldInvoice from '../../FormElements/InputFiledInvoice';
 import DecisionPop from './DecisionPop';
 import InputField from '../../FormElements/InputFiled';
+import InputDatePicker from '../../FormElements/InputDatePicker';
 
 
 interface InvoiceEditContentProps {
@@ -18,6 +19,7 @@ interface InvoiceEditContentProps {
     paymentMethod: string;
     invoiceid: string;
     reason: string;
+    orderdescription: string;
 
 
   };
@@ -29,6 +31,7 @@ interface InvoiceEditContentProps {
 const SignUpSchema = Yup.object().shape({
   paymentMethod: Yup.string(),
   reason: Yup.string(),
+  orderdescription: Yup.string()
 
 });
 
@@ -44,14 +47,13 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
 
   const handleEdit = (values: { reason: string; decision: string }) => {
     console.log('Registered', values);
-  
-    if (values.decision == "Reject")
-    {
+
+    if (values.decision == "Reject") {
       setShowDecisionPop({ isOpen: true });
     }
   };
 
-  
+
   return (
 
     <div className='w-screen h-screen bg-[#565656] bg-opacity-40 backdrop-blur-sm relative flex justify-center items-center z-20 '>
@@ -77,10 +79,11 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
           initialValues={{
             reason: "",
             decision: "",
+            orderdescription:""
           }}
           validationSchema={SignUpSchema}
           onSubmit={handleEdit}
-         
+
         >
 
 
@@ -108,40 +111,100 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                 />
 
 
-{values.decision === 'Accept' && (
+                {values.decision === 'Accept' && (
                   <div className='des-making flex w-full flex-col  mt-5 border-t-[1px] border-[#565656] border-opacity-25'>
 
                     <span className="text-[#1a1a1a] text-[14px] uppercase font-semibold dark:text-white mt-5">
                       Order Configuration
                     </span>
 
-                    <div className='w-full flex flex-row justify-between space-x-3 -mt-3'>
+                    <div className='w-full flex flex-col mt-3'>
                       <h3 className='md:text-[14px] text-[12px] text-[#161616] dark:text-[#fafafa]'>Package : Basic</h3>
+                      <h3 className='md:text-[14px] text-[12px] text-[#161616] dark:text-[#fafafa]'>Date : 03/05/2024</h3>
+                      <h3 className='md:text-[14px] text-[12px] text-[#161616] dark:text-[#fafafa]'>Order ID : VD0069</h3>
                     </div>
 
-                   <div className='w-full flex flex-row justify-between space-x-3 -mt-3'>
-<SelectField
-label='Responsible Department'
-boxcolor='transparent'
-options={["Graphic Designing Team","Sales Department"]}
-name='package'
-icon='Inventory'
-handleChange={handleChange}
-values={values}
-/>
+                    <div className='w-full flex flex-row justify-between space-x-3'>
+                      <SelectField
+                        label='Responsible Department'
+                        boxcolor='transparent'
+                        options={["Graphic Designing Team", "Sales Department"]}
+                        name='resdep'
+                        icon='Inventory'
+                        handleChange={handleChange}
+                        values={values}
+                      />
 
-<SelectField
-label='Manager Incharge'
-boxcolor='transparent'
-options={["Mr. Krishanth ","Ms. Dilhani"]}
-name='package'
-icon='Inventory'
-handleChange={handleChange}
-values={values}
-/>
+                      <SelectField
+                        label='Manager Incharge'
+                        boxcolor='transparent'
+                        options={["Mr. Krishanth ", "Ms. Dilhani"]}
+                        name='mincharge'
+                        icon='Inventory'
+                        handleChange={handleChange}
+                        values={values}
+                      />
 
 
-                   </div>
+                    </div>
+
+
+                    <div className='w-full flex flex-row justify-between space-x-3'>
+                      <InputDatePicker
+                        type='date'
+                        label='Starting Date'
+                        boxcolor='transparent'
+                        name='startdate'
+                        icon='CalendarMonth'
+                        handleChange={handleChange}
+                        values={values}
+                      />
+
+                      {/* <InputField
+                      type='date'
+                        label='Estimate Delivery Date'
+                        boxcolor='transparent'
+                        name='deldate'
+                        icon='CalendarMonth'
+                        handleChange={handleChange}
+                        values={values}
+                      /> */}
+
+<InputDatePicker
+                        type='date'
+                        label='Estimate Delivery Date'
+                        boxcolor='transparent'
+                        name='deldate'
+                        icon='CalendarMonth'
+                        handleChange={handleChange}
+                        values={values}
+                      />
+
+
+
+                    </div>
+
+
+
+                    <div className='w-full flex flex-col justify-between space-y-3 mt-3'>
+                    <span className="text-[#1a1a1a] text-[12px] uppercase font-semibold dark:text-white">
+                      Order Description</span>
+                    <textarea
+                      className='w-full p-2 outline-none resize-none rounded-md border-[1px] border-[#565656] border-opacity-25'
+                      rows={5}
+                      cols={4}
+                      name="orderdescription"
+                      value={values.orderdescription}
+                      onChange={handleChange}
+                      required
+                    />
+
+
+                    </div>
+
+
+
+
 
                   </div>
                 )}
@@ -149,7 +212,7 @@ values={values}
 
 
 
-{values.decision !== 'Accept' && (
+                {values.decision !== 'Accept' && (
                   <div className='des-making flex w-full flex-col space-y-2'>
                     <span className="text-[#1a1a1a] text-[12px] uppercase font-semibold dark:text-white">
                       Reason
@@ -166,7 +229,7 @@ values={values}
                     />
                   </div>
                 )}
-              
+
               </div>
 
 
@@ -175,23 +238,23 @@ values={values}
 
               <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
 
-              <PrimaryButton
-  label='Submit'
-  type='submit'
-  colorfrom='#c026d3'
-  colorto='#a855f7'
-  textcolor='#f5f5f5'
-/>
+                <PrimaryButton
+                  label='Submit'
+                  type='submit'
+                  colorfrom='#c026d3'
+                  colorto='#a855f7'
+                  textcolor='#f5f5f5'
+                />
               </div>
 
               {showDecisionPop.isOpen && (
-  <DecisionPop
-    onClose={() => setShowDecisionPop({ isOpen: false })}
-    isOpen={showDecisionPop.isOpen}
-    values={values}
-  />
-)}
-     
+                <DecisionPop
+                  onClose={() => setShowDecisionPop({ isOpen: false })}
+                  isOpen={showDecisionPop.isOpen}
+                  values={values}
+                />
+              )}
+
 
             </Form>
 
@@ -203,7 +266,7 @@ values={values}
         </Formik>
 
 
-        
+
       </div>
     </div>
   );
