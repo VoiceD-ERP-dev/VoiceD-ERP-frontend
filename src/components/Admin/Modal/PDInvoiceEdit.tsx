@@ -20,6 +20,10 @@ interface InvoiceEditContentProps {
     invoiceid: string;
     reason: string;
     orderdescription: string;
+    invoiceDate: string;
+    name:string;
+    agentid: string;
+    
 
 
   };
@@ -79,7 +83,11 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
           initialValues={{
             reason: "",
             decision: "",
-            orderdescription:""
+            orderdescription:"",
+            invoiceDate:"",
+            name:"",
+            agentid:"",
+            paymentMethod:"",
           }}
           validationSchema={SignUpSchema}
           onSubmit={handleEdit}
@@ -98,7 +106,54 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
 
 
               <div className='w-full flex flex-col justify-between space-y-3'>
-                <p className='mt-2'>Invoice ID : {pendingInvoiceDataItem.invoiceid} </p>
+                <div className='flex flex-col mt-2 space-y-1'>
+                 <table className='md:w-1/2 w-full'>
+                  <tr>
+                    <td className=''>
+                    <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Invoice ID :</span>
+                    </td>
+                    <td>
+                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.invoiceid}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className=''>
+                    <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Invoice Date :</span>
+                    </td>
+                    <td>
+                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.invoiceDate}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className=''>
+                    <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Customer Name :</span>
+                    </td>
+                    <td>
+                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.name}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className=''>
+                    <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Agent Id :</span>
+                    </td>
+                    <td>
+                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.agentid}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className=''>
+                    <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Payment Method :</span>
+                    </td>
+                    <td>
+                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.paymentMethod}</span>
+                    </td>
+                  </tr>
+
+                 </table>
+                
+                
+                </div>
+                
 
                 <SelectField
                   label='Make Decision'
@@ -160,15 +215,7 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                         values={values}
                       />
 
-                      {/* <InputField
-                      type='date'
-                        label='Estimate Delivery Date'
-                        boxcolor='transparent'
-                        name='deldate'
-                        icon='CalendarMonth'
-                        handleChange={handleChange}
-                        values={values}
-                      /> */}
+                      
 
 <InputDatePicker
                         type='date'
