@@ -1,14 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
-import SelectGroupOne from '../../Forms/SelectGroup/SelectGroupOne';
 import DefaultLayout from '../../../layout/DefaultLayout';
-import { Formik, Field, Form, ErrorMessage , useFormikContext } from "formik";
+import { Formik, Field, Form, ErrorMessage, useFormikContext } from "formik";
 import * as Yup from "yup";
 import InputField from '../../FormElements/InputFiled';
 import PrimaryButton from '../../FormElements/PrimaryButon';
-import SelectField from '../../FormElements/SelectField';
-import CheckboxOne from '../../Checkboxes/CheckboxOne';
-import TextField from '../../FormElements/TextFiled';
 import InputFileUpload from '../../FormElements/InputFileUpload';
 import axios from 'axios';
 
@@ -21,109 +17,51 @@ import Succeed from '../Modal/Succeed';
 
 
 
+
 type CustomerFormValuesType = {
   firstName: string;
   lastName: string;
   nicNo: string;
-  brId: string;
+  brid: string;
   email: string;
   address: string;
-  contactNo: string;
-  package: string;
-  payment: string;
+  otp: string;
+  contact: string;
   nicDoc: File | null;
   brDoc: File | null;
   otherDoc: File | null;
 };
 
 
-function CustomerRegister({userRole} : {userRole : string}) {
-
+function CustomerRegister({ userRole }: { userRole: string }) {
 
   const [showSucceedModal, setShowSucceedModal] = useState(false);
+  const [otpCode, setOtpCode] = useState<string | null>(null);
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [showOTPWarning, setShowOTPWarning] = useState(false);
+  const [confirmVerify, setConfirmVerify] = useState(false);
+  const [timer, setTimer] = useState({ minutes: 5, seconds: 0 });
+  const [loading, setLoading] = useState(false);
+  const [showVerifyBox, setShowVerifyBox] = useState(false);
 
-  const navigate = useNavigate();
 
   const CustomerRegistrationSchema = Yup.object().shape({
-    firstName: Yup.string()
-    .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
-    .required("Required"),
-    lastName: Yup.string()
-    .matches(/^[A-Za-z ]*$/, 'Please enter valid name')
-    .required("Required"),
+    firstName: Yup.string().required("Required"),
+    lastName: Yup.string().required("Required"),
     nicNo: Yup.string().required("Required"),
-    brId: Yup.string().required("Required"),
-    email: Yup.string().email().required("Required"),
-    package: Yup.string().required("Required"),
-    payment: Yup.string().required("Required"),
-    contactNo: Yup.string()
-    .min(10, "must include a valid mobile number")
-    .matches(/[0-9]/, "must includes only digits")
-    .required("Required"),
- 
-    
+    otp: Yup.string()
+      .min(6, "Required 6 Digits")
+      .max(6, "Required 6 Digits"),
+    brid: Yup.string().required("Required"),
+    email: Yup.string().required("Required"),
+    contact: Yup.string()
+      .min(10, "must include a valid mobile number")
+      .matches(/[0-9]/, "must includes only digits")
+      .required("Required"),
+
   });
 
 
-
-
-  const [loading, setLoading] = useState(false);
-
-  const handleRegister = async (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>): Promise<void> => {
-    try {
-      setLoading(true);
-      const formData = new FormData();
-      formData.append('firstName', values.firstName);
-      formData.append('lastName', values.lastName);
-      formData.append('nicNo', values.nicNo);
-      formData.append('brId', values.brId);
-      formData.append('email', values.email);
-      formData.append('address', values.address);
-      formData.append('contactNo', values.contactNo);
-      formData.append('package', values.package);
-      formData.append('payment', values.payment);
-  
-      // Append files to the formData if they are not null
-      if (values.nicDoc !== null) {
-        formData.append('nicDoc', values.nicDoc);
-      }
-  
-      if (values.brDoc !== null) {
-        formData.append('brDoc', values.brDoc);
-      }
-
-      if (values.otherDoc !== null) {
-        formData.append('otherDoc', values.otherDoc);
-      }
-  
-      const response = await axios.post('localhost:5001/customerRegister', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          // Add any other headers as needed, such as authorization token
-        },
-      });
-  
-      // Extract customer ID from the response
-      const customerId = response.data._id; // Assuming the customer ID is stored in the "_id" field
-  
-      // Use the obtained customer ID for further actions if needed
-      console.log('Customer ID:', customerId);
-  
-      // Handle successful registration
-      console.log('Registration successful', response.data);
-      // Open the Succeed modal
-      setShowSucceedModal(true);
-  
-      // Reset the form after successful registration
-      setLoading(false);
-      resetForm();
-    } catch (error) {
-      // Handle registration error
-      setLoading(false);
-      console.error('Registration error', error);
-    }
-  };
-  
 
   const handleCloseModal = () => {
     // Close the Succeed modal
@@ -132,11 +70,63 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
 
 
-  const handleResetForm = () => {
-    // Use the formik context to access resetForm function
-    const { resetForm } = useFormikContext<CustomerFormValuesType>();
-    resetForm();
+  const startTimer = () => {
+    const interval = setInterval(() => {
+      if (timer.minutes === 0 && timer.seconds === 0) {
+        clearInterval(interval);
+        // Handle timer expiration, e.g., show a message or resend OTP
+      } else {
+        setTimer((prevTimer) => {
+          const newSeconds = prevTimer.seconds === 0 ? 59 : prevTimer.seconds - 1;
+          const newMinutes = prevTimer.seconds === 0 ? prevTimer.minutes - 1 : prevTimer.minutes;
+          return { minutes: newMinutes, seconds: newSeconds };
+        });
+      }
+    }, 2000);
   };
+
+
+  const handleRegister = (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>) => {
+    if (!confirmVerify) {
+      // The mobile number is not verified
+      setShowOTPWarning(true);
+      return;
+    }
+
+    setShowOTPWarning(false); // Reset the warning flag
+    console.log('Now register the customer');
+    // Additional logic for customer registration
+    setShowSucceedModal(true);
+    resetForm();
+    setConfirmVerify(false);
+  };
+
+
+
+
+
+  const showVerifyEdit = () => {
+    setTimer({ minutes: 5, seconds: 0 }); // Reset the timer when triggered
+    setShowVerifyBox(true);
+    setShowOTPWarning(false);
+    startTimer();
+  };
+
+  useEffect(() => {
+    if (showVerifyBox) {
+      startTimer();
+    }
+  }, [showVerifyBox]);
+
+  const handleVerify = (values: any) => {
+    setConfirmVerify(true);
+    setShowOTPWarning(false);
+    console.log('Mobile Number Verified!');
+    // Additional logic for OTP verification
+  };
+
+
+
 
 
   return (
@@ -150,24 +140,23 @@ function CustomerRegister({userRole} : {userRole : string}) {
             <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark w-full">
               <h3 className="font-medium text-black dark:text-white">
                 Please fill all the details
+
               </h3>
             </div>
             <div className="p-6.5">
-            <Formik
+              <Formik
                 initialValues={{
                   firstName: "",
                   lastName: "",
                   nicNo: "",
-                  brId: "",
+                  brid: "",
                   email: "",
                   address: "",
-                  contactNo: "",
-                  package: "",
-                  payment: "",
-                  otherDoc: null,
+                  contact: "",
+                  otp: "",
                   nicDoc: null,  // Add these lines
                   brDoc: null,
-
+                  otherDoc: null,
                 }}
                 validationSchema={CustomerRegistrationSchema}
                 onSubmit={handleRegister}
@@ -177,27 +166,12 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
                 {({ errors, touched, handleChange, values }) => (
 
-<Form className=" w-full">
-
-
-<div className='w-full '>
-                      <h2>Self Regsitration Portal</h2>
-                    </div>
-
-                    <TextField 
-                        label=""
-                        name="portal"
-                        type="text"
-                        icon="AddLink"
-                        boxcolor="transparent"
-                        placeholder="voiced.lk/sid=?9076RtHYU6764/csr"
-                       
-                        
-                      />
+                  <Form className=" w-full">
 
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
                       <InputField
                         label="First Name"
                         name="firstName"
@@ -221,7 +195,7 @@ function CustomerRegister({userRole} : {userRole : string}) {
                     </div>
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
                       <InputField
                         label="NIC"
                         name="nicNo"
@@ -234,7 +208,7 @@ function CustomerRegister({userRole} : {userRole : string}) {
                       />
                       <InputField
                         label="BR ID"
-                        name="brId"
+                        name="brid"
                         type="text"
                         boxcolor="transparent"
                         placeholder="BR ID"
@@ -246,7 +220,7 @@ function CustomerRegister({userRole} : {userRole : string}) {
 
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3'>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
                       <InputField
                         label="Email"
                         name="email"
@@ -257,150 +231,174 @@ function CustomerRegister({userRole} : {userRole : string}) {
                         values={values}
                         icon="AlternateEmail"
                       />
+
+
+
                       <InputField
-                        label="Contact"
-                        name="contactNo"
+                        label="Address"
+                        name="address"
                         type="text"
                         boxcolor="transparent"
-                        placeholder="Contact"
+                        placeholder="Address"
                         handleChange={handleChange}
                         values={values}
-                        icon="LocalPhone"
+                        icon="Map"
                       />
                     </div>
 
-                    <InputField
-                      label="Address"
-                      name="address"
-                      type="text"
-                      boxcolor="transparent"
-                      placeholder="Address"
-                      handleChange={handleChange}
-                      values={values}
-                      icon="Map"
-                    />
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
+                      <div className='w-1/2 flex justify-start items-end flex-row space-x-2'>
+                        <div className='w-3/4 ' >
+                          <InputField
+                            label="Contact"
+                            name="contact"
+                            type="text"
+                            boxcolor="transparent"
+                            placeholder="Contact"
+                            handleChange={handleChange}
+                            values={values}
+                            icon="LocalPhone"
+                          />
+                        </div>
+
+                        <div className='w-1/4 ' >
+                          <button
+                            type="button"
+                            onClick={showVerifyEdit}
+                            className='text-[#40d659] bg-transparent border-[1px] rounded-md border-[#40d659] px-4 py-2 h-[44px]'
 
 
+                          >Send OTP</button>
+                        </div>
 
 
-
-
-<div className='w-full py-3 mt-5'>
-                      <h2>Documentations</h2>
-                    </div>
-                    <div className='w-full flex flex-row justify-between space-x-3 '>
-
-                    <InputFileUpload
-                      label="NIC"
-                      name="nicDoc"
-                      type="file"
-                      boxcolor="transparent"
-                      placeholder="nicDoc"
-                      icon="UploadFile"
-                    
-                    />
-
-                     <div className='flex flex-col w-full'>
-                     <InputFileUpload
-                      label="Business Registration"
-                      name="brDoc"
-                      type="file"
-                      boxcolor="transparent"
-                      placeholder="brDoc"
-                
-                      icon="UploadFile"
-                    />
-
-                    <p>Note : if you dont have a registered business yet, leave this filed.</p>
-                     </div>
-
-                     
+                      </div>
 
 
                     </div>
+                    {showVerifyBox && (
 
-                    <div className='md:w-1/2 w-full flex flex-row justify-between space-x-3 '>
+                      <div className='w-full flex flex-col justify-between mt-5'>
+                        <div className='w-1/2 flex justify-start items-end flex-row space-x-2'>
+                          <h2 className='text-[#161616] dark:text-[#fafafa] font-semibold'>Verify Your Mobile Number</h2>
+                        </div>
 
-                    <InputFileUpload
-                      label="Other Documents"
-                      name="otherDoc"
-                      type="file"
-                      boxcolor="transparent"
-                      placeholder="otherDoc"
-                      icon="UploadFile"
-                    
-                    />
+                        <div className='w-1/2 flex flex-row justify-between items-center '>
+                          <div className='w-3/4 flex flex-col space-y-2'>
+                            <div className='w-full flex justify-between items-end space-x-2 flex-row -mt-5'>
+                              <InputField
 
-                  
+                                name="otp"
+                                type="text"
+                                boxcolor="transparent"
+                                placeholder="OTP"
+                                handleChange={handleChange}
+                                values={values}
+                                icon="Pin"
+                              />
+                              <div className='w-1/4 ' >
+                                <PrimaryButton
+                                  type="button"
+                                  eventname={handleVerify}
+                                  textcolor="#fafafa"
+                                  label="Verify"
+                                  bgcolor='#40d659'
+                                />
+                              </div>
 
-                     
+                            </div>
+
+                            <div className=' w-full flex md:flex-row justify-between flex-col mt-2'>
+                              <span className='font-semibold text-[#a855f7]'>
+                                <span className='font-semibold text-[#a855f7]'>
+                                  {`${String(timer.minutes).padStart(2, '0')}:${String(timer.seconds).padStart(2, '0')}`}
+                                </span>
+
+                              </span>
+                              <span className='text-[#a855f7] cursor-pointer'>Resend Code</span>
+                            </div>
+                            {
+                              confirmVerify && (
+                                <p className='text-[12px] text-green-600'>Mobile number Verified!</p>
+                              )
+                            }
+                          </div>
 
 
-                    </div>
+
+                        </div>
 
 
+
+                      </div>
+                    )}
+
+
+
+
+                    {showOTPWarning && (
+                      <p className='text-red-600 text-[12px] mt-2'>Please Verify the Mobile Number before continuing</p>
+                    )}
 
 
 
 
                     <div className='w-full py-3 mt-5'>
-                      <h2>Package Details</h2>
+                      <h2>Documentations</h2>
                     </div>
-                    <div className='w-full flex flex-row justify-between space-x-3 '>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
 
-                      <SelectField
-                        label="Select a Package"
-                        name='package'
-                        icon="Inventory"
+                      <InputFileUpload
+                        label="NIC"
+                        name="nicDoc"
+                        type="file"
                         boxcolor="transparent"
-                        handleChange={handleChange}
-                        options={["Basic", "Platinum", "Premium"]}
-                        values={values}
+                        placeholder="nicImg"
+                        icon="UploadFile"
                       />
 
-                     
-                        <CheckboxOne
-                          type='checkbox'
-                          name="Select Startup fee"
-                          label='Select Startup fee'
+                      <div className='flex flex-col w-full'>
+                        <InputFileUpload
+                          label="Business Registration"
+                          name="brDoc"
+                          type="file"
                           boxcolor="transparent"
-                          icon="Inventory" />
-                     
+                          placeholder="brFile"
+
+                          icon="UploadFile"
+                        />
+
+                        <p>Note : if you dont have a registered business yet, leave this filed.</p>
+                      </div>
+
+
 
 
                     </div>
 
 
 
-                    <div className='w-full flex flex-row justify-between space-x-3 '>
 
-                      <SelectField
-                        label="Select a Payment Method"
-                        name='payment'
-                        icon="Payments"
+                    <div className='md:w-1/2 w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
+
+                      <InputFileUpload
+                        label="OTHER DOCUMENTS"
+                        name="otherDoc"
+                        type="file"
                         boxcolor="transparent"
-                        handleChange={handleChange}
-                        options={["Direct Purchase", "Bank Deposit", "Cheque"]}
-                        values={values}
+                        placeholder="otherDoc"
+                        icon="UploadFile"
                       />
 
-                     
-                       
-
-
                     </div>
 
-
-
-                    
 
 
 
                     <div className='w-full md:w-1/3 flex flex-row justify-between space-x-3'>
                       <PrimaryButton
-                        type="reset"
-                        // eventname={handleResetForm}
-                        eventname={handleResetForm}
+                        type="button"
+
                         textcolor="dark:text-[#fafafa]"
                         label="Clear From"
                         colorfrom='transparent'
@@ -416,7 +414,14 @@ function CustomerRegister({userRole} : {userRole : string}) {
                         colorto='#a855f7'
                       />
                     </div>
-                    {loading && <p>Please wait...</p>}
+                    {loading &&
+
+                      <div className='w-full mt-2 text-center'>
+                        <p className='text-[12px]'>Please wait...</p>
+                      </div>
+
+
+                    }
 
                   </Form>
 
@@ -431,7 +436,7 @@ function CustomerRegister({userRole} : {userRole : string}) {
         </div>
 
         <Succeed isOpen={showSucceedModal} onClose={handleCloseModal} />
-        
+
       </div>
     </DefaultLayout>
   )

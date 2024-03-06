@@ -222,13 +222,13 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
 
                     <div className="flex flex-row space-x-2 justify-center items-center">
-                    <h5 className="font-normal text-[#ffffff] dark:text-white text-[14px] md:text-[24px]">
+                    <h5 className="font-normal text-[#161616] dark:text-white text-[14px] md:text-[24px]">
                     <FontAwesomeIcon
-                      className="hover:text-[#c026d3] cursor-pointer"
+                      className="hover:text-[#a855f7] cursor-pointer"
                       icon={faCloudArrowDown} />
                     </h5>
                     <button 
-                    className="px-4 py-2 rounded-md hover:bg-[#c026d3] bg-[#a855f7] text-[#fafafa]"
+                    className="px-4 py-2 rounded-md hover:bg-[#c281ff] bg-[#a855f7] text-[#fafafa]"
                     onClick={() => handleEdit(customerDataItem)}>Edit</button>
                     </div>
                     

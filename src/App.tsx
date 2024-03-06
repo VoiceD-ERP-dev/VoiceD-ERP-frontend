@@ -20,6 +20,7 @@ import SaTableAdminSATemp from './components/Admin/CompanyRoles/TableTemplate/Sa
 import CustomerSelfPortal from './components/Customer/CustomerSelfPortal';
 import CreateInvoice from './components/Admin/FormLayout/CreateInvoice';
 import CreateSupplierInvoice from './components/Admin/FormLayout/CreateSupplierInvoice';
+import CreateInvoiceAgent from './components/Salesman/FormLayout/CreateInvoice';
 
 
 
@@ -292,20 +293,20 @@ function App() {
               }
             />
             <Route
-              path="/customerReg"
+              path="/customers/customer-registration"
               element={
                 <>
-                  <PageTitle title="VoiceD | Sales Agent - Dashboard" />
+                  <PageTitle title="VoiceD | Sales Agent - Customer Registration" />
                   <CustomerRegister userRole={userRole} />
                 </>
               }
             />
 
             <Route
-              path="/customerInsight"
+              path="/customers/customer-insight"
               element={
                 <>
-                  <PageTitle title="VoiceD | Sales Agent - Dashboard" />
+                  <PageTitle title="VoiceD | Sales Agent - Customer Insight" />
                   <CustomerInsight userRole={userRole} />
                 </>
               }
@@ -314,14 +315,26 @@ function App() {
 
 
             <Route
-              path="/myInvoices"
+              path="/invoices/ad-invoices"
               element={
                 <>
-                  <PageTitle title="VoiceD | Sales Agent - Dashboard" />
+                  <PageTitle title="VoiceD | Sales Agent - Create Invoices" />
+                  <CreateInvoiceAgent userRole={userRole} />
+                </>
+              }
+            />
+
+
+<Route
+              path="/invoices/pd-invoices"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Sales Agent - Pendinig Invoices" />
                   <MyInvoices userRole={userRole} />
                 </>
               }
             />
+
 
 
             <Route

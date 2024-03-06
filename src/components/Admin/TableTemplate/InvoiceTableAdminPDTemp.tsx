@@ -18,6 +18,7 @@ const pendingInvoiceData = [
     status: "Complete",
     paymentMethod: "Cash",
     agentid: "VD003Sa2024",
+   
   },
   {
     customerid: "Reg-00080C24",
@@ -27,6 +28,7 @@ const pendingInvoiceData = [
     status: "Pending",
     paymentMethod: "Bank Deposit",
     agentid: "VD003Sa2024",
+   
   },
   {
     customerid: "Reg-00092C24",
@@ -36,6 +38,7 @@ const pendingInvoiceData = [
     status: "Pending",
     paymentMethod: "Cash",
     agentid: "VD003Sa2024",
+  
   }
 ];
 

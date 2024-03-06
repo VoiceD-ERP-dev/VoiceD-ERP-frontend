@@ -37,7 +37,7 @@ function AdminInvoicesAccept( {userRole} : {userRole :  string}) {
           
           
       <InvoiceTableAdminAcceptTemp 
-tablehead={["","CustomerID", "Customer Name", "InvoiceID", "Invoice Date", "Action"]}
+tablehead={["","CustomerID", "Customer Name", "InvoiceID", "Invoice Date","Order Status"]}
 />
           
         

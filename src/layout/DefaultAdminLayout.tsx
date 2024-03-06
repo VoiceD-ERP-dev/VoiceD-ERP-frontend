@@ -1,6 +1,6 @@
 import React, { useState, ReactNode } from 'react';
 import Header from '../components/Header/index';
-import Sidebar from '../components/Sidebar/index';
+import Sidebar from '../components/Sidebar/SalesAgentSidebar';
 import AdminSidebar from '../components/Sidebar/AdminSidebar';
 
 const DefaultAdminLayout: React.FC<{ children: ReactNode ; userRole: string | null }> = ({ children, userRole }) => {
