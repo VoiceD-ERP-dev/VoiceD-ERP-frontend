@@ -149,6 +149,8 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                     </td>
                   </tr>
 
+                  
+
                  </table>
                 
                 
