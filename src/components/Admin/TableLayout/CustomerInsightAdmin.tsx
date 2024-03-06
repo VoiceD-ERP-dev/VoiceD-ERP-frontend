@@ -28,7 +28,6 @@ tablehead={
     "Customer ID", 
     "Customer First Name",
     "Customer Last Name",
-    "Organization",
     "NIC",
     "BR ID",
     "Contact No",
