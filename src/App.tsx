@@ -21,6 +21,7 @@ import CustomerSelfPortal from './components/Customer/CustomerSelfPortal';
 import CreateInvoice from './components/Admin/FormLayout/CreateInvoice';
 import CreateSupplierInvoice from './components/Admin/FormLayout/CreateSupplierInvoice';
 import CreateInvoiceAgent from './components/Salesman/FormLayout/CreateInvoice';
+import SocialPackages from './components/Admin/Layouts/SocialPackages';
 
 
 
@@ -190,6 +191,18 @@ function App() {
 
 
 
+            <Route
+              path="/vdservices/sm-ser"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <SocialPackages userRole={userRole} />
+                </>
+              }
+            />
+
+
+
 
 
           </>
@@ -325,7 +338,7 @@ function App() {
             />
 
 
-<Route
+            <Route
               path="/invoices/pd-invoices"
               element={
                 <>
