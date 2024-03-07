@@ -1,21 +1,20 @@
 import React , {useState} from 'react'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash, faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 
 
 interface PackageCardsProps {
-  packageName: string,
-  price: string,
-  features: string[],
-  colorfrom: string,
-  colorVia: string,
-  colorTo: string,
-  notes:string[],
+  packageName: string;
+  price: string;
+  features: string[];
+  colorfrom: string;
+  colorVia: string;
+  colorTo: string;
+  notes: string[];
+  onClick: () => void;
 }
 
 
-function PackageCards({ packageName, price, features, colorfrom, colorTo, colorVia, notes }: PackageCardsProps) {
+function PackageCardsEdit({ packageName, price, features, colorfrom, colorTo, colorVia, notes, onClick }: PackageCardsProps) {
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -60,7 +59,7 @@ function PackageCards({ packageName, price, features, colorfrom, colorTo, colorV
   };
 
   return (
-    <div className='p-2 md:w-1/4 w-full flex'>
+    <div className='p-2 md:w-1/4 w-full flex' onClick={onClick}>
       <div className='packcard flex flex-col space-y-8 border-[1px] border-[#565656] border-opacity-25 
       relative overflow-hidden hover:shadow-lg hover:shadow-slate-300 dark:hover:shadow-slate-900
       rounded-tr-2xl rounded-bl-2xl items-center p-5 bg-white w-full'
@@ -139,4 +138,4 @@ function PackageCards({ packageName, price, features, colorfrom, colorTo, colorV
   )
 }
 
-export default PackageCards
+export default PackageCardsEdit

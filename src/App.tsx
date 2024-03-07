@@ -22,6 +22,7 @@ import CreateInvoice from './components/Admin/FormLayout/CreateInvoice';
 import CreateSupplierInvoice from './components/Admin/FormLayout/CreateSupplierInvoice';
 import CreateInvoiceAgent from './components/Salesman/FormLayout/CreateInvoice';
 import SocialPackages from './components/Admin/Layouts/SocialPackages';
+import SocialPackagesEDT from './components/Admin/EditingComponents/SocialPackagesEDT';
 
 
 
@@ -82,6 +83,13 @@ function App() {
             </>
           }
         />
+
+
+
+
+
+
+
 
         {userRole === "superadmin" && (
 
@@ -197,6 +205,17 @@ function App() {
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
                   <SocialPackages userRole={userRole} />
+                </>
+              }
+            />
+
+
+<Route
+              path="/settings/packages"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <SocialPackagesEDT userRole={userRole} />
                 </>
               }
             />

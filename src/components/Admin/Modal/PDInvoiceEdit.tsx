@@ -28,6 +28,7 @@ interface InvoiceEditContentProps {
 
   };
   onClose: () => void;
+  
 }
 
 
