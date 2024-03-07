@@ -50,3 +50,7 @@ body{
 
     width: 100%;
 }
+
+.packcard:hover {
+  cursor: pointer !important;
+}

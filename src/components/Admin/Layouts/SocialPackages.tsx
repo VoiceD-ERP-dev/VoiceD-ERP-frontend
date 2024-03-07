@@ -151,12 +151,29 @@ const [ loading, setLoading ] = useState(false);
 
 <PackageCards
 packageName='Basic'
-price='1700'
+price='3000'
+features={['Graphic Post Design 5','Ad Campaign Setup 1','Find FB Groups and share Posts','Social Media Stories', 'Captions and Keywords','Hash Tag']}
+colorfrom='#9333ea'
+colorVia='#6366f1'
+colorTo='#d946ef'
+/>
+
+<PackageCards
+packageName='Platinum'
+price='7000'
+features={['Graphic Post Design 10','Ad Campaign Setup 1','Find FB Groups and share Posts','Social Media Stories', 'Captions and Keywords','Hash Tag']}
+colorfrom='#f43f5e'
+colorVia='#f87171'
+colorTo='#ec4899'
 />
 
 <PackageCards
 packageName='Premium'
-price='1850'
+price='12000'
+features={['Graphic Post Design 15','Ad Campaign Setup 1','Find FB Groups and share Posts','Social Media Stories', 'Captions and Keywords','Hash Tag']}
+colorfrom='#0ea5e9'
+colorVia='#22d3ee'
+colorTo='#34d399'
 />
              
 
