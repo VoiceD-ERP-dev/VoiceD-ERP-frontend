@@ -11,10 +11,11 @@ interface PackageCardsProps {
   colorfrom: string,
   colorVia: string,
   colorTo: string,
+  notes:string[],
 }
 
 
-function PackageCards({ packageName, price, features, colorfrom, colorTo, colorVia }: PackageCardsProps) {
+function PackageCards({ packageName, price, features, colorfrom, colorTo, colorVia, notes }: PackageCardsProps) {
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -46,7 +47,7 @@ function PackageCards({ packageName, price, features, colorfrom, colorTo, colorV
   }
   const overlayEffectStyle = {
     // hover effect for packoverlay
-    transform: isHovered ? 'scale(45)' : 'scale(1)',
+    transform: isHovered ? 'scale(52)' : 'scale(1)',
     transition: 'transform 0.5s ease-in-out',
   };
 
@@ -59,16 +60,16 @@ function PackageCards({ packageName, price, features, colorfrom, colorTo, colorV
   };
 
   return (
-    <div className='p-2 md:w-1/4 w-full '>
+    <div className='p-2 md:w-1/4 w-full flex'>
       <div className='packcard flex flex-col space-y-8 border-[1px] border-[#565656] border-opacity-25 
-      relative overflow-hidden hover:shadow-lg hover:shadow-slate-300
+      relative overflow-hidden hover:shadow-lg hover:shadow-slate-300 dark:hover:shadow-slate-900
       rounded-tr-2xl rounded-bl-2xl items-center p-5 bg-white w-full'
       style={{...effectStyle}}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       >
 
-        <h2 className='text-[1.5rem] font-semibold inline-block text-transparent bg-clip-text z-9'
+        <h2 className='text-[1.5rem] font-semibold h-[1.8rem] text-transparent bg-clip-text z-9'
         style={{ ...gradientStyle,}}
         
         >{packageName}</h2>
@@ -102,6 +103,24 @@ function PackageCards({ packageName, price, features, colorfrom, colorTo, colorV
 
           </ul>
         </div>
+
+
+        <div className='w-full mx-auto text-center items-center   h-auto relative flex flex-col justify-center z-9 border-t-[1px] border-[#565656] border-opacity-25'>
+          <ul className='w-full flex flex-col items-center justify-start'>
+            {notes.map((notesItem, index) => (
+
+              <li className='flex flex-row justify-start space-x-3' key={index}>
+              <h4 className='text-[12px] font-medium text-[#2b2b2b] text-left' 
+                style={{...textEffectStyle}}
+                >{notesItem}</h4>
+              </li>
+            ))}
+
+
+          </ul>
+        </div>
+
+
 
 
 
