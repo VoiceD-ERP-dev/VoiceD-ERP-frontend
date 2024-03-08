@@ -11,6 +11,7 @@ import CustomerRegister from './components/Salesman/FormLayout/CustomerRegister'
 import CustomerInsight from './components/Salesman/TableLayout/CustomerInsight';
 import MyInvoices from './components/Salesman/TableLayout/MyInvoices';
 import AdminDashboard from './pages/Dashboard/AdminDashboard';
+import FinanceDashboard from './pages/Dashboard/FinanceDashboard';
 import CustomerRegisterAdmin from './components/Admin/FormLayout/CustomerRegisterAdmin';
 import CustomerInsightAdmin from './components/Admin/TableLayout/CustomerInsightAdmin';
 import AdminInvoicesPD from './components/Admin/TableLayout/InvoicesAdminPD';
@@ -210,7 +211,7 @@ function App() {
             />
 
 
-<Route
+            <Route
               path="/settings/packages"
               element={
                 <>
@@ -235,12 +236,95 @@ function App() {
 
           <>
 
+
+
             <Route
               path="/adminDashboard"
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard" />
                   <AdminDashboard userRole={userRole} />
+                </>
+              }
+            />
+
+
+            <Route
+              path="/customers/customer-registration"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Registration" />
+                  <CustomerRegisterAdmin userRole={userRole} />
+                </>
+              }
+            />
+
+
+            <Route
+              path="/customers/customer-insight"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <CustomerInsightAdmin userRole={userRole} />
+                </>
+              }
+            />
+
+
+            <Route
+              path="/invoices/pd-invoices"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <AdminInvoicesPD userRole={userRole} />
+                </>
+              }
+            />
+
+
+            <Route
+              path="/invoices/accepted-invoices"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <AdminInvoicesAccept userRole={userRole} />
+                </>
+              }
+            />
+
+
+
+            <Route
+              path="/auth/sales-agents"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <SalesAgentAdmin userRole={userRole} />
+                </>
+              }
+            />
+
+
+
+
+          </>
+
+        )}
+
+
+        {userRole === "finance" && (
+
+
+          <>
+
+
+
+            <Route
+              path="/financeDashboard"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Finance Dashboard" />
+                  <FinanceDashboard userRole={userRole} />
                 </>
               }
             />
