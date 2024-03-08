@@ -6,6 +6,7 @@ interface SelectFieldProps {
   label: string;
   name: string;
   boxcolor: string;
+  headingvalue: string;
   icon: keyof typeof MuiIcons;
   options: string[];
   handleChange: ChangeEventHandler<HTMLSelectElement>;
@@ -20,6 +21,7 @@ function SelectField({
   options,
   handleChange,
   values,
+  headingvalue,
 }: SelectFieldProps) {
   const IconComponent = MuiIcons[icon];
   const iconWrapperStyle = {
@@ -54,7 +56,7 @@ function SelectField({
           required
         >
           <option value="" disabled>
-            Select an option
+            {headingvalue}
           </option>
           {options.map((option, index) => (
             <option key={index} value={option} className="w-full p-2">

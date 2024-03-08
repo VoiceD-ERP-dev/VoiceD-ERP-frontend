@@ -16,8 +16,8 @@ import CustomerRegisterAdmin from './components/Admin/FormLayout/CustomerRegiste
 import CustomerInsightAdmin from './components/Admin/TableLayout/CustomerInsightAdmin';
 import AdminInvoicesPD from './components/Admin/TableLayout/InvoicesAdminPD';
 import AdminInvoicesAccept from './components/Admin/TableLayout/InvoicesAdminAccept';
-import SalesAgentAdmin from './components/Admin/CompanyRoles/TableLayout/SalesAgentAdminSA';
-import SaTableAdminSATemp from './components/Admin/CompanyRoles/TableTemplate/SaTableAdminSATemp';
+import SalesAgentAdmin from './components/Admin/CompanyRoles/TableLayout/UserTableAdmin';
+import SaTableAdminSATemp from './components/Admin/CompanyRoles/TableTemplate/UserTableAdminTemp';
 import CustomerSelfPortal from './components/Customer/CustomerSelfPortal';
 import CreateInvoice from './components/Admin/FormLayout/CreateInvoice';
 import CreateSupplierInvoice from './components/Admin/FormLayout/CreateSupplierInvoice';

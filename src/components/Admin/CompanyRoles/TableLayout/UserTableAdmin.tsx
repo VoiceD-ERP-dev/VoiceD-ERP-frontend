@@ -3,9 +3,9 @@ import Breadcrumb from '../../../Breadcrumbs/Breadcrumb';
 import DefaultAdminLayout from '../../../../layout/DefaultAdminLayout';
 import * as Yup from "yup";
 
-import SaTableAdminSATemp from '../TableTemplate/SaTableAdminSATemp';
+import SaTableAdminSATemp from '../TableTemplate/UserTableAdminTemp';
 
-function SalesAgentAdmin( {userRole} : {userRole:string}) {
+function UserTableAdmin( {userRole} : {userRole:string}) {
 
 
     const navigate = useNavigate();
@@ -47,4 +47,4 @@ tablehead={["","SalesID ", "Full Name","NIC", "Contact","Email","Address","Joine
   )
 }
 
-export default SalesAgentAdmin;
+export default UserTableAdmin;

@@ -2,7 +2,8 @@ import React, { MouseEventHandler , CSSProperties} from 'react';
 
 interface PrimaryButtonProps {
   label: string;
-  eventname: MouseEventHandler<HTMLButtonElement>;
+  onClick?: MouseEventHandler<HTMLButtonElement>;
+  eventname?: MouseEventHandler<HTMLButtonElement>;
   bgcolor: string;
   colorfrom: string,
   colorto: string,
@@ -14,7 +15,7 @@ interface PrimaryButtonProps {
   type: 'button' | 'submit' | 'reset' | undefined; 
 }
 
-function PrimaryButton({ label, eventname, bgcolor, textcolor, type, colorfrom , colorto, borderSize, borderColor, hoverbg  }: PrimaryButtonProps) {
+function PrimaryButton({ label, eventname, bgcolor, textcolor, type, colorfrom , colorto, borderSize, borderColor, hoverbg , onClick }: PrimaryButtonProps) {
   const buttonStyle = {
     backgroundColor: bgcolor,
     color: textcolor,
@@ -33,10 +34,20 @@ function PrimaryButton({ label, eventname, bgcolor, textcolor, type, colorfrom ,
   };
 
 
+  const handleClick : MouseEventHandler<HTMLButtonElement> = (e) => {
+
+    if(onClick){
+      onClick(e);
+    }
+    if(eventname){
+      eventname(e);
+    }
+  }
+
   return (
     <button
       type={type}
-      onClick={eventname}
+      onClick={handleClick}
       className={`w-full rounded-md h-[44px] mt-3 `}
       style={{ ...buttonStyle, ...gradientStyle,}}
     >

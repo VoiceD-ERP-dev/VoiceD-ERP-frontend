@@ -102,16 +102,6 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
-  // const showVerifyEdit = () => {
-  //   setTimer({ minutes: 5, seconds: 0 }); // Reset the timer when triggered
-  //   setShowVerifyBox(true);
-  //   setShowOTPWarning(false);
-  //   startTimer();
-  // };
-
-
-
-
   const showVerifyEdit = (values: any) => {
     setTimer({ minutes: 5, seconds: 0 }); // Reset the timer when triggered
     setShowVerifyBox(true);
@@ -156,19 +146,62 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
   };
 
-  
   useEffect(() => {
     if (showVerifyBox) {
       startTimer();
     }
   }, [showVerifyBox]);
 
-  const handleVerify = (values: any) => {
-    setConfirmVerify(true);
-    setShowOTPWarning(false);
-    console.log('Mobile Number Verified!');
-    // Additional logic for OTP verification
+  const handleVerify = async (values: any) => {
+    try {
+      setConfirmVerify(true);
+      setShowOTPWarning(false);
+      
+      const { otp, contact } = values; // Destructure otp and contact from values
+  
+      // Assuming `contact` contains the phone number
+      let phoneNo = contact;
+  
+      // Remove any whitespace and hyphens from the phone number
+      phoneNo = phoneNo.replace(/\s|-/g, '');
+  
+      // If the phone number starts with '0', replace it with '+94'
+      if (phoneNo.startsWith('0')) {
+        phoneNo = '+94' + phoneNo.substring(1);
+      }
+  
+      // Create the JSON payload
+      const payload = {
+        userOTP: otp,
+        phoneNo: phoneNo
+      };
+  
+      // Make the HTTP POST request to the endpoint
+      const response = await fetch('http://localhost:5001/api/otp/compareotp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+  
+      const responseData = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(responseData.message || 'Failed to verify OTP');
+      }
+  
+      console.log('OTP verified successfully!');
+      // Additional logic after OTP verification
+    } catch (error: any) { // Explicitly type 'error' as 'any' or 'Error'
+      console.error('Error verifying OTP:', error.message);
+      // Show user-friendly error message to the user
+      //lert(error.message || 'Failed to verify OTP. Please try again later.');
+      // Handle error if needed
+    }
   };
+  
+  
 
 
   return (
@@ -195,7 +228,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                   email: "",
                   address: "",
                   contact: "",
-otp:"",
+                  otp:"",
                   nicDoc: null,  // Add these lines
                   brDoc: null,
                   otherDoc: null,
@@ -306,7 +339,7 @@ otp:"",
                         <div className='w-1/4 ' >
                           <button
                             type="button"
-                            onClick={showVerifyEdit}
+                            onClick={() => showVerifyEdit(values)}
                             className='text-[#40d659] bg-transparent border-[1px] rounded-md border-[#40d659] px-4 py-2 h-[44px]'
                             
                             
@@ -341,7 +374,7 @@ otp:"",
                               <div className='w-1/4 ' >
                                 <PrimaryButton
                                   type="button"
-                                  eventname={handleVerify}
+                                  onClick={() => handleVerify(values)}
                                   textcolor="#fafafa"
                                   label="Verify"
                                   bgcolor='#40d659'

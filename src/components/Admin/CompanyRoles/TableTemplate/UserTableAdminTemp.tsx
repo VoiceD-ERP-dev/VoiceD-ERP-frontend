@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
 import PrimaryButton from "../../../FormElements/PrimaryButon";
-import AddSalesAgent from "../../Modal/AddSalesAgent";
 import SalesAgentEdit from "../../Modal/SalesAgentEdit";
+import AddSystemUser from "../../Modal/AddSystemUser";
 
 
 
@@ -43,7 +43,7 @@ interface CheckedRows {
 
 
 
-const SaTableAdminSATemp = ({ tablehead }: TableProps) => {
+const UserTableAdminTemp = ({ tablehead }: TableProps) => {
 
 
 
@@ -119,10 +119,17 @@ const SaTableAdminSATemp = ({ tablehead }: TableProps) => {
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <div className="w-full flex justify-end items-end mb-3">
+      <div className="w-full flex justify-end items-end mb-3 space-x-3">
+      <div className="md:w-1/4 w-1/2 flex flex-row justify-center items-center ">
+  <select
+className="w-full h-full p-2 bg-[#fafafa] outline-none text-[#1a1a1a] text-[12px] form-control form-field-input cursor-pointer"
+> 
+<option value="" disabled></option>
+</select>
+  </div>
   <div className="md:w-1/4 w-1/2 flex flex-row justify-center items-center">
   <PrimaryButton
-label="Add New Agent"
+label="Add New System User"
 textcolor="#ffffff"
 bgcolor="#b76bff"
 type="button"
@@ -334,7 +341,7 @@ eventname={openSalesAgentPopUp}
       </div>
 
       {isSalesAgentPopUpOpen && (
-          <AddSalesAgent onClose={closeSalesAgentPopUp} />
+          <AddSystemUser onClose={closeSalesAgentPopUp} />
         )}
 
 
@@ -348,7 +355,7 @@ eventname={openSalesAgentPopUp}
   );
 };
 
-export default SaTableAdminSATemp;
+export default UserTableAdminTemp;
 
 
 

@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import Popup from 'reactjs-popup';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Formik, Field, Form, ErrorMessage , FormikHelpers } from "formik";
+import { Formik, Field, Form, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import InputFieldFilled from '../../FormElements/InputFiledFilled';
 import PrimaryButton from '../../FormElements/PrimaryButon';
 import Cookies from 'js-cookie';
-import Succeed from '../Modal/Succeed';
-import { Link, useNavigate } from 'react-router-dom';
+import Succeed from './Succeed';
+import SelectField from '../../FormElements/SelectField';
 
 
 interface SalesAgentProps {
 
   onClose: () => void;
   handleRegister: (values: any) => void;
-  
+
 }
 
 
@@ -36,6 +36,7 @@ const SalesAgentRegSchema = Yup.object().shape({
     .required("Required"),
   email: Yup.string().email().required("Required"),
   contactNo: Yup.string().required("Required"),
+  userRole: Yup.string().required("Required"),
   password: Yup.string()
     .min(8, 'must contain at least 6 characters')
     .matches(/[a-z]/, "must contain a LOWERCASE Letter")
@@ -49,19 +50,19 @@ const SalesAgentRegSchema = Yup.object().shape({
 
 
 
-const AddSalesAgent: React.FC<SalesAgentProps> = ({ onClose  }) => {
+const AddSystemUser: React.FC<SalesAgentProps> = ({ onClose }) => {
 
   const [showSucceedModal, setShowSucceedModal] = useState(false);
 
-  const [ loading, setLoading ] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
+
 
   const handleCloseModal = () => {
     // Close the Succeed modal
     setShowSucceedModal(false);
   };
-  
-  
+
+
   const handleRegister = async (values: any, { resetForm }: FormikHelpers<any>) => {
     try {
       setLoading(true);
@@ -73,7 +74,7 @@ const AddSalesAgent: React.FC<SalesAgentProps> = ({ onClose  }) => {
         'Content-Type': 'application/json' // Add this line
       };
       console.log('Registered:', JSON.stringify(values, null, 2));
-  
+
       const jsonData = JSON.stringify({
         firstname: values.firstName || "John",
         lastname: values.lastName || "Doe",
@@ -82,39 +83,40 @@ const AddSalesAgent: React.FC<SalesAgentProps> = ({ onClose  }) => {
         password: values.password || "1234",
         phone: values.contactNo || "1234567890",
         agentNo: values.agentID || "123456789",
+        userRole: values.userRole || "admin",
       });
-  
+
       // Make an HTTP POST request to the endpoint with the registration data and headers
       const response = await fetch('http://localhost:5001/api/salesmen/register', {
         method: 'POST',
         headers: headers,
         body: jsonData
       });
-  
+
       // Check if the request was successful
       if (response.ok) {
         // Log success message or handle success response
         console.log('Registration successful!');
         setShowSucceedModal(true);
         resetForm();
-  
+
       } else if (response.status === 401) {
         // Redirect to SignIn.tsx if unauthorized
         console.error('Unauthorized! Redirecting to sign-in page...');
-        
-  
+
+
       } else {
         // Handle error response
         console.error('Registration failed:', response.statusText);
       }
 
       setLoading(false);
-      
+
     } catch (error) {
       console.error('Error:', error);
       setLoading(false);
     }
-  
+
   };
 
 
@@ -128,7 +130,7 @@ const AddSalesAgent: React.FC<SalesAgentProps> = ({ onClose  }) => {
             close();
           }}
           handleRegister={handleRegister}
-          handleCloseModal={handleCloseModal} 
+          handleCloseModal={handleCloseModal}
           showSucceedModal={showSucceedModal}
           loading={loading}
         />
@@ -141,7 +143,7 @@ const AddSalesAgent: React.FC<SalesAgentProps> = ({ onClose  }) => {
 
 
 
-const SalesAgentContent: React.FC<SalesAgentProps & { handleRegister: (values: any) => void, handleCloseModal: () => void, showSucceedModal: boolean , loading: boolean}> = ({ onClose, handleRegister, handleCloseModal, showSucceedModal , loading }) => (
+const SalesAgentContent: React.FC<SalesAgentProps & { handleRegister: (values: any) => void, handleCloseModal: () => void, showSucceedModal: boolean, loading: boolean }> = ({ onClose, handleRegister, handleCloseModal, showSucceedModal, loading }) => (
   <div className='w-screen h-screen bg-[#565656] bg-opacity-40 backdrop-blur-sm relative flex justify-center items-center z-20 '>
     <div className='modal p-5 bg-white dark:bg-black rounded-lg md:w-[50%] lg:w-[50%] max-h-150 border-[2px] border-[#b76bff] w-full overflow-auto'>
       <div className='flex flex-row justify-end w-full'>
@@ -159,7 +161,7 @@ const SalesAgentContent: React.FC<SalesAgentProps & { handleRegister: (values: a
         </div>
       </div>
 
-      <h3 className='text-lg text-[#161616] font-semibold dark:text-[#ffffff]'>Sales Agent Registration Form</h3>
+      <h3 className='text-lg text-[#161616] font-semibold dark:text-[#ffffff]'>System User Registration Form</h3>
 
       <Formik
         initialValues={{
@@ -170,6 +172,7 @@ const SalesAgentContent: React.FC<SalesAgentProps & { handleRegister: (values: a
           password: "",
           email: "",
           contactNo: "",
+          userRole: "",
 
         }}
         validationSchema={SalesAgentRegSchema}
@@ -187,15 +190,27 @@ const SalesAgentContent: React.FC<SalesAgentProps & { handleRegister: (values: a
             <div className='w-full flex md:flex-row justify-between md:space-x-3 flex-col '>
 
               <InputFieldFilled
-                label="Agent ID"
+                label="Employee ID"
                 name="agentID"
                 type="text"
                 boxcolor="transparent"
-                placeholder="Agent ID"
+                placeholder="Employee ID"
                 handleChange={handleChange}
                 values={values}
                 icon="CoPresent"
               />
+
+              <SelectField
+                label='User role'
+                name='userRole'
+                headingvalue='Select user Role'
+                boxcolor='transparent'
+                options={['superadmin', 'admin', 'sales', 'finance']}
+                icon="Payments"
+                handleChange={handleChange}
+                values={values}
+              />
+
             </div>
 
 
@@ -298,14 +313,14 @@ const SalesAgentContent: React.FC<SalesAgentProps & { handleRegister: (values: a
             </div>
 
 
-            {loading && 
+            {loading &&
 
-<div className='w-full mt-2 text-center'>
-<p className='text-[12px]'>Please wait...</p>
-</div>
+              <div className='w-full mt-2 text-center'>
+                <p className='text-[12px]'>Please wait...</p>
+              </div>
 
 
-}
+            }
 
 
             <Succeed isOpen={showSucceedModal} onClose={handleCloseModal} />
@@ -326,4 +341,4 @@ const SalesAgentContent: React.FC<SalesAgentProps & { handleRegister: (values: a
 
 
 
-export default AddSalesAgent;
+export default AddSystemUser;
