@@ -74,6 +74,9 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
       } else if (userRole === 'admin'){
         onLogin('admin');
         navigate('/adminDashboard');
+      } else if (userRole === 'finance'){
+        onLogin('finance');
+        navigate('/financeDashboard');
       }
       
       else if (userRole === 'sales') {
