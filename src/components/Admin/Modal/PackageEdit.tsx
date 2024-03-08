@@ -5,11 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import PrimaryButton from '../../FormElements/PrimaryButon';
+import InputFieldFilled from '../../FormElements/InputFiledFilled';
 
 
 
 interface PackEditContentProps {
-  packDataItem?: {
+  packDataItem: {
     packageName: string;
     price: string;
     features:string[],
@@ -66,12 +67,12 @@ const PackEditContent = ({ packDataItem, onClose }: PackEditContentProps) => {
           </div>
         </div>
 
-        <h3 className='text-lg text-[#161616] font-semibold dark:text-[#ffffff]'>Invoice Payment Clearance</h3>
+        <h3 className='text-lg text-[#161616] font-semibold dark:text-[#ffffff]'>Package Edit</h3>
 
         <Formik
           initialValues={{
-            packageName: "",
-            price: "",
+            packageName: packDataItem.packageName,
+            price: packDataItem.price,
           }}
           validationSchema={PackageSchema}
           onSubmit={handleEdit}
@@ -86,25 +87,29 @@ const PackEditContent = ({ packDataItem, onClose }: PackEditContentProps) => {
               {packDataItem && (
                 <Form className="w-full">
                   <div className='w-full flex flex-col justify-between space-y-3'>
-                    <div className='flex flex-col mt-2 space-y-1'>
-                      <table className='md:w-1/2 w-full'>
-                        <tr>
-                          <td className=''>
-                            <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Invoice ID :</span>
-                          </td>
-                          <td>
-                            <span className=' md:text-[14px] text-[12px]'> {packDataItem.packageName}</span>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className=''>
-                            <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Invoice Date :</span>
-                          </td>
-                          <td>
-                            <span className=' md:text-[14px] text-[12px]'> {packDataItem.price}</span>
-                          </td>
-                        </tr>
-                      </table>
+                    <div className='flex flex-row  space-x-3'>
+
+                    <InputFieldFilled
+                        label="packageName"
+                        name="packageName"
+                        type="text"
+                        boxcolor="transparent"
+                        placeholder="packageName"
+                        handleChange={handleChange}
+                        values={values}
+                        icon="AlternateEmail"
+                      />
+                      <InputFieldFilled
+                        label="price"
+                        name="price"
+                        type="text"
+                        boxcolor="transparent"
+                        placeholder="price"
+                        handleChange={handleChange}
+                        values={values}
+                        icon="AlternateEmail"
+                      />
+
                     </div>
                   </div>
 
