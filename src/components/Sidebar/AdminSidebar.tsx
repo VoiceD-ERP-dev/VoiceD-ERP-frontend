@@ -979,7 +979,7 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) =
                                 }`}
                             >
 
-                              Sub Admin
+                              Employees
                             </NavLink>
                           </li>
 
