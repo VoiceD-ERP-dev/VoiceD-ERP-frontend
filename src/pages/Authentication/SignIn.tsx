@@ -68,10 +68,15 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
       const userRole = await authenticate(values.username, values.password, jwtToken);
       setLoading(false);
   
-      if (userRole === 'superadmin' || userRole === 'admin') {
+      if (userRole === 'superadmin') {
         onLogin('superadmin');
         navigate('/adminDashboard');
-      } else if (userRole === 'sales') {
+      } else if (userRole === 'admin'){
+        onLogin('admin');
+        navigate('/adminDashboard');
+      }
+      
+      else if (userRole === 'sales') {
         onLogin('sales');
         navigate('/dashboard');
       } else {
