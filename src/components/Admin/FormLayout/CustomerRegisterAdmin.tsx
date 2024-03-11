@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, json, useAsyncError, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
 import DefaultAdminLayout from '../../../layout/DefaultAdminLayout';
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from "formik";
@@ -8,7 +8,9 @@ import PrimaryButton from '../../FormElements/PrimaryButon';
 import InputFileUpload from '../../FormElements/InputFileUpload';
 import Cookies from 'js-cookie';
 import Succeed from '../Modal/Succeed';
-import { useState , useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import OTPInputField from '../../FormElements/OtpInput';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 
 
 
@@ -32,12 +34,22 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
   const [showSucceedModal, setShowSucceedModal] = useState(false);
   const [otpCode, setOtpCode] = useState<string | null>(null);
-  const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [isOtpIncorrect, setIsOtpIncorrect] = useState(false);
   const [showOTPWarning, setShowOTPWarning] = useState(false);
   const [confirmVerify, setConfirmVerify] = useState(false);
   const [timer, setTimer] = useState({ minutes: 5, seconds: 0 });
   const [loading, setLoading] = useState(false);
   const [showVerifyBox, setShowVerifyBox] = useState(false);
+  const [isSendingOTP, setIsSendingOTP] = useState(false);
+  const [isContactMissing, setIsContactMissing] = useState(false);
+  const [buttonBorderColor, setButtonBorderColor] = useState("#40d659");
+  const [buttonTextColor, setButtonTextColor] = useState("#40d659");
+  const [isSendButtonEnabled, setIsSendButtonEnabled] = useState(true);
+  const [isTimerExpired, setIsTimerExpired] = useState(true);
+  const [showResend, setShowResend] = useState(false);
+  const [showSendOTP, setShowSendOTP] = useState(true);
+  const [isResendButtonEnabled, setIsResendButtonEnabled] = useState(false);
+
 
 
   const CustomerRegistrationSchema = Yup.object().shape({
@@ -56,7 +68,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
   });
 
-  
+
 
   const handleCloseModal = () => {
     // Close the Succeed modal
@@ -65,31 +77,57 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
+
+
+
   const startTimer = () => {
     const interval = setInterval(() => {
+      setTimer((prevTimer) => {
+        const newSeconds =
+          prevTimer.seconds === 0 ? 59 : prevTimer.seconds - 1;
+        const newMinutes =
+          prevTimer.seconds === 0 ? prevTimer.minutes - 1 : prevTimer.minutes;
+
+        if (newMinutes === 0 && newSeconds === 0) {
+          clearInterval(interval);
+          setIsSendButtonEnabled(true);
+          setIsResendButtonEnabled(true); 
+          setButtonBorderColor("#40d659"); // Green border color
+          setButtonTextColor("#40d659"); // Green text color
+          setIsTimerExpired(true);
+        }
+
+  
+
+        return { minutes: newMinutes, seconds: newSeconds };
+      });
+
+      // Stop the interval if it reaches 00:00
       if (timer.minutes === 0 && timer.seconds === 0) {
         clearInterval(interval);
-        // Handle timer expiration, e.g., show a message or resend OTP
-      } else {
-        setTimer((prevTimer) => {
-          const newSeconds = prevTimer.seconds === 0 ? 59 : prevTimer.seconds - 1;
-          const newMinutes = prevTimer.seconds === 0 ? prevTimer.minutes - 1 : prevTimer.minutes;
-          return { minutes: newMinutes, seconds: newSeconds };
-        });
       }
-    }, 2000); 
+    }, 2000);
   };
 
 
 
+  const handleResendOTP = (values: any) => {
+    // Implement the logic to resend OTP
+    // Disable the Resend OTP button and start the timer
+    showVerifyEdit(values)
+    setIsResendButtonEnabled(false);
+    startTimer();
+  };
 
-  const handleRegister = ( values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType> ) => {
+
+
+  const handleRegister = (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>) => {
     if (!confirmVerify) {
       // The mobile number is not verified
       setShowOTPWarning(true);
       return;
     }
-  
+
     setShowOTPWarning(false); // Reset the warning flag
     console.log('Now register the customer');
     // Additional logic for customer registration
@@ -97,17 +135,31 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     resetForm();
     setConfirmVerify(false);
   };
-  
+
 
 
 
 
   const showVerifyEdit = (values: any) => {
+
+
+
+
+    if (!values.contact) {
+      setIsContactMissing(true)
+      console.error('Must include a contact number');
+      return;
+    }
+
+
+    setIsContactMissing(false)
     setTimer({ minutes: 5, seconds: 0 }); // Reset the timer when triggered
     setShowVerifyBox(true);
     setShowOTPWarning(false);
     startTimer();
     console.log(values.contact);
+
+
     // Assuming `values.contact` contains the phone number
     let phoneNo = values.contact;
 
@@ -132,50 +184,63 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
       },
       body: JSON.stringify(payload)
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to send OTP');
-      }
-      // Handle success response if needed
-      console.log('OTP sent successfully');
-    })
-    .catch(error => {
-      console.error('Error sending OTP:', error.message);
-      // Handle error if needed
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to send OTP');
+        }
+        console.log('OTP sent successfully');
+        setShowSendOTP(false)
+        setShowResend(true)
+        // Handle success response if needed
+        console.log(response.json().then(otpresult => {
+          console.log('OTP CODE: ', otpresult.otp)
+        }))
+
+
+        setButtonBorderColor("#565656");
+        setButtonTextColor("#565656");
+        setIsSendButtonEnabled(false);
+      })
+      .catch(error => {
+        console.error('Error sending OTP:', error.message);
+        // Handle error if needed
+      })
+      .finally(() => {
+        setIsSendingOTP(true); // Enable the button after completing the request
+      });
 
   };
 
-  useEffect(() => {
-    if (showVerifyBox) {
-      startTimer();
-    }
-  }, [showVerifyBox]);
+
+
+
+
+
 
   const handleVerify = async (values: any) => {
     try {
-      setConfirmVerify(true);
+
       setShowOTPWarning(false);
-      
+
       const { otp, contact } = values; // Destructure otp and contact from values
-  
+
       // Assuming `contact` contains the phone number
       let phoneNo = contact;
-  
+
       // Remove any whitespace and hyphens from the phone number
       phoneNo = phoneNo.replace(/\s|-/g, '');
-  
+
       // If the phone number starts with '0', replace it with '+94'
       if (phoneNo.startsWith('0')) {
         phoneNo = '+94' + phoneNo.substring(1);
       }
-  
+
       // Create the JSON payload
       const payload = {
         userOTP: otp,
         phoneNo: phoneNo
       };
-  
+
       // Make the HTTP POST request to the endpoint
       const response = await fetch('http://localhost:5001/api/otp/compareotp', {
         method: 'POST',
@@ -184,24 +249,58 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
         },
         body: JSON.stringify(payload)
       });
-  
+
       const responseData = await response.json();
-  
+
       if (!response.ok) {
         throw new Error(responseData.message || 'Failed to verify OTP');
       }
-  
-      console.log('OTP verified successfully!');
+
+
+      setConfirmVerify(true)
+      setIsOtpIncorrect(false)
+      console.log('OTP verified successfully!')
+      setShowVerifyBox(false)
+
+      if (responseData.message === 'Mobile Number Verified')
+      {
+        setShowResend(false);
+        setShowSendOTP(false);
+      }
+
       // Additional logic after OTP verification
-    } catch (error: any) { // Explicitly type 'error' as 'any' or 'Error'
+    } catch (error: any) {
+
       console.error('Error verifying OTP:', error.message);
-      // Show user-friendly error message to the user
-      //lert(error.message || 'Failed to verify OTP. Please try again later.');
-      // Handle error if needed
+      if (error.message === 'OTP is incorrect') {
+        setIsOtpIncorrect(true)
+      }
+
+
     }
   };
-  
-  
+
+
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (timer.minutes === 0 && timer.seconds === 0) {
+        clearInterval(interval);
+
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [timer]);
+
+
+  useEffect(() => {
+    if (showVerifyBox) {
+      setIsSendButtonEnabled(false); // Disable the button when starting the timer
+      startTimer();
+    }
+  }, [showVerifyBox]);
+
 
 
   return (
@@ -228,7 +327,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                   email: "",
                   address: "",
                   contact: "",
-                  otp:"",
+                  otp: "",
                   nicDoc: null,  // Add these lines
                   brDoc: null,
                   otherDoc: null,
@@ -323,8 +422,8 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
                     <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
                       <div className='w-1/2 flex justify-start items-end flex-row space-x-2'>
-                        <div className='w-3/4 ' >
-                          <InputField
+                        <div className='w-2/3 ' >
+                          <OTPInputField
                             label="Contact"
                             name="contact"
                             type="text"
@@ -333,24 +432,50 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                             handleChange={handleChange}
                             values={values}
                             icon="LocalPhone"
+                            disabled={confirmVerify}
                           />
+
                         </div>
 
-                        <div className='w-1/4 ' >
-                          <button
-                            type="button"
-                            onClick={() => showVerifyEdit(values)}
-                            className='text-[#40d659] bg-transparent border-[1px] rounded-md border-[#40d659] px-4 py-2 h-[44px]'
-                            
-                            
-                          >Send OTP</button>
+                        <div className='w-1/3 ' >
+
+                          {
+                            showSendOTP && (
+                              <button
+                              type="button"
+                              onClick={() => {
+                                if (isTimerExpired) {
+                                  showVerifyEdit(values);
+                                }
+                              }}
+                              className='text-[#40d659] bg-transparent border-[1px] rounded-md border-[#40d659] px-4 py-2 h-[44px]'
+                              style={{ borderColor: buttonBorderColor, color: buttonTextColor }}
+                            >
+                              Send OTP
+                            </button>
+                            )
+                          }
+
+                          {
+                            showResend && (
+                              <button
+                              type="button"
+                              onClick={()=>handleResendOTP(values)}
+                              disabled={!isResendButtonEnabled}
+                              className='text-[#40d659] bg-transparent border-[1px] rounded-md border-[#40d659] px-4 py-2 h-[44px]'
+                              style={{ borderColor: buttonBorderColor, color: buttonTextColor }}
+                            >
+                              Resend OTP
+                            </button>
+                            )
+                          }
+                        
                         </div>
-
-
                       </div>
 
-
                     </div>
+
+
                     {showVerifyBox && (
 
                       <div className='w-full flex flex-col justify-between mt-5'>
@@ -385,18 +510,18 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
                             <div className=' w-full flex md:flex-row justify-between flex-col mt-2'>
                               <span className='font-semibold text-[#a855f7]'>
-                              <span className='font-semibold text-[#a855f7]'>
-              {`${String(timer.minutes).padStart(2, '0')}:${String(timer.seconds).padStart(2, '0')}`}
-            </span>
-            
+                                <span className='font-semibold text-[#a855f7]'>
+                                  {timer.minutes >= 0 && timer.seconds >= 0
+                                    ? `${String(timer.minutes).padStart(2, '0')}:${String(timer.seconds).padStart(2, '0')}`
+                                    : '00:00'}
+                                </span>
+
+
+
                               </span>
-                              <span className='text-[#a855f7] cursor-pointer'>Resend Code</span>
+
                             </div>
-                            {
-                              confirmVerify && (
-                                <p className='text-[12px] text-green-600'>Mobile number Verified!</p>
-                              )
-                            }
+
                           </div>
 
 
@@ -409,11 +534,21 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                     )}
 
 
+                    {isContactMissing && (
+                      <p className='text-red-600 text-[12px] mt-2'>Please Enter your valid mobile Number</p>
+                    )}
 
-
-{showOTPWarning && (
-              <p className='text-red-600 text-[12px] mt-2'>Please Verify the Mobile Number before continuing</p>
-            )}
+                    {showOTPWarning && (
+                      <p className='text-red-600 text-[12px] mt-2'>Please Verify the Mobile Number before continuing</p>
+                    )}
+                    {
+                      confirmVerify && (
+                        <p className='text-[12px] text-green-600'>Mobile number Verified!</p>
+                      )
+                    }
+                    {isOtpIncorrect && (
+                      <p className='text-red-600 text-[12px] mt-2'>Incorrect OTP. Please Enter the correct OTP.</p>
+                    )}
 
 
 

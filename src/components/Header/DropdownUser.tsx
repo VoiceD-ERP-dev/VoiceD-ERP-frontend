@@ -13,6 +13,7 @@ interface UserProps {
 function username() {
   // Retrieve the JWT token from cookies
   const jwtToken: string | undefined = Cookies.get('jwtToken');
+  // console.log('JWT Token:', jwtToken);
 
   // Check if jwtToken is undefined
   if (!jwtToken) {

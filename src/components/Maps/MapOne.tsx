@@ -4,6 +4,13 @@ import { useEffect } from 'react';
 import '../../js/us-aea-en';
 
 const MapOne = () => {
+
+
+  const ontouchmove = (event: any) => {
+    console.log('Touch Move Event:', event);
+  };
+
+
   useEffect(() => {
     const mapOne = new jsVectorMap({
       selector: '#mapOne',
@@ -38,8 +45,15 @@ const MapOne = () => {
         },
       },
     });
-    mapOne;
-  });
+
+    // Add passive: true to the touchmove event listener
+    mapOne.container.addEventListener('touchmove', ontouchmove, { passive: true });
+
+    return () => {
+      // Cleanup the event listener when the component unmounts
+      mapOne.container.removeEventListener('touchmove', ontouchmove);
+    };
+  }, []);
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-7">

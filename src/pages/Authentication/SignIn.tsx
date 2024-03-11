@@ -57,12 +57,12 @@ const SignIn: React.FC<SignInProps> = ({ onLogin }) => {
       const jwtToken = response.data.accessToken;
   
       // // Log the user
-      // console.log('Logged in user:', values.username);
+      console.log('Logged in user:', values.username);
   
       // // Log the JWT token
-      // console.log('JWT Token:', jwtToken);
+      console.log('JWT Token:', jwtToken);
   
-      // Cookies.set('jwtToken', jwtToken);
+      Cookies.set('jwtToken', jwtToken);
 
       // Assuming you have an authentication function that returns the user role
       const userRole = await authenticate(values.username, values.password, jwtToken);
