@@ -25,14 +25,14 @@ function username() {
 
   // Stringify the decoded token to JSON format
   const jsonUser = JSON.stringify(decoded, null, 2);
-  console.log(jsonUser);
+
 
   // Parse the JSON string to an object
   const userObject = JSON.parse(jsonUser);
 
   // Extract and log the username
   const username = userObject.user.firstname +" "+ userObject.user.lastname;
-  console.log('Username:', username);
+
 
   return username;
 }

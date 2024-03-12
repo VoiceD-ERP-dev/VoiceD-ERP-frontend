@@ -16,6 +16,7 @@ import { useState } from 'react';
 
 
 type CustomerFormValuesType = {
+  id: string;
   firstName: string;
   lastName: string;
   nicNo: string;
@@ -53,80 +54,91 @@ function CreateInvoice({ userRole }: { userRole: string }) {
 
 const [ loading, setLoading ] = useState(false);
 
-  const handleRegister = async (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>): Promise<void> => {
-    try {
+  const findCustomer =async (values: any, setValues) => {
+    console.log(values.contact);
+    let phoneNo = values.contact;
 
-      setLoading(true);
+    // Extract the JWT token from local storage
+    const jwtToken = Cookies.get('jwtToken');
+
+    // Construct the headers object with the bearer token
+    const headers = {
+      'Authorization': `Bearer ${jwtToken}`,
+    };
+
+        // Make an HTTP GET request to the endpoint with the phone number and headers
+    const response = await fetch(`http://localhost:5001/api/customers/findbyPhone/${phoneNo}`, {
+        method: 'GET',
+        headers: headers
+    });
+
+    // Check if the request was successful
+    if (response.ok) {
+        // Parse the response body as JSON
+        const data = await response.json();
+        console.log('Customer data:', data);
+        const customer = data[0]; // Assuming you want the first customer if multiple found
+        setValues({
+          ...values,
+          id:customer._id,
+          firstName: customer.firstname,
+          lastName: customer.lastname,
+          email: customer.email,
+          address: customer.address
+          // Update other fields similarly if needed
+        });
+    } else if (response.status === 401) {
+        // Handle unauthorized access
+        console.error('Unauthorized!'); // You can add additional handling if needed
+    } else {
+        // Handle other error responses
+        console.error('Error:', response.statusText);
+    }
+    
+  }
+
+  const handleRegister = async (values: any): Promise<void> => {
+    console.log(values.id);
+    
+    try {
       // Extract the JWT token from local storage
       const jwtToken = Cookies.get('jwtToken');
   
       // Construct the headers object with the bearer token
       const headers = {
         'Authorization': `Bearer ${jwtToken}`,
-        
+        'Content-Type': 'application/json', // Make sure to set the content type
       };
   
-      // Construct the registration data object
-      const registrationData = new FormData();
-      registrationData.append('firstname', values.firstName || "John");
-      registrationData.append('lastname', values.lastName || "Doe");
-      registrationData.append('nicNo', values.nicNo || "123456789");
-      registrationData.append('brId', values.brid || "234");
-      registrationData.append('email', values.email || "shanbasnayake98@gmail.com");
-      registrationData.append('phone', values.contact || "1234567890");
-      registrationData.append('address', values.address || "123 Main Street, City");
-      registrationData.append('invoice[0][paymentType]', values.payment || "Card");
-      registrationData.append('invoice[0][order][description]', "Order for invoice for A");
-      registrationData.append('invoice[0][package][package]', values.package || "Basic");
-      registrationData.append('invoice[0][package][startupFee]', "2990");
-  
-      // Append files to the formData if they are not null
-      if (values.nicDoc !== null) {
-        registrationData.append('nicDoc', values.nicDoc);
-      }
-  
-      if (values.brDoc !== null) {
-        registrationData.append('brDoc', values.brDoc);
-      }
-
-
-      if (values.otherDoc !== null) {
-        registrationData.append('otherDoc', values.otherDoc);
-      }
+      // Construct the payload
+      const payload = {
+        customerId: values.id,
+        paymentType: values.payment,
+        package: values.package,
+        startupFee: "2990"
+      };
+      console.log(payload);
       
-
-
-      // Make an HTTP POST request to the endpoint with the registration data and headers
-      const response = await fetch('https://voiced-erp-backend.onrender.com/api/customers/cv', {
+      // Make the HTTP POST request to the endpoint
+      const response = await fetch('http://localhost:5001/api/invoices/create', {
         method: 'POST',
         headers: headers,
-        body: registrationData
+        body: JSON.stringify(payload)
       });
   
-      // Check if the request was successful
+      // Handle response status
       if (response.ok) {
-        // Log success message or handle success response
-        console.log('Registration successful!');
-        // Open the Succeed modal
-        setShowSucceedModal(true);
-      } else if (response.status === 401) {
-        // Redirect to SignIn.tsx if unauthorized
-        console.error('Unauthorized! Redirecting to sign-in page...');
-        navigate('/'); // Assuming 'navigate' is a function from react-router-dom
-    
+        console.log('Invoice created successfully!');
       } else {
-        // Handle error response
-        console.error('Registration failed:', response.statusText);
+        console.error('Error:', response.statusText);
       }
-      setLoading(false);
-      resetForm();
-    } catch (error) {
-      console.error('Error:', error);
-      setLoading(false);
+    } catch (error: any) { // Explicitly type 'error' as 'any' or 'Error'
+      console.error('Error:', error.message); // Fix typo here
     }
     console.log(values);
   };
-
+  
+  
 
 
   const handleCloseModal = () => {
@@ -153,6 +165,7 @@ const [ loading, setLoading ] = useState(false);
             <div className="p-6.5">
               <Formik
                 initialValues={{
+                  id:"",
                   firstName: "",
                   lastName: "",
                   nicNo: "",
@@ -172,7 +185,7 @@ const [ loading, setLoading ] = useState(false);
 
 
 
-                {({ errors, touched, handleChange, values }) => (
+                {({ errors, touched, handleChange,values, setValues, }) => (
 
                   <Form className=" w-full">
 
@@ -194,6 +207,7 @@ const [ loading, setLoading ] = useState(false);
                   <PrimaryButton
                         type="button"
                         // eventname={handleRegister}
+                        onClick={() => findCustomer(values, setValues)}
                         bgcolor='#a855f7'
                         textcolor="#fafafa"
                         label="Search"
@@ -220,6 +234,7 @@ const [ loading, setLoading ] = useState(false);
                         placeholder="First Name"
                         handleChange={handleChange}
                         values={values}
+                        disabled={true}
                       />
                       <InputField
                         label="Last Name"
@@ -230,6 +245,7 @@ const [ loading, setLoading ] = useState(false);
                         handleChange={handleChange}
                         values={values}
                         icon="AccountCircle"
+                        disabled={true}
                       />
                     </div>
 
@@ -245,6 +261,7 @@ const [ loading, setLoading ] = useState(false);
                         handleChange={handleChange}
                         values={values}
                         icon="AlternateEmail"
+                        disabled={true}
                       />
                       
                       <InputField
@@ -255,6 +272,7 @@ const [ loading, setLoading ] = useState(false);
                       placeholder="Address"
                       handleChange={handleChange}
                       values={values}
+                      disabled={true}
                       icon="Map"
                     />
                     </div>
@@ -328,7 +346,8 @@ const [ loading, setLoading ] = useState(false);
 
                       <PrimaryButton
                         type="submit"
-                        // eventname={handleRegister}
+                        onClick={() => handleRegister(values)}
+                        
                         textcolor="#fafafa"
                         label="Place Invoice"
                         colorfrom='#c026d3'
@@ -363,3 +382,7 @@ const [ loading, setLoading ] = useState(false);
 }
 
 export default CreateInvoice
+function resetForm() {
+  throw new Error('Function not implemented.');
+}
+

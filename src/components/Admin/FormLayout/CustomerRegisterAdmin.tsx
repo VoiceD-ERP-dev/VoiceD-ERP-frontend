@@ -29,7 +29,7 @@ type CustomerFormValuesType = {
 
 
 function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
-
+  const navigate = useNavigate();
   const [showSucceedModal, setShowSucceedModal] = useState(false);
   const [otpCode, setOtpCode] = useState<string | null>(null);
   const [isOtpVerified, setIsOtpVerified] = useState(false);
@@ -83,7 +83,75 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
-  const handleRegister = ( values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType> ) => {
+  const handleRegister =async ( values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType> ) => {
+    try {
+
+      setLoading(true);
+      // Extract the JWT token from local storage
+      const jwtToken = Cookies.get('jwtToken');
+  
+      // Construct the headers object with the bearer token
+      const headers = {
+        'Authorization': `Bearer ${jwtToken}`,
+        
+      };
+  
+      // Construct the registration data object
+      const registrationData = new FormData();
+      registrationData.append('firstname', values.firstName || "John");
+      registrationData.append('lastname', values.lastName || "Doe");
+      registrationData.append('nicNo', values.nicNo || "123456789");
+      registrationData.append('brId', values.brid || "234");
+      registrationData.append('email', values.email || "shanbasnayake98@gmail.com");
+      registrationData.append('phone', values.contact || "1234567890");
+      registrationData.append('address', values.address || "123 Main Street, City");
+
+  
+      // Append files to the formData if they are not null
+      if (values.nicDoc !== null) {
+        registrationData.append('nicDoc', values.nicDoc);
+      }
+  
+      if (values.brDoc !== null) {
+        registrationData.append('brDoc', values.brDoc);
+      }
+
+
+      if (values.otherDoc !== null) {
+        registrationData.append('otherDoc', values.otherDoc);
+      }
+      
+
+
+      // Make an HTTP POST request to the endpoint with the registration data and headers
+      const response = await fetch('http://localhost:5001/api/customers/cv', {
+        method: 'POST',
+        headers: headers,
+        body: registrationData
+      });
+  
+      // Check if the request was successful
+      if (response.ok) {
+        // Log success message or handle success response
+        console.log('Registration successful!');
+        // Open the Succeed modal
+        setShowSucceedModal(true);
+      } else if (response.status === 401) {
+        // Redirect to SignIn.tsx if unauthorized
+        console.error('Unauthorized! Redirecting to sign-in page...');
+        navigate('/'); // Assuming 'navigate' is a function from react-router-dom
+    
+      } else {
+        // Handle error response
+        console.error('Registration failed:', response.statusText);
+      }
+      setLoading(false);
+      resetForm();
+    } catch (error) {
+      console.error('Error:', error);
+      setLoading(false);
+    }
+    console.log(values);
     if (!confirmVerify) {
       // The mobile number is not verified
       setShowOTPWarning(true);
@@ -102,11 +170,52 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
-  const showVerifyEdit = () => {
+  const showVerifyEdit = (values: any) => {
     setTimer({ minutes: 5, seconds: 0 }); // Reset the timer when triggered
     setShowVerifyBox(true);
     setShowOTPWarning(false);
     startTimer();
+    console.log(values.contact);
+    // Assuming `values.contact` contains the phone number
+    let phoneNo = values.contact;
+
+    // Remove any whitespace and hyphens from the phone number
+    phoneNo = phoneNo.replace(/\s|-/g, '');
+
+    // If the phone number starts with '0', replace it with '+94'
+    if (phoneNo.startsWith('0')) {
+      phoneNo = '+94' + phoneNo.substring(1);
+    }
+
+    // Create the JSON payload
+    const payload = {
+      phoneNo: phoneNo
+    };
+
+    // Make the HTTP POST request to the endpoint
+    fetch('http://localhost:5001/api/otp/sendopt', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to send OTP');
+      }
+      // Handle success response if needed
+      console.log('OTP sent successfully');
+      console.log(response.json().then(otpresult=>{
+        console.log("OTP:",otpresult.otp)
+      
+      }))
+    })
+    .catch(error => {
+      console.error('Error sending OTP:', error.message);
+      // Handle error if needed
+    });
+
   };
 
   useEffect(() => {
@@ -115,12 +224,56 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     }
   }, [showVerifyBox]);
 
-  const handleVerify = (values: any) => {
-    setConfirmVerify(true);
-    setShowOTPWarning(false);
-    console.log('Mobile Number Verified!');
-    // Additional logic for OTP verification
+  const handleVerify = async (values: any) => {
+    try {
+      setConfirmVerify(true);
+      setShowOTPWarning(false);
+      
+      const { otp, contact } = values; // Destructure otp and contact from values
+  
+      // Assuming `contact` contains the phone number
+      let phoneNo = contact;
+  
+      // Remove any whitespace and hyphens from the phone number
+      phoneNo = phoneNo.replace(/\s|-/g, '');
+  
+      // If the phone number starts with '0', replace it with '+94'
+      if (phoneNo.startsWith('0')) {
+        phoneNo = '+94' + phoneNo.substring(1);
+      }
+  
+      // Create the JSON payload
+      const payload = {
+        userOTP: otp,
+        phoneNo: phoneNo
+      };
+  
+      // Make the HTTP POST request to the endpoint
+      const response = await fetch('http://localhost:5001/api/otp/compareotp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+  
+      const responseData = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(responseData.message || 'Failed to verify OTP');
+      }
+  
+      console.log('OTP verified successfully!');
+      // Additional logic after OTP verification
+    } catch (error: any) { // Explicitly type 'error' as 'any' or 'Error'
+      console.error('Error verifying OTP:', error.message);
+      // Show user-friendly error message to the user
+      //lert(error.message || 'Failed to verify OTP. Please try again later.');
+      // Handle error if needed
+    }
   };
+  
+  
 
 
   return (
@@ -147,7 +300,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
                   email: "",
                   address: "",
                   contact: "",
-otp:"",
+                  otp:"",
                   nicDoc: null,  // Add these lines
                   brDoc: null,
                   otherDoc: null,
@@ -258,7 +411,7 @@ otp:"",
                         <div className='w-1/4 ' >
                           <button
                             type="button"
-                            onClick={showVerifyEdit}
+                            onClick={() => showVerifyEdit(values)}
                             className='text-[#40d659] bg-transparent border-[1px] rounded-md border-[#40d659] px-4 py-2 h-[44px]'
                             
                             
@@ -293,7 +446,7 @@ otp:"",
                               <div className='w-1/4 ' >
                                 <PrimaryButton
                                   type="button"
-                                  eventname={handleVerify}
+                                  onClick={() => handleVerify(values)}
                                   textcolor="#fafafa"
                                   label="Verify"
                                   bgcolor='#40d659'

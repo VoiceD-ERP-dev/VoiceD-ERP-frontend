@@ -24,7 +24,7 @@ interface InputFieldProps {
 
   
 
-function InputField({ label, name, type, placeholder, handleChange, values, boxcolor, icon }: InputFieldProps) {
+function InputField({ label, name, type, placeholder, handleChange, values, boxcolor, icon ,disabled }: InputFieldProps) {
 
     const IconComponent = MuiIcons[icon];
   const iconwrapper = {
@@ -63,6 +63,7 @@ function InputField({ label, name, type, placeholder, handleChange, values, boxc
           placeholder={placeholder}
           className="w-full h-full p-2 bg-transparent outline-none text-[#1a1a1a] text-[14px] form-control form-field-input"
           required
+          disabled={disabled} 
         />
       </div>
       <ErrorMessage

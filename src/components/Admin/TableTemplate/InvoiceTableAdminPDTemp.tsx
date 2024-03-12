@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
 import PDInvoiceEdit from "../Modal/PDInvoiceEdit";
+import axios from "axios";
 
 
 interface pendingInvoiceData {
   customerid: string;
-  payementMethod: string;
+  name: string;
+  createdAt: string;
+  invoiceid: string;
+  status: string;
+  paymentMethod: string;
+  agentid: string;
 }
 
 
@@ -65,8 +71,8 @@ const downloadSampleImage = () => {
 
 const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
 
-
-
+  const [invoices, setInvoices] = useState<pendingInvoiceData[]>([]);
+  const [selectedPDInvoice, setSelectedPDInvoice] = useState<pendingInvoiceData | null>(null);
   const [checkedRows, setCheckedRows] = useState<CheckedRows>({});
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredData, setFilteredData] = useState(pendingInvoiceData);
@@ -84,21 +90,37 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
     setCheckedRows(updatedCheckedRows);
   };
 
-  const handleRowCheckboxChange = (key: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRowCheckboxChange = (key: number) => async (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     setCheckedRows((prevCheckedRows) => ({
       ...prevCheckedRows,
       [key]: isChecked,
       all: false, // Uncheck "Select All" if an individual row is unchecked
     }));
-
+  
     const allChecked = Object.values({ ...prevCheckedRows, [key]: isChecked }).every(Boolean);
-
+  
     setCheckedRows((prevCheckedRows) => ({
       ...prevCheckedRows,
       all: allChecked,
     }));
+  
   };
+  
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
+  
+  const fetchInvoices = async () => {
+    try {
+      const response = await axios.get<pendingInvoiceData[]>('http://localhost:5001/api/invoices/all');
+      console.log('Response from the server:', response.data);
+      // Further processing of response data can be done here
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  
 
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -133,7 +155,7 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
   };
 
 
-  const [selectedPDInvoice, setSelectedPDInvoice] = useState<pendingInvoiceData | null>(null);
+
 
   const handleEdit = (pendingInvoiceDataItem: pendingInvoiceData) => {
     setSelectedPDInvoice(pendingInvoiceDataItem);

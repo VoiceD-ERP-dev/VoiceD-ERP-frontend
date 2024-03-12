@@ -72,7 +72,9 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
     return formattedDate;
   };
 
-
+  const downloadDocs = ()=>{
+    console.log("Downloaded");
+  }
 
 
   return (
@@ -217,7 +219,8 @@ const CustomerTableAdmin = ({ tablehead }: TableProps) => {
                     <h5 className="font-normal text-[#161616] dark:text-white text-[14px] md:text-[24px]">
                     <FontAwesomeIcon
                       className="hover:text-[#a855f7] cursor-pointer"
-                      icon={faCloudArrowDown} />
+                      icon={faCloudArrowDown} 
+                      onClick={() => downloadDocs()}/>
                     </h5>
                     <button 
                     className="px-4 py-2 rounded-md hover:bg-[#c281ff] bg-[#a855f7] text-[#fafafa]"

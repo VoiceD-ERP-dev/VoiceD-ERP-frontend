@@ -36,7 +36,7 @@ function CustomerInsight({userRole} : {userRole :  string}) {
           
           
 <CustomerTableSales 
-tablehead={["CustomerID", "Customer Name", "Registered On","Payment Status"]}
+tablehead={["CustomerID", "Customer Name", "Registered On"]}
 />
           
         
