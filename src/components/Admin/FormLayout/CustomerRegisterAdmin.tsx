@@ -260,7 +260,7 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
         setIsOtpIncorrect(true)
         setIsOtpExpired(false);
       }
-      if (error.message === 'OTP is expired' || error.message === 'Phone number not found' ) {
+      if (error.message === 'OTP is expired') {
         setIsOtpIncorrect(false)
         setIsOtpExpired(false);
         setIsOtpExpired(true);

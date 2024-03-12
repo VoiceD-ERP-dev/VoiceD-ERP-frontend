@@ -271,7 +271,7 @@ function App() {
             />
 
 
-            <Route
+<Route
               path="/invoices/pd-invoices"
               element={
                 <>
@@ -280,6 +280,42 @@ function App() {
                 </>
               }
             />
+
+            <Route
+              path="/invoices/ad-invoices"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Create Invoice" />
+                  <CreateInvoice userRole={userRole} />
+                </>
+              }
+            />
+
+
+            <Route
+              path="/supplierin/adsup-in"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Create Supplier Invoice" />
+                  <CreateSupplierInvoice userRole={userRole} />
+                </>
+              }
+            />
+
+
+
+
+            <Route
+              path="/purchase/mn-vendors"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Create Invoice" />
+                  <CreateInvoice userRole={userRole} />
+                </>
+              }
+            />
+
+
 
 
             <Route
@@ -293,13 +329,24 @@ function App() {
             />
 
 
-
             <Route
               path="/auth/sales-agents"
               element={
                 <>
                   <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
                   <SalesAgentAdmin userRole={userRole} />
+                </>
+              }
+            />
+
+
+
+            <Route
+              path="/vdservices/sm-ser"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Customer Insight" />
+                  <SocialPackages userRole={userRole} />
                 </>
               }
             />
