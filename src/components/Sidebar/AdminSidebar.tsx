@@ -727,8 +727,8 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) =
 
 
 
-                          <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-	 className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
+                          <svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" 
+	 className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 64 64" enableBackground="new 0 0 64 64" xmlSpace="preserve">
 <g>
 	<path className='fill-black dark:fill-white' d="M60,0H4C1.789,0,0,1.789,0,4v8c0,2.211,1.789,4,4,4v44c0,2.211,1.789,4,4,4h48c2.211,0,4-1.789,4-4V16
 		c2.211,0,4-1.789,4-4V4C64,1.789,62.211,0,60,0z M58,50.587L46.586,62H17.414L6,50.587V16h52V50.587z M6,60v-6.586L14.586,62H8
@@ -1015,8 +1015,8 @@ const AdminSidebar = ({ sidebarOpen, setSidebarOpen, userRole }: SidebarProps) =
 
 
 
-                            <svg version="1.1" id="SETTINGS" xmlns="http://www.w3.org/2000/svg" xmlns: xlink="http://www.w3.org/1999/xlink"
-                              className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 1800 1800" enable-background="new 0 0 1800 1800" xml: space="preserve" fill='none'>
+                            <svg version="1.1" id="SETTINGS" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink"
+                              className="w-6 h-6 text-gray-800 dark:text-white" viewBox="0 0 1800 1800" enableBackground="new 0 0 1800 1800" xmlSpace="preserve" fill='none'>
                               <g>
                                 <path className='fill-black dark:fill-white' d="M1468.436,32.467v188.211c-98.748,15.249-174.595,100.822-174.595,203.777s75.847,188.521,174.595,203.777
 		v1139.302c0,17.453,14.146,31.608,31.607,31.608c17.454,0,31.609-14.155,31.609-31.608V628.232

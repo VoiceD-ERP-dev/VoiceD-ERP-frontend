@@ -51,7 +51,6 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
   const [showSendOTP, setShowSendOTP] = useState(true);
   const [isResendButtonEnabled, setIsResendButtonEnabled] = useState(false);
   const [isOtpExpired, setIsOtpExpired] = useState(false);
-  const [resetCountdown, setResetCountdown] = useState<number>(0);
 
 
 
@@ -81,6 +80,39 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
+
+
+  // const startTimer = () => {
+  //   const interval = setInterval(() => {
+  //     setTimer((prevTimer) => {
+  //       const newSeconds =
+  //         prevTimer.seconds === 0 ? 59 : prevTimer.seconds - 1;
+  //       const newMinutes =
+  //         prevTimer.seconds === 0 ? prevTimer.minutes - 1 : prevTimer.minutes;
+
+  //       if (newMinutes === 0 && newSeconds === 0) {
+  //         clearInterval(interval);
+  //         setIsSendButtonEnabled(true);
+  //         setIsResendButtonEnabled(true);
+  //         setButtonBorderColor("#40d659"); // Green border color
+  //         setButtonTextColor("#40d659"); // Green text color
+  //         setIsTimerExpired(true);
+  //       }
+
+
+
+  //       return { minutes: newMinutes, seconds: newSeconds };
+  //     });
+
+  //     // Stop the interval if it reaches 00:00
+  //     if (timer.minutes === 0 && timer.seconds === 0) {
+  //       clearInterval(interval);
+  //     }
+  //   }, 2000);
+  // };
+
+
+
   const handleCountdownComplete = () => {
     // Your logic when the countdown is completed
     setIsSendButtonEnabled(true);
@@ -93,10 +125,11 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
   const handleResendOTP = (values: any) => {
+    // Implement the logic to resend OTP
+    // Disable the Resend OTP button and start the timer
     showVerifyEdit(values)
     setIsResendButtonEnabled(false);
-    // Trigger reset and start the countdown
-    setResetCountdown((prev) => prev + 1);
+    // startTimer();
     
   };
 
@@ -251,7 +284,10 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
         setShowSendOTP(false);
         setIsOtpExpired(false);
       }
-     
+      else if (responseData.message === 'OTP is expired') {
+        setIsOtpExpired(true);
+      }
+
       // Additional logic after OTP verification
     } catch (error: any) {
 
@@ -260,17 +296,23 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
         setIsOtpIncorrect(true)
         setIsOtpExpired(false);
       }
-      if (error.message === 'OTP is expired' || error.message === 'Phone number not found' ) {
-        setIsOtpIncorrect(false)
-        setIsOtpExpired(false);
-        setIsOtpExpired(true);
-      }
 
 
     }
   };
 
 
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (timer.minutes === 0 && timer.seconds === 0) {
+        clearInterval(interval);
+
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [timer]);
 
 
   useEffect(() => {
@@ -489,12 +531,40 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
                             <div className=' w-full flex md:flex-row justify-between flex-col mt-2'>
                               <span className='font-semibold text-[#a855f7]'>
-                              
+                                {/* <span className='font-semibold text-[#a855f7]'>
+                                  {timer.minutes >= 0 && timer.seconds >= 0
+                                    ? `${String(timer.minutes).padStart(2, '0')}:${String(timer.seconds).padStart(2, '0')}`
+                                    : '00:00'}
+                                </span> */}
+
+                                {/* <CountdownCircleTimer
+    isPlaying
+    duration={300}
+    colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+    colorsTime={[7, 5, 2, 0]}
+  >
+    {({ remainingTime }) => remainingTime}
+  </CountdownCircleTimer> */}
+
+                                {/* <CountdownCircleTimer
+  isPlaying
+  duration={300}
+  colors={['#004777', '#F7B801', '#A30000', '#A30000']}
+  colorsTime={[7, 5, 2, 0]}
+>
+  {({ remainingTime }) => {
+    const minutes = Math.floor(remainingTime / 60);
+    const seconds = remainingTime % 60;
+
+    // Add leading zero if necessary
+    const formattedTime = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+    return formattedTime;
+  }}
+</CountdownCircleTimer> */}
+
                                 <CountDown 
-                                onCountdownComplete={handleCountdownComplete}
-                                shouldStart={isResendButtonEnabled}
-                                resetKey={resetCountdown}
-                                />
+                                onCountdownComplete={handleCountdownComplete}/>
 
 
 
