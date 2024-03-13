@@ -1,17 +1,16 @@
-import { Link, json, useAsyncError, useNavigate } from 'react-router-dom';
-import Breadcrumb from '../../Breadcrumbs/Breadcrumb';
-import DefaultAdminLayout from '../../../layout/DefaultAdminLayout';
+import { Link, json, useNavigate } from 'react-router-dom';
+import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
+import DefaultAdminLayout from '../layout/DefaultAdminLayout';
 import { Formik, Field, Form, ErrorMessage, FormikHelpers } from "formik";
 import * as Yup from "yup";
-import InputField from '../../FormElements/InputFiled';
-import PrimaryButton from '../../FormElements/PrimaryButon';
-import InputFileUpload from '../../FormElements/InputFileUpload';
+import InputField from '../components/FormElements/InputFiled';
+import PrimaryButton from '../components/FormElements/PrimaryButon';
+import InputFileUpload from '../components/FormElements/InputFileUpload';
 import Cookies from 'js-cookie';
-import Succeed from '../Modal/Succeed';
+import Succeed from '../components/Admin/Modal/Succeed';
 import { useState, useEffect } from 'react';
-import OTPInputField from '../../FormElements/OtpInput';
+import OTPInputField from '../components/FormElements/OtpInput';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import CountDown from '../../CountDowns/CountDown';
 
 
 
@@ -38,21 +37,16 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
   const [isOtpIncorrect, setIsOtpIncorrect] = useState(false);
   const [showOTPWarning, setShowOTPWarning] = useState(false);
   const [confirmVerify, setConfirmVerify] = useState(false);
-  const [timer, setTimer] = useState({ minutes: 5, seconds: 0 });
+  const [timer, setTimer] = useState({ minutes: 0, seconds: 15 });
   const [loading, setLoading] = useState(false);
   const [showVerifyBox, setShowVerifyBox] = useState(false);
+  const [resendLabel, setResendLabel] = useState("Send OTP");
   const [isSendingOTP, setIsSendingOTP] = useState(false);
   const [isContactMissing, setIsContactMissing] = useState(false);
   const [buttonBorderColor, setButtonBorderColor] = useState("#40d659");
   const [buttonTextColor, setButtonTextColor] = useState("#40d659");
   const [isSendButtonEnabled, setIsSendButtonEnabled] = useState(true);
   const [isTimerExpired, setIsTimerExpired] = useState(true);
-  const [showResend, setShowResend] = useState(false);
-  const [showSendOTP, setShowSendOTP] = useState(true);
-  const [isResendButtonEnabled, setIsResendButtonEnabled] = useState(false);
-  const [isOtpExpired, setIsOtpExpired] = useState(false);
-  const [resetCountdown, setResetCountdown] = useState<number>(0);
-
 
 
 
@@ -67,7 +61,6 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     email: Yup.string().required("Required"),
     contact: Yup.string()
       .min(10, "must include a valid mobile number")
-      .max(10, "must include a valid mobile number")
       .matches(/[0-9]/, "must includes only digits")
       .required("Required"),
 
@@ -83,24 +76,37 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
-  const handleCountdownComplete = () => {
-    // Your logic when the countdown is completed
-    setIsSendButtonEnabled(true);
-    setIsResendButtonEnabled(true);
-    setButtonBorderColor('#40d659'); // Green border color
-    setButtonTextColor('#40d659'); // Green text color
-    setIsTimerExpired(true);
+
+
+  const startTimer = () => {
+    const interval = setInterval(() => {
+      setTimer((prevTimer) => {
+        const newSeconds =
+          prevTimer.seconds === 0 ? 59 : prevTimer.seconds - 1;
+        const newMinutes =
+          prevTimer.seconds === 0 ? prevTimer.minutes - 1 : prevTimer.minutes;
+
+        if (newMinutes === 0 && newSeconds === 0) {
+          clearInterval(interval);
+          setIsSendButtonEnabled(true); // Enable the button when the timer reaches 00:00
+          setButtonBorderColor("#40d659"); // Green border color
+          setButtonTextColor("#40d659"); // Green text color
+          setIsTimerExpired(true);
+        }
+
+        return { minutes: newMinutes, seconds: newSeconds };
+      });
+
+      // Stop the interval if it reaches 00:00
+      if (timer.minutes === 0 && timer.seconds === 0) {
+        clearInterval(interval);
+      }
+    }, 2000);
   };
 
 
 
-  const handleResendOTP = (values: any) => {
-    showVerifyEdit(values)
-    setIsResendButtonEnabled(false);
-    // Trigger reset and start the countdown
-    setResetCountdown((prev) => prev + 1);
-    
-  };
+
 
 
 
@@ -112,7 +118,6 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     }
 
     setShowOTPWarning(false); // Reset the warning flag
-    setShowSendOTP(true);
     console.log('Now register the customer');
     // Additional logic for customer registration
     setShowSucceedModal(true);
@@ -135,14 +140,18 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
       return;
     }
 
-    
+
     setIsContactMissing(false)
-    setTimer({ minutes: 5, seconds: 0 }); // Reset the timer when triggered
+    setTimer({ minutes: 0, seconds: 15 }); // Reset the timer when triggered
     setShowVerifyBox(true);
     setShowOTPWarning(false);
-    // startTimer();
+    startTimer();
     console.log(values.contact);
 
+
+
+    setResendLabel("Resend OTP"); // Change the button label
+    setIsSendingOTP(false); // Disable the button
 
     // Assuming `values.contact` contains the phone number
     let phoneNo = values.contact;
@@ -173,9 +182,6 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
           throw new Error('Failed to send OTP');
         }
         console.log('OTP sent successfully');
-        
-        setShowSendOTP(false)
-        setShowResend(true)
         // Handle success response if needed
         console.log(response.json().then(otpresult => {
           console.log('OTP CODE: ', otpresult.otp)
@@ -206,7 +212,6 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     try {
 
       setShowOTPWarning(false);
-      setIsOtpExpired(false);
 
       const { otp, contact } = values; // Destructure otp and contact from values
 
@@ -247,80 +252,39 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
       setIsOtpIncorrect(false)
       console.log('OTP verified successfully!')
       setShowVerifyBox(false)
-      setIsOtpExpired(false);
 
-      if (responseData.message === 'Mobile Number Verified') {
-        setShowResend(false);
-        setShowSendOTP(false);
-        setIsOtpExpired(false);
-      }
-     
+      // Additional logic after OTP verification
     } catch (error: any) {
 
       console.error('Error verifying OTP:', error.message);
       if (error.message === 'OTP is incorrect') {
         setIsOtpIncorrect(true)
-        setIsOtpExpired(false);
-      }
-      if (error.message === 'OTP is expired') {
-        setIsOtpIncorrect(false)
-        setIsOtpExpired(false);
-        setIsOtpExpired(true);
       }
 
 
     }
   };
-
 
 
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      if (timer.minutes === 0 && timer.seconds === 0) {
+        clearInterval(interval);
+       
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [timer]);
+
+
+  useEffect(() => {
     if (showVerifyBox) {
-      setIsSendButtonEnabled(false); 
+      setIsSendButtonEnabled(false); // Disable the button when starting the timer
+      startTimer();
     }
   }, [showVerifyBox]);
-
-
-
-const [makeEditable, setMakeEditable]= useState<boolean>(false);
-
-  const handleDisable = () => {
-    if (showVerifyBox || confirmVerify) {
-      return true; 
-    }
-    else {
-      return false; 
-    }   
-  };
-
-
-  const handleEnable = () => {
- if (isTimerExpired)
- {
-   return false;
- } 
- else {
-   return true; 
- }
-  }
-
-
-  const handleDisabletoEnable = () => {
-    console.log("handleDisable function:", handleDisable());
-    console.log("handleEnable function:", handleEnable());
-
-    // if(handleDisable() === true && handleEnable() === false)
-    // {
-    //   setMakeEditable(false);
-    // }
-
-    //   return makeEditable;
-    return handleDisable();
-    // return handleEnable();
-  };
-
-
 
 
 
@@ -444,7 +408,6 @@ const [makeEditable, setMakeEditable]= useState<boolean>(false);
                     <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
                       <div className='w-1/2 flex justify-start items-end flex-row space-x-2'>
                         <div className='w-2/3 ' >
-                          
                           <OTPInputField
                             label="Contact"
                             name="contact"
@@ -454,44 +417,24 @@ const [makeEditable, setMakeEditable]= useState<boolean>(false);
                             handleChange={handleChange}
                             values={values}
                             icon="LocalPhone"
-                            disabled={handleDisabletoEnable()}
+                            disabled={confirmVerify}
                           />
 
                         </div>
 
                         <div className='w-1/3 ' >
-
-                          {
-                            showSendOTP && (
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  if (isTimerExpired) {
-                                    showVerifyEdit(values);
-                                  }
-                                }}
-                                className='text-[#40d659] bg-transparent border-[1px] rounded-md border-[#40d659] px-4 py-2 h-[44px]'
-
-                              >
-                                Send OTP
-                              </button>
-                            )
-                          }
-
-                          {
-                            showResend && (
-                              <button
-                                type="button"
-                                onClick={() => handleResendOTP(values)}
-                                disabled={!isResendButtonEnabled}
-                                className='text-[#40d659] bg-transparent border-[1px] rounded-md border-[#40d659] px-4 py-2 h-[44px]'
-                                style={{ borderColor: buttonBorderColor, color: buttonTextColor }}
-                              >
-                                Resend OTP
-                              </button>
-                            )
-                          }
-
+                        <button
+  type="button"
+  onClick={() => {
+    if (isTimerExpired) {
+      showVerifyEdit(values);
+    }
+  }}
+  className='text-[#40d659] bg-transparent border-[1px] rounded-md border-[#40d659] px-4 py-2 h-[44px]'
+  style={{ borderColor: buttonBorderColor, color: buttonTextColor }}
+>
+  {resendLabel}
+</button>
                         </div>
                       </div>
 
@@ -506,7 +449,7 @@ const [makeEditable, setMakeEditable]= useState<boolean>(false);
                         </div>
 
                         <div className='w-1/2 flex flex-row justify-between items-center '>
-                          <div className='w-full flex flex-col space-y-2'>
+                          <div className='w-3/4 flex flex-col space-y-2'>
                             <div className='w-full flex justify-between items-end space-x-2 flex-row -mt-5'>
                               <InputField
 
@@ -532,12 +475,11 @@ const [makeEditable, setMakeEditable]= useState<boolean>(false);
 
                             <div className=' w-full flex md:flex-row justify-between flex-col mt-2'>
                               <span className='font-semibold text-[#a855f7]'>
-                              
-                                <CountDown 
-                                onCountdownComplete={handleCountdownComplete}
-                                shouldStart={isResendButtonEnabled}
-                                resetKey={resetCountdown}
-                                />
+                                <span className='font-semibold text-[#a855f7]'>
+                                  {timer.minutes >= 0 && timer.seconds >= 0
+                                    ? `${String(timer.minutes).padStart(2, '0')}:${String(timer.seconds).padStart(2, '0')}`
+                                    : '00:00'}
+                                </span>
 
 
 
@@ -572,10 +514,6 @@ const [makeEditable, setMakeEditable]= useState<boolean>(false);
                     {isOtpIncorrect && (
                       <p className='text-red-600 text-[12px] mt-2'>Incorrect OTP. Please Enter the correct OTP.</p>
                     )}
-                    {isOtpExpired && (
-                      <p className='text-red-600 text-[12px] mt-2'>OTP is Expired!</p>
-                    )}
-
 
 
 

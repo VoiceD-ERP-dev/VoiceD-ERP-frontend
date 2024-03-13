@@ -1,6 +1,7 @@
 // CustomerFormValuesType.ts
 
 export type CustomerFormValuesType = {
+    [x: string]: any;
     firstName: string;
     lastName: string;
     nicNo: string;

@@ -20,11 +20,12 @@ interface InputFieldProps {
   handleChange: ChangeEventHandler<HTMLInputElement>;
   values: CustomerFormValuesType; // Change the type here
   icon: keyof typeof MuiIcons;
+  disabled: boolean
 }
 
   
 
-function OTPInputField({ label, name, type, placeholder, handleChange, values, boxcolor, icon }: InputFieldProps) {
+function OTPInputField({ label, name, type, placeholder, handleChange, values, boxcolor, icon, disabled }: InputFieldProps) {
 
     const IconComponent = MuiIcons[icon];
   const iconwrapper = {
@@ -63,7 +64,7 @@ function OTPInputField({ label, name, type, placeholder, handleChange, values, b
           placeholder={placeholder}
           className="w-full h-full p-2 bg-transparent outline-none text-[#1a1a1a] text-[14px] form-control form-field-input"
           required
-          disabled={values[name] && values[name].length > 0 ? true : false}
+          disabled={disabled}
         />
       </div>
       <ErrorMessage
