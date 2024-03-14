@@ -213,7 +213,7 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
 
 
             {filteredData
-              .filter((item) => item.paymentMethod === "Bank Deposit")
+              .filter((item) => item.paymentMethod === "Bank Deposit" || item.paymentMethod === "Cash")
               .map((pendingInvoiceDataItem, key) => {
 
 

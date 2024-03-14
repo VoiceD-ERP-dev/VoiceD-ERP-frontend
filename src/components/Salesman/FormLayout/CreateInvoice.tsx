@@ -31,6 +31,7 @@ type CustomerFormValuesType = {
 function CreateInvoiceAgent({ userRole }: { userRole: string }) {
 
   const [showSucceedModal, setShowSucceedModal] = useState(false);
+  const [isContactFound, setIsContactFound] = useState(false);
   const navigate = useNavigate();
 
   const CustomerRegistrationSchema = Yup.object().shape({
@@ -203,7 +204,10 @@ const [ loading, setLoading ] = useState(false);
 
                 </div>
 
-                <p className='text-red-600 text-[12px] mt-1'>User Not Found</p>
+                {isContactFound &&
+                    (
+                      <p className='text-red-600 text-[12px] mt-2'>User found with this Contact</p>
+                    )}
 
 
 

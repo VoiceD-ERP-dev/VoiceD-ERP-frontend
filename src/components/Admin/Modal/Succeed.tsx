@@ -12,6 +12,7 @@ import CheckAnimation from './CheckAnimation';
 
 interface SuceedProps {
   isOpen: boolean; // Add isOpen to the SuceedProps interface
+  message : string;
   onClose: () => void;
 
 }
@@ -24,7 +25,7 @@ const handleRegister = () => {
   console.log('Registered');
 };
 
-const SucceedContent = ({ onClose }: SuceedProps) => (
+const SucceedContent = ({ onClose , message}: SuceedProps) => (
   <div className='w-screen h-screen bg-[#565656] bg-opacity-40 backdrop-blur-sm relative flex justify-center items-center z-20 '>
     <div className='modal p-5 bg-white dark:bg-black rounded-lg w-[50%] lg:w-[50%] h-auto border-[2px] border-[#b76bff]'>
       <div className='flex flex-row justify-end w-full'>
@@ -43,7 +44,9 @@ const SucceedContent = ({ onClose }: SuceedProps) => (
       </div>
 
       <div className='w-full flex justify-center items-center flex-col'>
-        <h2 className='text-center'>Registration Succeed!</h2>
+        <h2 className='text-center'>
+          {message}
+        </h2>
         <div className='md:w-full md:h-full flex justify-center items-center md:p-5 mx-auto  w-full relative'>
 <CheckAnimation/>
         </div>
@@ -54,10 +57,10 @@ const SucceedContent = ({ onClose }: SuceedProps) => (
   </div>
 );
 
-function Succeed({ isOpen, onClose }: SuceedProps) {
+function Succeed({ isOpen, onClose, message}: SuceedProps) {
   return (
-    <Popup open={isOpen} modal nested closeOnDocumentClick={false} closeOnEscape={false}>
-      {(close: () => void) => <SucceedContent onClose={() => { onClose(); close(); }} />}
+    <Popup open={isOpen} modal nested closeOnDocumentClick={false} closeOnEscape={false} message={message}>
+      {(close: () => void) => <SucceedContent onClose={() => { onClose(); close(); }} message={message}/>}
     </Popup>
   );
 }

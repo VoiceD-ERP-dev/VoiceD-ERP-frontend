@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
 import Popup from 'reactjs-popup';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -12,6 +12,7 @@ import InputFieldInvoice from '../../FormElements/InputFiledInvoice';
 import DecisionPop from './DecisionPop';
 import InputField from '../../FormElements/InputFiled';
 import InputDatePicker from '../../FormElements/InputDatePicker';
+import Succeed from './Succeed';
 
 
 interface InvoiceEditContentProps {
@@ -47,15 +48,21 @@ const SignUpSchema = Yup.object().shape({
 const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditContentProps) => {
 
 
-
+  const [showSucceedModal, setShowSucceedModal] = useState(false);
   const [showDecisionPop, setShowDecisionPop] = React.useState<{ isOpen: boolean }>({ isOpen: false });
 
   const handleEdit = (values: { reason: string; decision: string }) => {
     console.log('Registered', values);
-
+    setShowSucceedModal(true);
     if (values.decision == "Reject") {
       setShowDecisionPop({ isOpen: true });
     }
+  };
+
+
+  const handleCloseModal = () => {
+    // Close the Succeed modal
+    setShowSucceedModal(false);
   };
 
 
@@ -161,6 +168,7 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                 <SelectField
                   label='Make Decision'
                   name="decision"
+                  headingvalue="Make Decision"
                   icon="Person"
                   options={['Accept', 'Decline', 'Reject']}
                   boxcolor='transparent'
@@ -186,6 +194,7 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                       <SelectField
                         label='Responsible Department'
                         boxcolor='transparent'
+                        headingvalue="Select an Option"
                         options={["Graphic Designing Team", "Sales Department"]}
                         name='resdep'
                         icon='Inventory'
@@ -196,6 +205,7 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                       <SelectField
                         label='Manager Incharge'
                         boxcolor='transparent'
+                        headingvalue="Select an Option"
                         options={["Mr. Krishanth ", "Ms. Dilhani"]}
                         name='mincharge'
                         icon='Inventory'
@@ -315,7 +325,12 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
 
         </Formik>
 
-
+        <Succeed 
+        message='Order Created Successfully'
+        isOpen={showSucceedModal} 
+        onClose={handleCloseModal} 
+        
+        />
 
       </div>
     </div>

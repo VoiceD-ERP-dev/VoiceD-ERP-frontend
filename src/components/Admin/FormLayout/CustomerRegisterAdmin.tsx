@@ -52,6 +52,9 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
   const [isResendButtonEnabled, setIsResendButtonEnabled] = useState(false);
   const [isOtpExpired, setIsOtpExpired] = useState(false);
   const [resetCountdown, setResetCountdown] = useState<number>(0);
+  const [isNICFound, setIsNICFound] = useState(false);
+  const [isBRIDFound, setIsBRIDFound] = useState(false);
+
 
 
 
@@ -135,64 +138,75 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
       return;
     }
 
-    
-    setIsContactMissing(false)
-    setTimer({ minutes: 5, seconds: 0 }); // Reset the timer when triggered
-    setShowVerifyBox(true);
-    setShowOTPWarning(false);
-    // startTimer();
-    console.log(values.contact);
-
-
-    // Assuming `values.contact` contains the phone number
     let phoneNo = values.contact;
+    console.log(phoneNo.length);
 
-    // Remove any whitespace and hyphens from the phone number
-    phoneNo = phoneNo.replace(/\s|-/g, '');
 
-    // If the phone number starts with '0', replace it with '+94'
-    if (phoneNo.startsWith('0')) {
-      phoneNo = '+94' + phoneNo.substring(1);
-    }
+    if(phoneNo.length === 10)
+    {
 
-    // Create the JSON payload
-    const payload = {
-      phoneNo: phoneNo
-    };
-
-    // Make the HTTP POST request to the endpoint
-    fetch('http://localhost:5001/api/otp/sendopt', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to send OTP');
-        }
-        console.log('OTP sent successfully');
+      setIsContactMissing(false)
+      setTimer({ minutes: 5, seconds: 0 }); // Reset the timer when triggered
+      setShowVerifyBox(true);
+      setShowOTPWarning(false);
+      // startTimer();
+      console.log(values.contact);
+  
+  
+      // Assuming `values.contact` contains the phone number
+      
+  
+      // Remove any whitespace and hyphens from the phone number
+      phoneNo = phoneNo.replace(/\s|-/g, '');
+  
+      // If the phone number starts with '0', replace it with '+94'
+      if (phoneNo.startsWith('0')) {
+        phoneNo = '+94' + phoneNo.substring(1);
+      }
+  
+      // Create the JSON payload
+      const payload = {
+        phoneNo: phoneNo
+      };
+  
+      // Make the HTTP POST request to the endpoint
+      fetch('http://localhost:5001/api/otp/sendopt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to send OTP');
+          }
+          console.log('OTP sent successfully');
+          
+          setShowSendOTP(false)
+          setShowResend(true)
+          // Handle success response if needed
+          console.log(response.json().then(otpresult => {
+            console.log('OTP CODE: ', otpresult.otp)
+          }))
+  
+  
+          setButtonBorderColor("#565656");
+          setButtonTextColor("#565656");
+          setIsSendButtonEnabled(false);
+        })
+        .catch(error => {
+          console.error('Error sending OTP:', error.message);
+          // Handle error if needed
+        })
+        .finally(() => {
+          setIsSendingOTP(true); // Enable the button after completing the request
+        });
         
-        setShowSendOTP(false)
-        setShowResend(true)
-        // Handle success response if needed
-        console.log(response.json().then(otpresult => {
-          console.log('OTP CODE: ', otpresult.otp)
-        }))
+    }
+    
+    
 
-
-        setButtonBorderColor("#565656");
-        setButtonTextColor("#565656");
-        setIsSendButtonEnabled(false);
-      })
-      .catch(error => {
-        console.error('Error sending OTP:', error.message);
-        // Handle error if needed
-      })
-      .finally(() => {
-        setIsSendingOTP(true); // Enable the button after completing the request
-      });
 
   };
 
@@ -412,6 +426,25 @@ const [makeEditable, setMakeEditable]= useState<boolean>(false);
                         icon="Nfc"
                       />
                     </div>
+
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
+
+                      <div className='md:w-1/2 w-full'>
+                      {isNICFound &&
+                    (
+                         <p className='text-red-600 text-[12px] mt-2'>This NIC is already exists</p>
+                         )}     
+                        </div>
+                     
+                        <div className='md:w-1/2 w-full'>
+                        {isBRIDFound &&
+                    (
+                      <p className='text-red-600 text-[12px] mt-2'>This BRID is already exists</p>
+                    )}
+                        </div>
+                    
+                    </div>
+                    
 
 
 
@@ -672,7 +705,7 @@ const [makeEditable, setMakeEditable]= useState<boolean>(false);
           </div>
         </div>
 
-        <Succeed isOpen={showSucceedModal} onClose={handleCloseModal} />
+        <Succeed isOpen={showSucceedModal} onClose={handleCloseModal} message='Customer Registered Successfully'/>
 
       </div>
     </DefaultAdminLayout>
