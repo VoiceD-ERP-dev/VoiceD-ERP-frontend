@@ -6,18 +6,19 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import InputFieldFilled from '../../FormElements/InputFiledFilled';
 import PrimaryButton from '../../FormElements/PrimaryButon';
-
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 
 interface CustomerEditProps {
   customerData: {
     firstname: string;
     lastname: string;
-    nic: string;
-    brid: string;
+    nicNo: string;
+    brId: string;
     email: string;
     address: string;
-    contact: string;
+    phone: string;
     organization: string;
   };
   onClose: () => void;
@@ -28,16 +29,72 @@ interface CustomerEditProps {
 const SignUpSchema = Yup.object().shape({
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
-    nic: Yup.string().required("Required"),
-    brid: Yup.string().required("Required"),
+    nicNo: Yup.string().required("Required"),
+    brId: Yup.string().required("Required"),
     email: Yup.string().required("Required"),
-    contact: Yup.string().required("Required"),
+    phone: Yup.string().required("Required"),
     address: Yup.string().required("Required"),
     organization: Yup.string().required("Required"),
   });
 
-  const handleRegister = () => {
+  const handleRegister = async (values: any): Promise<void>=> {
     console.log('Registered');
+    let phoneNo = values.phone;
+
+    // Extract the JWT token from local storage
+    const jwtToken = Cookies.get('jwtToken');
+
+    // Construct the headers object with the bearer token
+    const headers = {
+      'Authorization': `Bearer ${jwtToken}`,
+    };
+
+        // Make an HTTP GET request to the endpoint with the phone number and headers
+    const response = await fetch(`http://localhost:5001/api/customers/findbyPhone/${phoneNo}`, {
+        method: 'GET',
+        headers: headers
+    });
+
+      // Check if the request was successful
+      if (response.ok) {
+          // Parse the response body as JSON
+          const data = await response.json();
+          console.log('Customer data:', data);
+          console.log('Customer data:', data[0]._id);
+
+          const url = `http://localhost:5001/api/customers/update/${data[0]._id}`;
+          const token = Cookies.get('jwtToken');
+
+          const changeddata = {
+            firstname: values.firstName,
+            lastname: values.lastName,
+            nicNo: values.nicNo,
+            brId: values.brId,
+            email: values.email,
+            phone: values.phone,
+            address: values.address
+          };
+          console.log('Customer data:', changeddata);
+
+          try {
+            const response = await axios.patch(url, changeddata, {
+              headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+              }
+            });
+            console.log('Response:', response.data);
+          } catch (error) {
+            console.error('Error:', error);
+          }
+
+      } else if (response.status === 401) {
+          // Handle unauthorized access
+          console.error('Unauthorized!'); // You can add additional handling if needed
+      } else {
+          // Handle other error responses
+          console.error('Error:', response.statusText);
+      }
   };
 
 const CustomerEditContent = ({ customerData, onClose }: CustomerEditProps) => (
@@ -62,13 +119,14 @@ const CustomerEditContent = ({ customerData, onClose }: CustomerEditProps) => (
 
       <Formik
                 initialValues={{
+                    
                     firstName: customerData.firstname,
                     lastName: customerData.lastname,
-                    nic: customerData.nic,
-                    brid: customerData.brid,
-                  email: customerData.email,
-                  address: customerData.address,
-                  contact: customerData.contact,
+                    nicNo: customerData.nicNo,
+                    brId: customerData.brId,
+                    email: customerData.email,
+                    address: customerData.address,
+                    phone: customerData.phone,
 
                 }}
                 validationSchema={SignUpSchema}
@@ -113,20 +171,20 @@ const CustomerEditContent = ({ customerData, onClose }: CustomerEditProps) => (
                     <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
                       <InputFieldFilled
                         label="NIC"
-                        name="nic"
+                        name="nicNo"
                         type="text"
                         boxcolor="transparent"
-                        placeholder={customerData.nic}
+                        placeholder={customerData.nicNo}
                         handleChange={handleChange}
                         values={values}
                         icon="ContactMail"
                       />
                       <InputFieldFilled
                         label="BR ID"
-                        name="brid"
+                        name="brId"
                         type="text"
                         boxcolor="transparent"
-                        placeholder={customerData.brid}
+                        placeholder={customerData.brId}
                         handleChange={handleChange}
                         values={values}
                         icon="Nfc"
@@ -148,7 +206,7 @@ const CustomerEditContent = ({ customerData, onClose }: CustomerEditProps) => (
                       />
                       <InputFieldFilled
                         label="Contact"
-                        name="contact"
+                        name="phone"
                         type="text"
                         boxcolor="transparent"
                         placeholder="Contact"
@@ -182,7 +240,7 @@ const CustomerEditContent = ({ customerData, onClose }: CustomerEditProps) => (
                       
                       <PrimaryButton
                         type="submit"
-
+                        onClick={() => handleRegister(values)}
                         textcolor="#fafafa"
                         label="Submit"
                         colorfrom='#c026d3'

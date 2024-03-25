@@ -64,59 +64,108 @@ const AddSystemUser: React.FC<SalesAgentProps> = ({ onClose }) => {
 
 
   const handleRegister = async (values: any, { resetForm }: FormikHelpers<any>) => {
-    try {
-      setLoading(true);
-      const jwtToken = Cookies.get('jwtToken');
-      console.log(jwtToken);
-      // Construct the headers object with the bearer token
-      const headers = {
-        'Authorization': `Bearer ${jwtToken}`,
-        'Content-Type': 'application/json' // Add this line
-      };
-      console.log('Registered:', JSON.stringify(values, null, 2));
+    if(values.userRole=="sales"){
+      try {
+        setLoading(true);
+        const jwtToken = Cookies.get('jwtToken');
+        console.log(jwtToken);
+        // Construct the headers object with the bearer token
+        const headers = {
+          'Authorization': `Bearer ${jwtToken}`,
+          'Content-Type': 'application/json' // Add this line
+        };
+        console.log('Registered:', JSON.stringify(values, null, 2));
 
-      const jsonData = JSON.stringify({
-        firstname: values.firstName || "John",
-        lastname: values.lastName || "Doe",
-        username: values.userName || "234",
-        email: values.email || "shanbasnayake98@gmail.com",
-        password: values.password || "1234",
-        phone: values.contactNo || "1234567890",
-        agentNo: values.agentID || "123456789",
-        userRole: values.userRole || "admin",
-      });
+        const jsonData = JSON.stringify({
+          firstname: values.firstName || "John",
+          lastname: values.lastName || "Doe",
+          username: values.userName || "234",
+          email: values.email || "shanbasnayake98@gmail.com",
+          password: values.password || "1234",
+          phone: values.contactNo || "1234567890",
+          agentNo: values.agentID || "123456789",
+          userRole: values.userRole || "admin",
+        });
 
-      // Make an HTTP POST request to the endpoint with the registration data and headers
-      const response = await fetch('http://localhost:5001/api/salesmen/register', {
-        method: 'POST',
-        headers: headers,
-        body: jsonData
-      });
+        // Make an HTTP POST request to the endpoint with the registration data and headers
+        const response = await fetch('http://localhost:5001/api/salesmen/register', {
+          method: 'POST',
+          headers: headers,
+          body: jsonData
+        });
 
-      // Check if the request was successful
-      if (response.ok) {
-        // Log success message or handle success response
-        console.log('Registration successful!');
-        setShowSucceedModal(true);
-        resetForm();
+        // Check if the request was successful
+        if (response.ok) {
+          // Log success message or handle success response
+          console.log('Registration successful!');
+          setShowSucceedModal(true);
+          resetForm();
 
-      } else if (response.status === 401) {
-        // Redirect to SignIn.tsx if unauthorized
-        console.error('Unauthorized! Redirecting to sign-in page...');
+        } else if (response.status === 401) {
+          // Redirect to SignIn.tsx if unauthorized
+          console.error('Unauthorized! Redirecting to sign-in page...');
 
 
-      } else {
-        // Handle error response
-        console.error('Registration failed:', response.statusText);
+        } else {
+          // Handle error response
+          console.error('Registration failed:', response.statusText);
+        }
+
+        setLoading(false);
+
+      } catch (error) {
+        console.error('Error:', error);
+        setLoading(false);
       }
-
-      setLoading(false);
-
+    }else if(values.userRole=="admin"||values.userRole=="superadmin"){
+      try {
+        setLoading(true);
+    
+        const headers = {
+            'Content-Type': 'application/json'
+        };
+        console.log('Registered:', JSON.stringify(values, null, 2));
+    
+        const jsonData = JSON.stringify({
+            firstname: values.firstName || "John",
+            lastname: values.lastName || "Doe",
+            username: values.userName || "234",
+            email: values.email || "shanbasnayake98@gmail.com",
+            password: values.password || "1234",
+            phone: values.contactNo || "1234567890",
+            agentNo: values.agentID || "123456789",
+            adminRole: values.userRole || "admin",
+        });
+        console.log(jsonData);
+        const response = await fetch('http://localhost:5001/api/admins/register', {
+            method: 'POST',
+            headers: headers,
+            body: jsonData
+        });
+    
+        if (response.ok) {
+            console.log('Registration successful!');
+            setShowSucceedModal(true);
+            resetForm();
+        } else if (response.status === 401) {
+            console.error('Unauthorized! Redirecting to sign-in page...');
+            // Redirect to SignIn.tsx if unauthorized
+        } else {
+            // Handle other HTTP errors
+            console.error('Registration failed:', response.statusText);
+            const errorMessage = await response.text(); // Extract error message from response body
+            console.error('Error Message:', errorMessage);
+            // Display error message to the user or handle as needed
+        }
+    
+        setLoading(false);
     } catch (error) {
-      console.error('Error:', error);
-      setLoading(false);
+        // Handle other errors
+        console.error('Error:', error);
+        setLoading(false);
     }
 
+    }
   };
 
 

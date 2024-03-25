@@ -32,7 +32,7 @@ const CountDown: React.FC<CountDownProps> = ({ onCountdownComplete, shouldStart,
   return (
     <CountdownTimer
       key={key}
-      duration={10}
+      duration={60}
       colors={['#004777', '#F7B801', '#A30000', '#A30000']}
       colorsTime={[7, 5, 2, 0]}
       onCountdownComplete={onCountdownComplete}

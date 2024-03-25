@@ -1,46 +1,53 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
 import PDInvoiceEdit from "../Modal/PDInvoiceEdit";
+import axios from "axios";
 
 
 interface pendingInvoiceData {
-  customerid: string;
-  payementMethod: string;
+  customerNo: string;
+  customerName: string;
+  createdAt: string;
+  invoiceNo: string;
+  status: string;
+  paymentType: string;
+  agentNo: string;
+  _id:string;
 }
 
 
-const pendingInvoiceData = [
-  {
-    customerid: "Reg-00078C24",
-    name: "Nissanka Konara",
-    invoiceDate: "02/Feb/2024",
-    invoiceid: "VDG000001/24",
-    status: "Complete",
-    paymentMethod: "Cash",
-    agentid: "VD003Sa2024",
+// const pendingInvoiceData = [
+//   {
+//     customerid: "Reg-00078C24",
+//     name: "Nissanka Konara",
+//     invoiceDate: "02/Feb/2024",
+//     invoiceid: "VDG000001/24",
+//     status: "Complete",
+//     paymentMethod: "Cash",
+//     agentid: "VD003Sa2024",
    
-  },
-  {
-    customerid: "Reg-00080C24",
-    name: "Asela Pradeepan",
-    invoiceDate: "11/Feb/2024",
-    invoiceid: "VDG000003/24",
-    status: "Pending",
-    paymentMethod: "Bank Deposit",
-    agentid: "VD003Sa2024",
+//   },
+//   {
+//     customerid: "Reg-00080C24",
+//     name: "Asela Pradeepan",
+//     invoiceDate: "11/Feb/2024",
+//     invoiceid: "VDG000003/24",
+//     status: "Pending",
+//     paymentMethod: "Bank Deposit",
+//     agentid: "VD003Sa2024",
    
-  },
-  {
-    customerid: "Reg-00092C24",
-    name: "Kasuni Jayathilake",
-    invoiceDate: "08/Feb/2024",
-    invoiceid: "VDG000005/24",
-    status: "Pending",
-    paymentMethod: "Cash",
-    agentid: "VD003Sa2024",
+//   },
+//   {
+//     customerid: "Reg-00092C24",
+//     name: "Kasuni Jayathilake",
+//     invoiceDate: "08/Feb/2024",
+//     invoiceid: "VDG000005/24",
+//     status: "Pending",
+//     paymentMethod: "Cash",
+//     agentid: "VD003Sa2024",
   
-  }
-];
+//   }
+// ];
 
 interface TableProps {
   tablehead: string[];
@@ -65,8 +72,8 @@ const downloadSampleImage = () => {
 
 const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
 
-
-
+  const [pendingInvoiceData , setPendingInvoiceData ] = useState<pendingInvoiceData[]>([]);
+  const [selectedPDInvoice, setSelectedPDInvoice] = useState<pendingInvoiceData | null>(null);
   const [checkedRows, setCheckedRows] = useState<CheckedRows>({});
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredData, setFilteredData] = useState(pendingInvoiceData);
@@ -84,20 +91,51 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
     setCheckedRows(updatedCheckedRows);
   };
 
-  const handleRowCheckboxChange = (key: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRowCheckboxChange = (key: number) => async (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     setCheckedRows((prevCheckedRows) => ({
       ...prevCheckedRows,
       [key]: isChecked,
       all: false, // Uncheck "Select All" if an individual row is unchecked
     }));
-
+  
     const allChecked = Object.values({ ...prevCheckedRows, [key]: isChecked }).every(Boolean);
-
+  
     setCheckedRows((prevCheckedRows) => ({
       ...prevCheckedRows,
       all: allChecked,
     }));
+  
+  };
+  
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
+  
+  
+  const fetchInvoices = async () => {
+    try {
+      const response = await axios.get<pendingInvoiceData[]>('http://localhost:5001/api/invoices/all');
+      console.log('Response from the server:', response.data);
+      // Filter the data with status equal to "Pending"
+      const filteredData = response.data.filter((invoice: pendingInvoiceData) => invoice.status !== 'Accept' && invoice.status !== 'Reject');
+      // Format createdAt for each invoice
+      const formattedData = filteredData.map((invoice: pendingInvoiceData) => ({
+        ...invoice,
+        createdAt: formatCreatedAt(invoice.createdAt),
+      }));
+      // Set the filtered and formatted data into the invoices state variable
+      setPendingInvoiceData(formattedData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  
+  
+  const formatCreatedAt = (createdAt: string): string => {
+    const date = new Date(createdAt);
+    const formattedDate = `${date.toISOString().split('T')[0]} @ ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    return formattedDate;
   };
 
 
@@ -108,10 +146,10 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
     // Filter data based on the search query
     const newFilteredData = pendingInvoiceData.filter(
       (item) =>
-        item.agentid.toLowerCase().includes(query) ||
-        item.customerid.toLowerCase().includes(query)
+        item.agentNo.toLowerCase().includes(query) ||
+        item.customerNo.toLowerCase().includes(query)
     );
-    setFilteredData(newFilteredData);
+    setPendingInvoiceData(newFilteredData);
   };
 
 
@@ -133,7 +171,7 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
   };
 
 
-  const [selectedPDInvoice, setSelectedPDInvoice] = useState<pendingInvoiceData | null>(null);
+
 
   const handleEdit = (pendingInvoiceDataItem: pendingInvoiceData) => {
     setSelectedPDInvoice(pendingInvoiceDataItem);
@@ -212,15 +250,14 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
 
 
 
-            {filteredData
-              .filter((item) => item.paymentMethod === "Bank Deposit" || item.paymentMethod === "Cash")
+            {pendingInvoiceData
               .map((pendingInvoiceDataItem, key) => {
 
 
                 let statusColor = '';
-                if (pendingInvoiceDataItem.status === 'Complete') {
+                if (pendingInvoiceDataItem.status === 'Accept') {
                   statusColor = 'green-600';
-                } else if (pendingInvoiceDataItem.status === 'Pending') {
+                } else if (pendingInvoiceDataItem.status === "Pending") {
                   statusColor = 'red-600';
                 }
 
@@ -237,7 +274,7 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
 
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                       <h5 className="font-medium text-black dark:text-white">
-                        {pendingInvoiceDataItem.customerid}
+                        CLI{pendingInvoiceDataItem.customerNo}
                       </h5>
 
                     </td>
@@ -245,22 +282,14 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
 
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                       <h5 className="font-medium text-black dark:text-white">
-                        {pendingInvoiceDataItem.agentid}
+                        {pendingInvoiceDataItem.agentNo}
                       </h5>
 
                     </td>
 
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                       <h5 className="font-medium text-black dark:text-white">
-                        {pendingInvoiceDataItem.name}
-                      </h5>
-
-                    </td>
-
-
-                    <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                      <h5 className="font-medium text-black dark:text-white">
-                        {pendingInvoiceDataItem.invoiceid}
+                        {pendingInvoiceDataItem.customerName}
                       </h5>
 
                     </td>
@@ -268,7 +297,15 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
 
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                       <h5 className="font-medium text-black dark:text-white">
-                        {pendingInvoiceDataItem.invoiceDate}
+                        VDDG{pendingInvoiceDataItem.invoiceNo}
+                      </h5>
+
+                    </td>
+
+
+                    <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
+                      <h5 className="font-medium text-black dark:text-white">
+                        {pendingInvoiceDataItem.createdAt}
                       </h5>
 
                     </td>
@@ -278,7 +315,7 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
                     <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
 
                       <h5 className="font-medium text-black dark:text-white">
-                        {pendingInvoiceDataItem.paymentMethod}
+                        {pendingInvoiceDataItem.paymentType}
                       </h5>
 
 

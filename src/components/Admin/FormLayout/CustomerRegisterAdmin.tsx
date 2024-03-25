@@ -32,7 +32,7 @@ type CustomerFormValuesType = {
 
 
 function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
-
+  const navigate = useNavigate();
   const [showSucceedModal, setShowSucceedModal] = useState(false);
   const [otpCode, setOtpCode] = useState<string | null>(null);
   const [isOtpIncorrect, setIsOtpIncorrect] = useState(false);
@@ -54,6 +54,8 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
   const [resetCountdown, setResetCountdown] = useState<number>(0);
   const [isNICFound, setIsNICFound] = useState(false);
   const [isBRIDFound, setIsBRIDFound] = useState(false);
+  const [isEmailFound, setIsEmailFound] = useState(false);
+  const [isNumberEx, setIsNumberEx] = useState(false);
 
 
 
@@ -107,7 +109,8 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
 
 
 
-  const handleRegister = (values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType>) => {
+  const handleRegister =async ( values: CustomerFormValuesType, { resetForm }: FormikHelpers<CustomerFormValuesType> ) => {
+    
     if (!confirmVerify) {
       // The mobile number is not verified
       setShowOTPWarning(true);
@@ -118,16 +121,103 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
     setShowSendOTP(true);
     console.log('Now register the customer');
     // Additional logic for customer registration
-    setShowSucceedModal(true);
-    resetForm();
-    setConfirmVerify(false);
+
+    try {
+
+      setLoading(true);
+      // Extract the JWT token from local storage
+      const jwtToken = Cookies.get('jwtToken');
+  
+      // Construct the headers object with the bearer token
+      const headers = {
+        'Authorization': `Bearer ${jwtToken}`,
+        
+      };
+  
+      // Construct the registration data object
+      const registrationData = new FormData();
+      registrationData.append('firstname', values.firstName || "John");
+      registrationData.append('lastname', values.lastName || "Doe");
+      registrationData.append('nicNo', values.nicNo || "123456789");
+      registrationData.append('brId', values.brid || "234");
+      registrationData.append('email', values.email || "shanbasnayake98@gmail.com");
+      registrationData.append('phone', values.contact || "1234567890");
+      registrationData.append('address', values.address || "123 Main Street, City");
+
+  
+      // Append files to the formData if they are not null
+      if (values.nicDoc !== null) {
+        registrationData.append('nicDoc', values.nicDoc);
+      }
+  
+      if (values.brDoc !== null) {
+        registrationData.append('brDoc', values.brDoc);
+      }
+
+
+      if (values.otherDoc !== null) {
+        registrationData.append('otherDoc', values.otherDoc);
+      }
+      
+
+
+      // Make an HTTP POST request to the endpoint with the registration data and headers
+      const response = await fetch('http://localhost:5001/api/customers/cv', {
+        method: 'POST',
+        headers: headers,
+        body: registrationData
+      });
+  
+      // Check if the request was successful
+      if (response.ok) {
+        // Log success message or handle success response
+        console.log('Registration successful!');
+        // Open the Succeed modal
+        setShowSucceedModal(true);
+        resetForm();
+        setConfirmVerify(false);
+        setIsNICFound(false);
+        setIsBRIDFound(false);
+        setIsEmailFound(false);
+      } else if (response.status === 401) {
+        // Redirect to SignIn.tsx if unauthorized
+        console.error('Unauthorized! Redirecting to sign-in page...');
+        navigate('/'); // Assuming 'navigate' is a function from react-router-dom
+    
+      } else {
+        const responseData = await response.json();
+        console.error('Registration failed:', responseData.message);
+        if (responseData.message.includes('NIC')) {
+          setIsNICFound(true);
+          setIsBRIDFound(false);
+          setIsEmailFound(false);
+        }
+        if (responseData.message.includes('BRID')) {
+          setIsBRIDFound(true);
+          setIsNICFound(false);
+          setIsEmailFound(false);
+        }
+        if (responseData.message.includes('Email')) {
+          setIsEmailFound(true);
+          setIsNICFound(false);
+          setIsBRIDFound(false);
+
+        }
+      }
+      setLoading(false);
+
+    } catch (error) {
+      console.error('Error:', error);
+      setLoading(false);
+    }
+    console.log(values);
   };
 
 
 
 
 
-  const showVerifyEdit = (values: any) => {
+  const showVerifyEdit =async (values: any) => {
 
 
 
@@ -166,7 +256,10 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
   
       // Create the JSON payload
       const payload = {
-        phoneNo: phoneNo
+        phoneNo: phoneNo,
+        nicNo:values.nicNo, 
+        email:values.email, 
+        brId:values.brid
       };
   
       // Make the HTTP POST request to the endpoint
@@ -177,18 +270,23 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
         },
         body: JSON.stringify(payload)
       })
-        .then(response => {
+        .then(async response => {
+          
+          const responseData = await response.json(); // Parse the JSON from the response
           if (!response.ok) {
-            throw new Error('Failed to send OTP');
+            throw new Error(responseData.message || 'Failed to send OTP');
+            
           }
           console.log('OTP sent successfully');
-          
+          console.log('OTP CODE: ', responseData.otp);
           setShowSendOTP(false)
           setShowResend(true)
-          // Handle success response if needed
-          console.log(response.json().then(otpresult => {
-            console.log('OTP CODE: ', otpresult.otp)
-          }))
+          setIsNumberEx(false);
+
+          // // Handle success response if needed
+          // console.log(response.json().then(otpresult => {
+          //   console.log('OTP CODE: ', otpresult.otp)
+          // }))
   
   
           setButtonBorderColor("#565656");
@@ -197,17 +295,19 @@ function CustomerRegisterAdmin({ userRole }: { userRole: string }) {
         })
         .catch(error => {
           console.error('Error sending OTP:', error.message);
-          // Handle error if needed
+          
+          if(error.message = "Phone number already registered")
+          {
+            setIsNumberEx(true);
+            setShowVerifyBox(false);
+          }
+
         })
         .finally(() => {
           setIsSendingOTP(true); // Enable the button after completing the request
         });
         
     }
-    
-    
-
-
   };
 
 
@@ -473,7 +573,16 @@ const [makeEditable, setMakeEditable]= useState<boolean>(false);
                         icon="Map"
                       />
                     </div>
+                    <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
 
+                      <div className='md:w-1/2 w-full'>
+                      {isEmailFound &&
+                    (
+                         <p className='text-red-600 text-[12px] mt-2'>This Email is already exists</p>
+                         )}     
+                        </div>
+                    
+                    </div>
                     <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3 '>
                       <div className='w-1/2 flex justify-start items-end flex-row space-x-2'>
                         <div className='w-2/3 ' >
@@ -608,7 +717,9 @@ const [makeEditable, setMakeEditable]= useState<boolean>(false);
                     {isOtpExpired && (
                       <p className='text-red-600 text-[12px] mt-2'>OTP is Expired!</p>
                     )}
-
+                    {isNumberEx && (
+                      <p className='text-red-600 text-[12px] mt-2'>This Phone number Already exists!</p>
+                    )}
 
 
 

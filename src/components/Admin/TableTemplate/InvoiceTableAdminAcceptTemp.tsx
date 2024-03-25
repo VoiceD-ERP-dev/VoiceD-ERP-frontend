@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
+import axios from "axios";
 
 const customerData = [
   {
@@ -35,11 +36,20 @@ interface CheckedRows {
 }
 
 
-
+interface pendingInvoiceData {
+  customerNo: string;
+  customerName: string;
+  createdAt: string;
+  invoiceNo: string;
+  status: string;
+  paymentType: string;
+  agentNo: string;
+  _id:string;
+}
 const InvoiceTableAdminAcceptTemp = ({ tablehead }: TableProps) => {
 
 
-
+  const [invoices, setInvoices] = useState<pendingInvoiceData[]>([]);
   const [checkedRows, setCheckedRows] = useState<CheckedRows>({});
 
   const handleHeaderCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +81,35 @@ const InvoiceTableAdminAcceptTemp = ({ tablehead }: TableProps) => {
     }));
   };
 
-
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
+  
+  
+  const fetchInvoices = async () => {
+    try {
+      const response = await axios.get<pendingInvoiceData[]>('http://localhost:5001/api/invoices/all');
+      console.log('Response from the server:', response.data);
+      // Filter the data with status equal to "Pending"
+      const filteredData = response.data.filter((invoice: pendingInvoiceData) => invoice.status === 'Accept');
+      // Format createdAt for each invoice
+      const formattedData = filteredData.map((invoice: pendingInvoiceData) => ({
+        ...invoice,
+        createdAt: formatCreatedAt(invoice.createdAt),
+      }));
+      // Set the filtered and formatted data into the invoices state variable
+      setInvoices(formattedData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  
+  
+  const formatCreatedAt = (createdAt: string): string => {
+    const date = new Date(createdAt);
+    const formattedDate = `${date.toISOString().split('T')[0]} @ ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    return formattedDate;
+  };
 
   const handleDownload = () => {
     // Filter out unchecked rows
@@ -140,7 +178,8 @@ const InvoiceTableAdminAcceptTemp = ({ tablehead }: TableProps) => {
 
 
           <tbody>
-            {customerData.map((customerDataItem, key) => (
+          {invoices
+              .map((pendingInvoiceDataItem, key) => (
               <tr key={key}>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                 <input
@@ -152,22 +191,14 @@ const InvoiceTableAdminAcceptTemp = ({ tablehead }: TableProps) => {
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {customerDataItem.customerid}
+                  CLI{pendingInvoiceDataItem.customerNo}
                   </h5>
 
                  </td>
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {customerDataItem.name}
-                  </h5>
-
-                 </td>
-
-
-                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                  <h5 className="font-medium text-black dark:text-white">
-                    {customerDataItem.invoiceid}
+                    {pendingInvoiceDataItem.customerName}
                   </h5>
 
                  </td>
@@ -175,7 +206,15 @@ const InvoiceTableAdminAcceptTemp = ({ tablehead }: TableProps) => {
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {customerDataItem.registeredon}
+                    VDDG{pendingInvoiceDataItem.invoiceNo}
+                  </h5>
+
+                 </td>
+
+
+                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
+                  <h5 className="font-medium text-black dark:text-white">
+                  {pendingInvoiceDataItem.createdAt}
                   </h5>
 
                  </td>
@@ -183,7 +222,7 @@ const InvoiceTableAdminAcceptTemp = ({ tablehead }: TableProps) => {
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                  <h5 className="font-medium text-black dark:text-white">
-                    {customerDataItem.orderStatus}
+                    {pendingInvoiceDataItem.status}
                   </h5>
                 </td>
 

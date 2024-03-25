@@ -13,26 +13,28 @@ import DecisionPop from './DecisionPop';
 import InputField from '../../FormElements/InputFiled';
 import InputDatePicker from '../../FormElements/InputDatePicker';
 import Succeed from './Succeed';
+import axios from 'axios';
 
 
 interface InvoiceEditContentProps {
   pendingInvoiceDataItem: {
-    paymentMethod: string;
-    invoiceid: string;
+    paymentType: string;
+    invoiceNo: string;
     reason: string;
     orderdescription: string;
-    invoiceDate: string;
-    name:string;
-    agentid: string;
-    
-
-
+    createdAt: string;
+    customerName:string;
+    agentNo: string;
+    packagename: string;
+    startdate:string;
+    deldate:string;
+    _id:string;
   };
   onClose: () => void;
   
 }
 
-
+const currentDate = new Date().toLocaleDateString();
 
 const SignUpSchema = Yup.object().shape({
   paymentMethod: Yup.string(),
@@ -44,19 +46,55 @@ const SignUpSchema = Yup.object().shape({
 
 
 
-
 const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditContentProps) => {
 
 
   const [showSucceedModal, setShowSucceedModal] = useState(false);
   const [showDecisionPop, setShowDecisionPop] = React.useState<{ isOpen: boolean }>({ isOpen: false });
 
-  const handleEdit = (values: { reason: string; decision: string }) => {
+  const handleEdit = async (values:any): Promise<void> => {
+    let desc = "";
     console.log('Registered', values);
-    setShowSucceedModal(true);
-    if (values.decision == "Reject") {
-      setShowDecisionPop({ isOpen: true });
+    if(values.decision==="Reject" ||values.decision==="Decline"){
+      desc = values.reason;
+    }else{
+      desc = values.orderdescription;
     }
+
+    const url = `http://localhost:5001/api/invoices/${values._id}/updateStatus`;
+    const changeddata = {
+      status: values.decision,
+      responsibleDep: values.resdep,
+      managerInCharge: values.mincharge,
+      startingDate: values.startdate,
+      estDeliveryDate: values.deldate,
+      packageName: values.packagename,
+      description: desc
+    };
+    console.log('Customer data:', changeddata);
+    console.log('Decision', values.decision)
+
+    if(values.decision === 'Reject')
+    {
+      setShowDecisionPop({ isOpen : true});
+    }
+
+    try {
+      const response = await axios.patch(url, changeddata, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('Response:', response.data);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    setShowSucceedModal(true);
+
+    
+    // if (values.decision == "Reject") {
+    //   setShowDecisionPop({ isOpen: true });
+    // }
   };
 
 
@@ -89,13 +127,18 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
 
         <Formik
           initialValues={{
+            _id:pendingInvoiceDataItem._id,
             reason: "",
             decision: "",
             orderdescription:"",
-            invoiceDate:"",
-            name:"",
-            agentid:"",
-            paymentMethod:"",
+            createdAt:pendingInvoiceDataItem.createdAt,
+            customerName:pendingInvoiceDataItem.customerName,
+            agentNo:pendingInvoiceDataItem.agentNo,
+            paymentType:pendingInvoiceDataItem.paymentType,
+            packagename:pendingInvoiceDataItem.packagename,
+            startdate: new Date(), // Initialize with the current date
+            deldate: new Date(),
+
           }}
           validationSchema={SignUpSchema}
           onSubmit={handleEdit}
@@ -121,7 +164,7 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                     <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Invoice ID :</span>
                     </td>
                     <td>
-                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.invoiceid}</span>
+                    <span className=' md:text-[14px] text-[12px]'> VDDG{pendingInvoiceDataItem.invoiceNo}</span>
                     </td>
                   </tr>
                   <tr>
@@ -129,7 +172,7 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                     <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Invoice Date :</span>
                     </td>
                     <td>
-                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.invoiceDate}</span>
+                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.createdAt}</span>
                     </td>
                   </tr>
                   <tr>
@@ -137,7 +180,7 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                     <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Customer Name :</span>
                     </td>
                     <td>
-                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.name}</span>
+                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.customerName}</span>
                     </td>
                   </tr>
                   <tr>
@@ -145,7 +188,7 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                     <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Agent Id :</span>
                     </td>
                     <td>
-                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.agentid}</span>
+                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.agentNo}</span>
                     </td>
                   </tr>
                   <tr>
@@ -153,7 +196,7 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                     <span className='font-semibold uppercase md:text-[14px] text-[12px]'>Payment Method :</span>
                     </td>
                     <td>
-                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.paymentMethod}</span>
+                    <span className=' md:text-[14px] text-[12px]'> {pendingInvoiceDataItem.paymentType}</span>
                     </td>
                   </tr>
 
@@ -185,9 +228,8 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
                     </span>
 
                     <div className='w-full flex flex-col mt-3'>
-                      <h3 className='md:text-[14px] text-[12px] text-[#161616] dark:text-[#fafafa]'>Package : Basic</h3>
-                      <h3 className='md:text-[14px] text-[12px] text-[#161616] dark:text-[#fafafa]'>Date : 03/05/2024</h3>
-                      <h3 className='md:text-[14px] text-[12px] text-[#161616] dark:text-[#fafafa]'>Order ID : VD0069</h3>
+                      <h3 className='md:text-[14px] text-[12px] text-[#161616] dark:text-[#fafafa]'>Package : {pendingInvoiceDataItem.packagename}</h3>
+                      <h3 className='md:text-[14px] text-[12px] text-[#161616] dark:text-[#fafafa]'>Date : {currentDate}</h3>
                     </div>
 
                     <div className='w-full flex flex-row justify-between space-x-3'>
@@ -230,7 +272,7 @@ const InvoiceEditContent = ({ pendingInvoiceDataItem, onClose }: InvoiceEditCont
 
                       
 
-<InputDatePicker
+                      <InputDatePicker
                         type='date'
                         label='Estimate Delivery Date'
                         boxcolor='transparent'
