@@ -16,39 +16,6 @@ interface pendingInvoiceData {
 }
 
 
-// const pendingInvoiceData = [
-//   {
-//     customerid: "Reg-00078C24",
-//     name: "Nissanka Konara",
-//     invoiceDate: "02/Feb/2024",
-//     invoiceid: "VDG000001/24",
-//     status: "Complete",
-//     paymentMethod: "Cash",
-//     agentid: "VD003Sa2024",
-   
-//   },
-//   {
-//     customerid: "Reg-00080C24",
-//     name: "Asela Pradeepan",
-//     invoiceDate: "11/Feb/2024",
-//     invoiceid: "VDG000003/24",
-//     status: "Pending",
-//     paymentMethod: "Bank Deposit",
-//     agentid: "VD003Sa2024",
-   
-//   },
-//   {
-//     customerid: "Reg-00092C24",
-//     name: "Kasuni Jayathilake",
-//     invoiceDate: "08/Feb/2024",
-//     invoiceid: "VDG000005/24",
-//     status: "Pending",
-//     paymentMethod: "Cash",
-//     agentid: "VD003Sa2024",
-  
-//   }
-// ];
-
 interface TableProps {
   tablehead: string[];
 }
@@ -59,13 +26,29 @@ interface CheckedRows {
 }
 
 
+const downloadSampleImage = async (invoiceNo: string, _id: string) => {
+  try {
+    // Make GET request to the API endpoint
+    console.log('Pending Invoice Data Item:',invoiceNo)
+    const response = await axios.get(`http://localhost:5001/api/invoices/${_id}`);
 
-const downloadSampleImage = () => {
-  // Replace the URL with the actual URL of your sample image
-  const sampleImageUrl = "https://resources.tallysolutions.com/wp-content/uploads/2019/11/format-of-cash-deposit-slip.jpg";
+    // Log the response values
+    console.log('Response:', response.data);
 
-  // Trigger download
-  saveAs(sampleImageUrl, "sample-image.jpg");
+    // Extract the file name from the proofDocs field
+    const proofDocsFileName = response.data.proofDocs.split('\\').pop();
+
+    // Log the extracted file name
+    console.log('Proof Docs File Name:', proofDocsFileName);
+
+    // Construct the download URL for the file
+    const downloadUrl = `http://localhost:5001/api/customers/download/${proofDocsFileName}`;
+
+    // Trigger download of the file from the download URL
+    saveAs(downloadUrl, proofDocsFileName);
+  } catch (error) {
+    console.error('Error:', error);
+  }
 };
 
 
@@ -342,7 +325,7 @@ const InvoiceTableAdminPDTemp = ({ tablehead }: TableProps) => {
 
 
                         <svg className="w-6 h-6 cursor-pointer " viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                          onClick={downloadSampleImage}
+                          onClick={() => downloadSampleImage(pendingInvoiceDataItem.invoiceNo, pendingInvoiceDataItem._id)}
                         >
                           <path className='fill-black dark:fill-white ' d="M24 12a5 5 0 0 1-5 5h-2v-1h2a3.99 3.99 0 0 0 .623-7.934l-.79-.124-.052-.798a5.293 5.293 0 0 0-10.214-1.57L8.17 6.59l-.977-.483A2.277 2.277 0 0 0 6.19 5.87a2.18 2.18 0 0 0-1.167.339 2.206 2.206 0 0 0-.98 1.395l-.113.505-.476.2A4 4 0 0 0 5 16h3v1H5a5 5 0 0 1-1.934-9.611 3.21 3.21 0 0 1 1.422-2.025 3.17 3.17 0 0 1 1.702-.493 3.268 3.268 0 0 1 1.446.34 6.293 6.293 0 0 1 12.143 1.867A4.988 4.988 0 0 1 24 12zm-11-1h-1v10.292l-2.646-2.646-.707.707 3.854 3.854 3.853-3.852-.707-.707L13 21.294z" />
                           <path fill="none" d="M0 0h24v24H0z" />

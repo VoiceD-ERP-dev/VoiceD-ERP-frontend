@@ -5,10 +5,11 @@ import Cookies from 'js-cookie';
 
 interface CustomerData {
 
-  _id: string;
+  customerNo: string;
   firstname: string;
   lastname: string;
   createdAt: string;
+  phone: string;
 
 }
 const getCookie = (name: string) => {
@@ -113,7 +114,7 @@ return(
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {customerDataItem._id}
+                    CLI{customerDataItem.customerNo}
                   </h5>
 
                  </td>
@@ -136,7 +137,12 @@ return(
 
                  </td>
 
+                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
+                  <h5 className="font-medium text-black dark:text-white">
+                    {customerDataItem.phone}
+                  </h5>
 
+                 </td>
 
 
 

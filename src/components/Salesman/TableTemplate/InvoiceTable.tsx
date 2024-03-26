@@ -1,44 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
 import InvoiceEdit from "../Modal/InvoiceEdit";
-
-
-
-
-
+import axios from "axios";
+import Cookies from 'js-cookie';
 
 interface InvoiceData {
- 
+  customerNo: string;
+  customerName: string;
+  createdAt: string;
+  invoiceNo: string;
+  status: string;
+  paymentType: string;
+  agentNo: string;
+  _id:string;
   payementMethod: string;
-    paymentProof: File | null;
+  paymentProof: File | null;
 }
-
-const invoiceData = [
-  {
-    customerid: "Reg-00078C24",
-    name: "Nissanka Konara",
-    invoiceDate: "02/Feb/2024",
-    paymentMethod: "Bank Deposit",
-    payementStatus: "Pending",
-    invoiceid: "VDG000001/24"
-  },
-  {
-    customerid: "Reg-00080C24",
-    name: "Asela Pradeepan",
-    invoiceDate: "11/Feb/2024",
-    paymentMethod: "Cash",
-    payementStatus: "Complete",
-    invoiceid: "VDG000003/24"
-  },
-  {
-    customerid: "Reg-00092C24",
-    name: "Kasuni Jayathilake",
-    invoiceDate: "08/Feb/2024",
-    paymentMethod: "Bank Deposit",
-    payementStatus: "Pending",
-    invoiceid: "VDG000005/24"
-  }
-];
 
 interface TableProps {
   tablehead: string[];
@@ -49,34 +26,46 @@ interface CheckedRows {
   all?: boolean;
 }
 
-
-
 const InvoiceTable = ({ tablehead }: TableProps) => {
-
-
-
   const [checkedRows, setCheckedRows] = useState<CheckedRows>({});
+  const [invoiceData, setInvoiceData] = useState<InvoiceData[]>([]);
+  const [selectedInvoice, setSelectedInvoice] = useState<InvoiceData | null>(null);
+
+  useEffect(() => {
+    fetchInvoices();
+  }, []);
+
+  const fetchInvoices = async () => {
+    try {
+      const jwtToken = Cookies.get('jwtToken');
+      const axiosConfig = {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      };
+      const response = await axios.get<InvoiceData[]>('http://localhost:5001/api/invoices/', axiosConfig);
+      setInvoiceData(response.data);
 
 
-  const [selectedInvoice, setSelectedInvoice] = useState<InvoiceData| null>(null);
-
-  const handleEdit = (invoiceDataItem: InvoiceData) => {
-    setSelectedInvoice(invoiceDataItem);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   };
 
-
-
+  const handleEdit = (invoice: InvoiceData) => {
+    setSelectedInvoice(invoice);
+    
+  };
 
   const handleHeaderCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     const updatedCheckedRows: CheckedRows = {};
 
-    invoiceData.forEach((invoiceDataItem, key) => {
+    invoiceData.forEach((_, key) => {
       updatedCheckedRows[key] = isChecked;
     });
 
     updatedCheckedRows.all = isChecked;
-
     setCheckedRows(updatedCheckedRows);
   };
 
@@ -85,34 +74,22 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
     setCheckedRows((prevCheckedRows) => ({
       ...prevCheckedRows,
       [key]: isChecked,
-      all: false, // Uncheck "Select All" if an individual row is unchecked
+      all: false,
     }));
 
     const allChecked = Object.values({ ...prevCheckedRows, [key]: isChecked }).every(Boolean);
-
     setCheckedRows((prevCheckedRows) => ({
       ...prevCheckedRows,
       all: allChecked,
     }));
   };
 
-
-
   const handleDownload = () => {
-    // Filter out unchecked rows
     const selectedRows = invoiceData.filter((_, key) => checkedRows[key]);
-
-    // Create CSV content
-    const csvContent =
-      selectedRows.map(row => Object.values(row).join(",")).join("\n");
-
-    // Convert CSV content to Blob
+    const csvContent = selectedRows.map(row => Object.values(row).join(",")).join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8" });
-
-    // Trigger download
     saveAs(blob, "selected_data.csv");
   };
-
 
 
   return (
@@ -166,7 +143,8 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
 
 
           <tbody>
-            {invoiceData.map((invoiceDataItem, key) => (
+            {invoiceData.map((invoice, key) => (
+              
               <tr key={key}>
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                   <input
@@ -178,14 +156,14 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {invoiceDataItem.customerid}
+                    CLI{invoice.customerNo}
                   </h5>
 
                 </td>
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {invoiceDataItem.name}
+                    {invoice.customerName}
                   </h5>
 
                 </td>
@@ -193,16 +171,7 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {invoiceDataItem.invoiceid}
-                  </h5>
-
-                </td>
-
-
-
-                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                  <h5 className="font-medium text-black dark:text-white">
-                    {invoiceDataItem.paymentMethod}
+                    VDDG{invoice.invoiceNo}
                   </h5>
 
                 </td>
@@ -211,7 +180,16 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {invoiceDataItem.payementStatus}
+                    {invoice.paymentType}
+                  </h5>
+
+                </td>
+
+
+
+                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
+                  <h5 className="font-medium text-black dark:text-white">
+                    {invoice.status}
                   </h5>
 
                 </td>
@@ -219,7 +197,7 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {invoiceDataItem.invoiceDate}
+                    {invoice.createdAt}
                   </h5>
 
                 </td>
@@ -228,9 +206,10 @@ const InvoiceTable = ({ tablehead }: TableProps) => {
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex items-center space-x-3.5">
 
-                  {invoiceDataItem.paymentMethod === "Bank Deposit" && (
+                  {invoice.status !== "Accept" && invoice.status !== "Reject" && (
       <button className="invoice-edit px-4 py-2 rounded-md bg-purple-700 text-white"
-      onClick={() => handleEdit(invoiceDataItem)}>
+      onClick={() => handleEdit(invoice)}>
+        
         Upload Payment Slip
       </button>
     )}
