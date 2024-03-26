@@ -14,6 +14,8 @@ import AdminDashboard from './pages/Dashboard/AdminDashboard';
 import FinanceDashboard from './pages/Dashboard/FinanceDashboard';
 import CustomerRegisterAdmin from './components/Admin/FormLayout/CustomerRegisterAdmin';
 import CustomerInsightAdmin from './components/Admin/TableLayout/CustomerInsightAdmin';
+import OrderInsightAdmin from './components/Admin/TableLayout/OrderInsightAdmin';
+import ClosedOrderAdmin from './components/Admin/TableLayout/ClosedOrderAdmin';
 import AdminInvoicesPD from './components/Admin/TableLayout/InvoicesAdminPD';
 import AdminInvoicesAccept from './components/Admin/TableLayout/InvoicesAdminAccept';
 import SalesAgentAdmin from './components/Admin/CompanyRoles/TableLayout/UserTableAdmin';
@@ -222,6 +224,28 @@ function App() {
             />
 
 
+            <Route
+              path="/orders/vd-orders"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Order Insight" />
+                  <OrderInsightAdmin userRole={userRole} />
+                </>
+              }
+            />
+
+
+            <Route
+              path="/orders/vd-corders"
+              element={
+                <>
+                  <PageTitle title="VoiceD | Admin Dashboard - Closed Orders" />
+                  <ClosedOrderAdmin userRole={userRole} />
+                </>
+              }
+            />
+
+
 
 
 
@@ -271,7 +295,7 @@ function App() {
             />
 
 
-<Route
+            <Route
               path="/invoices/pd-invoices"
               element={
                 <>
