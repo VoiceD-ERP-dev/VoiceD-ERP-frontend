@@ -11,7 +11,22 @@ import PrimaryButton from '../../FormElements/PrimaryButon';
 
 interface SalesAgentEditProps {
   salesAgentData: {
-    fullName: string;
+    agentNo: string;
+    firstname: string;
+    lastname: string;
+    username: string;
+    contact: string;
+    overallC: string;
+    overallI: string;
+    address: string;
+    createdAt : string;
+    empStatus : string;
+    role:string;
+    email : string;
+    remLeave : string;
+    otherData: {
+      phone: string;
+    }[];
     
   };
   onClose: () => void;
@@ -20,7 +35,7 @@ interface SalesAgentEditProps {
 
 
 const SignUpSchema = Yup.object().shape({
-  fullName: Yup.string().required("Required"),
+  firstname: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
     nic: Yup.string().required("Required"),
     brid: Yup.string().required("Required"),
@@ -56,7 +71,12 @@ const SalesAgentEditContent = ({ salesAgentData, onClose }: SalesAgentEditProps)
 
       <Formik
                 initialValues={{
-                  fullName: salesAgentData.fullName,
+                  firstname: salesAgentData.firstname,
+                  lastname: salesAgentData.lastname,
+                  username: salesAgentData.username,
+                  agentNo: salesAgentData.agentNo,
+                  email: salesAgentData.email,
+                  phone: salesAgentData.otherData[0].phone,
                     
 
                 }}
@@ -78,85 +98,77 @@ const SalesAgentEditContent = ({ salesAgentData, onClose }: SalesAgentEditProps)
                     <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
                       <InputFieldFilled
                         label="First Name"
-                        name="fullName"
+                        name="firstname"
                         type="text"
                         icon="AccountCircle"
                         boxcolor="transparent"
-                        placeholder={salesAgentData.fullName}
+                        placeholder={salesAgentData.firstname}
                         handleChange={handleChange}
                         values={values}
                       />
                       <InputFieldFilled
                         label="Last Name"
-                        name="lastName"
+                        name="lastname"
                         type="text"
-                        boxcolor="transparent"
-                        placeholder={salesAgentData.fullName}
-                        handleChange={handleChange}
-                        values={values}
                         icon="AccountCircle"
+                        boxcolor="transparent"
+                        placeholder={salesAgentData.lastname}
+                        handleChange={handleChange}
+                        values={values}
                       />
                     </div>
 
 
                     <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
-                      <InputFieldFilled
-                        label="NIC"
-                        name="nic"
+                    <InputFieldFilled
+                        label="Username"
+                        name="username"
                         type="text"
+                        icon="AccountCircle"
                         boxcolor="transparent"
-                        placeholder={salesAgentData.fullName}
+                        placeholder={salesAgentData.username}
                         handleChange={handleChange}
                         values={values}
-                        icon="ContactMail"
+                        editable={false}
                       />
                       <InputFieldFilled
-                        label="BR ID"
-                        name="brid"
+                        label="Agent No"
+                        name="agentNo"
                         type="text"
+                        icon="AccountCircle"
                         boxcolor="transparent"
-                        placeholder={salesAgentData.fullName}
+                        placeholder={salesAgentData.agentNo}
                         handleChange={handleChange}
                         values={values}
-                        icon="Nfc"
+                        editable={false}
                       />
                     </div>
 
 
 
                     <div className='w-full flex md:flex-row flex-col justify-between md:space-x-3'>
+                    <InputFieldFilled
+                        label="Contact Number"
+                        name="phone"
+                        type="text"
+                        icon="AccountCircle"
+                        boxcolor="transparent"
+                        placeholder={salesAgentData.otherData[0].phone}
+                        handleChange={handleChange}
+                        values={values}
+                      />
                       <InputFieldFilled
                         label="Email"
                         name="email"
                         type="text"
+                        icon="AccountCircle"
                         boxcolor="transparent"
-                        placeholder="Email"
+                        placeholder={salesAgentData.email}
                         handleChange={handleChange}
                         values={values}
-                        icon="AlternateEmail"
-                      />
-                      <InputFieldFilled
-                        label="Contact"
-                        name="contact"
-                        type="text"
-                        boxcolor="transparent"
-                        placeholder="Contact"
-                        handleChange={handleChange}
-                        values={values}
-                        icon="LocalPhone"
                       />
                     </div>
 
-                    <InputFieldFilled
-                      label="Address"
-                      name="address"
-                      type="text"
-                      boxcolor="transparent"
-                      placeholder="Address"
-                      handleChange={handleChange}
-                      values={values}
-                      icon="Map"
-                    />
 
 
                     

@@ -3,19 +3,36 @@ import { saveAs } from "file-saver";
 import PrimaryButton from "../../../FormElements/PrimaryButon";
 import SalesAgentEdit from "../../Modal/SalesAgentEdit";
 import AddSystemUser from "../../Modal/AddSystemUser";
+import axios from "axios";
+import { string } from "yup";
 
 
 
 
 interface salesAgentData {
-  fullName: string;
+  agentNo: string;
+  firstname: string;
+  lastname: string;
+  username: string;
+  contact: string;
+  overallC: string;
+  overallI: string;
+  address: string;
+  createdAt : string;
+  empStatus : string;
+  role:string;
+  email : string;
+  remLeave : string;
+  otherData: {
+    phone: string;
+  }[];
 }
 
 
 
 const salesAgentData = [
   {
-    salesId: "SID-00078C24",
+    agentNo: "SID-00078C24",
     fullName: "Nissanka Konara",
     contact: "0778484855",
     overallC: "56",
@@ -49,6 +66,11 @@ const UserTableAdminTemp = ({ tablehead }: TableProps) => {
 
   const [checkedRows, setCheckedRows] = useState<CheckedRows>({});
 
+
+
+
+
+  
   const handleHeaderCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     const updatedCheckedRows: CheckedRows = {};
@@ -109,6 +131,30 @@ const UserTableAdminTemp = ({ tablehead }: TableProps) => {
 
 
   const [selectedAgent, setSelectedAgent] = useState<salesAgentData | null>(null);
+  const [salesAgentData, setsalesAgentData] = useState<salesAgentData[]>([]);
+
+  const fetchCustomers = async () => {
+    try {
+      const response = await axios.get<salesAgentData[]>('http://localhost:5001/api/users/getAll');
+      console.log('Response from the server:', response.data);
+      const formattedData = response.data.map((agent: salesAgentData) => ({
+        ...agent,
+        createdAt: formatCreatedAt(agent.createdAt),
+      }));
+      setsalesAgentData(formattedData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  const formatCreatedAt = (createdAt: string): string => {
+    const date = new Date(createdAt);
+    const formattedDate = `${date.toISOString().split('T')[0]} @ ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    return formattedDate;
+  };
 
   const handleEdit = (salesAgentDataItem: salesAgentData) => {
     setSelectedAgent(salesAgentDataItem);
@@ -200,15 +246,15 @@ eventname={openSalesAgentPopUp}
             {salesAgentData.map((salesAgentDataItem, key) => {
 
 
-              const [statusColor, setStatusColor] = useState('green-600');
+              // const [statusColor, setStatusColor] = useState('green-600');
 
-                useEffect(() => {
-                  if (salesAgentDataItem.empStatus === 'Retired') {
-                    setStatusColor('red-600');
-                  } else if (salesAgentDataItem.empStatus === 'Working') {
-                    setStatusColor('green-600');
-                  }
-                }, [salesAgentDataItem.empStatus]);
+              //   useEffect(() => {
+              //     if (salesAgentDataItem.empStatus === 'Retired') {
+              //       setStatusColor('red-600');
+              //     } else if (salesAgentDataItem.empStatus === 'Working') {
+              //       setStatusColor('green-600');
+              //     }
+              //   }, [salesAgentDataItem.empStatus]);
 
               return(
                 <tr key={key}>
@@ -222,22 +268,14 @@ eventname={openSalesAgentPopUp}
 
                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {salesAgentDataItem.salesId}
+                    {salesAgentDataItem.agentNo}
                   </h5>
 
                  </td>
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {salesAgentDataItem.fullName}
-                  </h5>
-
-                 </td>
-
-
-                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                  <h5 className="font-medium text-black dark:text-white">
-                    {salesAgentDataItem.nic}
+                    {salesAgentDataItem.firstname} {salesAgentDataItem.lastname}
                   </h5>
 
                  </td>
@@ -245,10 +283,17 @@ eventname={openSalesAgentPopUp}
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {salesAgentDataItem.contact}
+                    {salesAgentDataItem.username}
                   </h5>
 
                  </td>
+
+
+                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
+      <h5 className="font-medium text-black dark:text-white">
+        {salesAgentDataItem.otherData.length > 0 ? salesAgentDataItem.otherData[0].phone : ''}
+      </h5>
+    </td>
 
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
@@ -259,18 +304,12 @@ eventname={openSalesAgentPopUp}
                  </td>
 
 
-                 <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                  <h5 className="font-medium text-black dark:text-white">
-                    {salesAgentDataItem.address}
-                  </h5>
-
-                 </td>
 
 
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
                   <h5 className="font-medium text-black dark:text-white">
-                    {salesAgentDataItem.joindedDate}
+                    {salesAgentDataItem.createdAt}
                   </h5>
 
                  </td>
@@ -304,19 +343,16 @@ eventname={openSalesAgentPopUp}
                  </td>
 
 
-
-
-
-
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">
-                  <div className="w-full rounded-md px-4 py-2 flex justify-center items-center dark:bg-white bg-slate-100">
-                  <h5 className={`font-medium text-[14px] text-${statusColor}` }>
-        {salesAgentDataItem.empStatus}
-      </h5>
-                  </div>
-              
+                  <h5 className="font-medium text-black dark:text-white">
+                    {salesAgentDataItem.role}
+                  </h5>
 
                  </td>
+
+
+
+
 
 
                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11 ">

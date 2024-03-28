@@ -35,7 +35,7 @@ function UserTableAdmin( {userRole} : {userRole:string}) {
           
           
       <SaTableAdminSATemp 
-tablehead={["","SalesID ", "Full Name","NIC", "Contact","Email","Address","Joined Date", "Overall Customers","Overall Sales","Remain Leaves", "Employee Status", "Action"]}
+tablehead={["","SalesID ", "Full Name","Username", "Contact","Email","Joined Date", "Overall Customers","Overall Sales","Remain Leaves", "Employee Category", "Action"]}
 />
           
         
